@@ -1,25 +1,58 @@
-const Typeorm = require('typeorm');
-const CharacterEntity = require('../entity/Character');
-const WeeklyEntity = require('../entity/Weekly');
+const TypeORM = require('typeorm');
 const Errs = require('restify-errors');
-const Jobs = require('../utils/Jobs');
+const Jobs = require('../jobs/Jobs');
 const Queues = require('../utils/Queues');
 const Logger = require('../utils/Logger');
 const Enums = require('../utils/Enums');
 const Utils = require('../utils/Utils');
 const DefaultController = require('./DefaultController');
+const Entities = require('../entity/Entities');
+const Context = require('../utils/Context');
 
 class CharacterController extends DefaultController {
     GetAll = (req, res, next) => {
         Logger.info('Characters search', req.params);
-
-        const reqs = this.ClearProps(req.query, [ 'name', 'realm', 'type', 'class', 'spec', 'role', 'equipped', 'avg', 'azerite', 'orderBy', 'orderDir', 'weekly', 'refresh', 'refreshWeekly' ]);
+        const reqs = this.ClearProps(req.query, [ 'name', 'realm', 'type', 'class', 'spec', 'role', 'equipped', 'avg', 'azerite', 'weekly', 'refresh', 'refreshWeekly' ]);
         Logger.info('Characters search found params: ', reqs);
 
-        let p = Typeorm.getRepository(CharacterEntity.name)
-        .createQueryBuilder("c")
-        .orderBy('type', 'ASC')
-        .addOrderBy(reqs['orderBy'] || 'name', reqs['orderDir'] || 'ASC')
+        if (reqs['name'])
+            reqs['name'] = TypeORM.Like(`%${reqs['name']}%`)
+        if (reqs['realm'])
+            reqs['realm'] = TypeORM.Like(`%${reqs['realm']}%`)
+        if (reqs['role'])
+            reqs['spec'] = TypeORM.In(Utils.GetSpecsByRole(reqs['role']));
+        if (reqs['equipped'])
+            reqs['equipped'] = TypeORM.MoreThanOrEqual(reqs['equipped']);
+        if (reqs['avg'])
+            reqs['avg'] = TypeORM.MoreThanOrEqual(reqs['avg']);
+        if (reqs['azerite'])
+            reqs['azerite'] = TypeORM.MoreThanOrEqual(reqs['azerite']);
+            /*
+        if (reqs['weekly'])
+            p = p.andWhere('dungeons.period = :weekly', { weekly: Context.CurrentPeriod })
+            */
+
+            console.log(reqs);
+
+        TypeORM.getRepository(Entities.Character)
+            .find({
+                relations: ["dungeons"],
+                where: reqs,
+                order: {
+                    type: 'ASC',
+                    name: 'ASC'
+                }
+            })
+            .then(chars => res.send(chars))
+            .catch(err => console.log(err))
+        return;
+
+        let p = TypeORM.getRepository(Entities.Character)
+            .createQueryBuilder('c')
+            .leftJoinAndMapMany('c.dungeons', Entities.Weekly, 'dungeons', `dungeons.character = c.id AND dungeons.period >= ${Context.CurrentPeriod - 5}`)
+            .groupBy('c.id')
+            .orderBy('c.type', 'ASC')
+            .addOrderBy(reqs['orderBy'] || 'name', reqs['orderDir'] || 'ASC')
 
         if (reqs['name'])
             p = p.where('c.name like :name', { name: `%${reqs['name']}%` });
@@ -48,25 +81,28 @@ class CharacterController extends DefaultController {
         if (reqs['azerite'])
             p = p.andWhere('c.azerite >= :azerite', { azerite: reqs['azerite'] });
 
-        p
-        .getMany()
-        .then((chars) => {
-            res.send({
-                err: false,
-                data: chars
-            })
+        if (reqs['weekly'])
+            p = p.andWhere('dungeons.period = :weekly', { weekly: Context.CurrentPeriod })
 
-            chars.forEach((c) => {
-                if (reqs.refresh)
-                    Queues.Character.add({ character: c.id });
-                
-                if (reqs.refreshWeekly)
-                    Queues.Weekly.add({ character: c.id });
-            });
+        p.getMany()
+            .then((chars) => {
+                res.send({
+                    err: false,
+                    data: chars
+                })
+
+                chars.forEach((c) => {
+                    if (reqs.refresh)
+                        Queues.Character.add({ character: c.id });
+                    
+                    if (reqs.refreshWeekly)
+                        Queues.Weekly.add({ character: c.id });
+                });
 
             next();
         })
         .catch(err => {
+            console.log(err);
             Logger.error('Character retrieve failed', { id: req.params.id });
             next(new Errs.InternalError('Character retrieve failed'));
         })
@@ -75,7 +111,7 @@ class CharacterController extends DefaultController {
     Get = (req, res, next) => {
         Logger.info('Retrieve character', req.params);
 
-        Typeorm.getRepository(CharacterEntity.name)
+        TypeORM.getRepository(Entities.Character)
         .createQueryBuilder("char")
         .where("char.id = :id", { id : req.params.id })
         .getOne()
@@ -99,9 +135,14 @@ class CharacterController extends DefaultController {
 
     Create = (req, res, next) => {
         Logger.info('Start character create', req.body);
-        this.RequiredProps(req.body, [ 'name', 'realm', 'type' ]);
 
-        const repo = Typeorm.getRepository(CharacterEntity.name);
+        try {
+            this.RequiredProps(req.body, [ 'name', 'realm', 'type' ]);
+        } catch (err) {
+            return next(err);
+        }
+
+        const repo = TypeORM.getRepository(Entities.Character);
         repo
             .createQueryBuilder("c")
             .where("c.name = :name AND c.realm = :realm", { name: req.body.name, realm: req.body.realm })
@@ -133,7 +174,7 @@ class CharacterController extends DefaultController {
 
     Update = (req, res, next) => {
         Logger.info('Start character update', { id: req.params.id, body: req.body });
-        const repo = Typeorm.getRepository(CharacterEntity.name);
+        const repo = TypeORM.getRepository(Entities.Character);
         const props = [ 'type' ];
 
         let update = {};
@@ -152,7 +193,7 @@ class CharacterController extends DefaultController {
 
                     repo
                         .createQueryBuilder()
-                        .update(CharacterEntity.name)
+                        .update(Entities.Character)
                         .set(update)
                         .where("id = :id", { id: req.params.id })
                         .execute()
@@ -175,10 +216,10 @@ class CharacterController extends DefaultController {
     Delete = (req, res, next) => {
         Logger.info("Character deletion", req.params.id);
 
-        Typeorm.getConnection()
+        TypeORM.getConnection()
             .createQueryBuilder()
             .delete()
-            .from(CharacterEntity.name)
+            .from(Entities.Character)
             .where('id = :id', { id : req.params.id })
             .execute()
             .then((deleted) => {

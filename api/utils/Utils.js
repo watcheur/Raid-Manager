@@ -10,7 +10,7 @@ module.exports = {
     },
 
     GetSpecsByRole: (role) => {
-        switch (role) {
+        switch (parseInt(role)) {
             case Enums.Characters.Role.HEAL:
                 return Enums.Characters.Specs.HEAL;
             case Enums.Characters.Role.TANK:

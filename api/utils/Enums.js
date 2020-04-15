@@ -117,7 +117,7 @@ const Specs = {
         Classes.Shaman.Enhancement,
 
         Classes.Warlock.Affliction,
-        Classes.Warlock.DemonHunter,
+        Classes.Warlock.Demonology,
         Classes.Warlock.Destruction,
 
         Classes.Warrior.Arms,

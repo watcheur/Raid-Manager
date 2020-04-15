@@ -4,8 +4,8 @@ const Restify = require('restify');
 const Controllers = require('./controllers/Controllers');
 const Logger = require('./utils/Logger');
 const Queues = require('./utils/Queues');
-const Jobs = require('./utils/Jobs');
-const CronJob = require('cron').CronJob;
+const Jobs = require('./jobs/Jobs');
+const Entities = require('./entity/Entities');
 
 const server = Restify.createServer({
     name: 'raid-manager-api',
@@ -14,12 +14,7 @@ const server = Restify.createServer({
 server.use(Restify.plugins.queryParser());
 server.use(Restify.plugins.bodyParser({ mapParams: false }));
 
-Config.database.entities = [
-    new TypeORM.EntitySchema(require('./entity/Character')),
-    new TypeORM.EntitySchema(require('./entity/Weekly')),
-    new TypeORM.EntitySchema(require('./entity/Raid')),
-    new TypeORM.EntitySchema(require('./entity/Boss'))
-]
+Config.database.entities = Entities.All;
 
 Logger.info('Create database connection');
 TypeORM
@@ -54,6 +49,12 @@ TypeORM
         server.put('/bosses/:id', Controllers.Boss.Update);
         server.del('/bosses/:id', Controllers.Boss.Delete);
 
+        // Period
+        server.get('/periods', Controllers.Period.GetAll);
+        server.get('/periods/:id', Controllers.Period.Get);
+        server.get('/period/current', Controllers.Period.GetCurrent);
+        server.get('/period/refresh', Controllers.Period.RefreshPeriods);
+
         // Queues endpoints
         server.get('/queues/character/:id', (req, res, next) => {
             Queues.character.add({ character: req.params.id });
@@ -67,62 +68,13 @@ TypeORM
             next();
         });
 
-        server.on('uncaughtException', (req, res, route, err) => {
-            Logger.error('An uncaught error was catched', err);
-            res.send({
-                name: err.name,
-                message: err.message
-            });
-        });
-
         server.listen(3005, () => {
             Logger.info('Server started');
         });
+
+        // We start CRONs
+        require('./utils/Crons')();
+
+        // We start Jobs
+        Jobs.Start();
     });
-
-Logger.info('Sarting character queue processing');
-Queues.Character.process((job, done) => {
-    Jobs.Character.Update(job.data.character, done);
-}).catch(err => { Logger.error('Character queue processing failed'); })
-
-Logger.info('Starting weekly queue processing');
-Queues.Weekly.process((job, done) => {
-    Jobs.Weekly.Update(job.data.character, done);
-}).catch(err => { Logger.error('Weekly queue processing failed '); })
-
-// Every 6 hours
-var CharUpdateCron = new CronJob('* * */6 * * *', () => {
-    Logger.info('Start refresh character cron');
-
-    TypeORM.getRepository(require('./entity/Character').name)
-        .createQueryBuilder('c')
-        .select('c.id')
-        .getMany()
-        .then(chars => {
-            chars.map(c => c.id).forEach(id => {
-                Jobs.Character.Update(id, done);
-
-                Logger.info('End refresh character cron');
-            });
-        })
-        .catch(err => Logger.error("Error occured on character cron job", err));
-});
-CharUpdateCron.start();
-
-// Every 8 hours
-var WeeklyUpdateCron = new CronJob('* * */8 * * *', () => {
-    Logger.info('Start refresh weekly cron');
-
-    TypeORM.getRepository(require('./entity/Character').name)
-        .createQueryBuilder('c')
-        .select('c.id')
-        .getMany()
-        .then(chars => {
-            chars.map(c => c.id).forEach(id => {
-                Jobs.Weekly.Update(id, done);
-            });
-
-            Logger.info('End refresh weekly chest cron');
-        })
-        .catch(err => Logger.error("Error occured on weekly chest cron job", err));
-});

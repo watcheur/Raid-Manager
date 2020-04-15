@@ -112,5 +112,17 @@ module.exports = {
             type: "datetime",
             nullable: true
         }
+    },
+    relations: {
+        dungeons: {
+            target: "Weekly",
+            type: "one-to-many",
+            joinColumn: {
+                name: 'id',
+                referencedColumnName: 'character'
+            },
+            inverseSide: 'character',
+            cascade: false
+        }
     }
 };

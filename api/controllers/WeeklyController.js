@@ -31,7 +31,9 @@ class WeeklyController extends DefaultController {
 
     Create = (req, res, next) => {
         Logger.info('Start creating weekly chest', req.body);
-        this.RequiredProps(req.body, [ 'period', 'level', 'zone', 'timed', 'timestamp', 'character' ]);
+        try {
+            this.RequiredProps(req.body, [ 'period', 'level', 'zone', 'timed', 'timestamp', 'character' ]);
+        } catch (err) { return next(err); }
 
         var weekly = {
             period: req.body.period,

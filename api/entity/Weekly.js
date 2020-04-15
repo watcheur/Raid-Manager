@@ -26,8 +26,9 @@ module.exports = {
         character: {
             target: "Character",
             type: "many-to-one",
-            joinColum: {
-                name: 'character'
+            joinColumn: {
+                name: 'character',
+                referencedColumnName: 'id'
             },
             cascade: true
         }

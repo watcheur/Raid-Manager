@@ -5,9 +5,6 @@ module.exports = {
             primary: true,
             type: "int",
         },
-        season: {
-            type: "int"
-        },
         start: {
             type: "datetime"
         },
