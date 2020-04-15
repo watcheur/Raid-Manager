@@ -1,0 +1,22 @@
+{
+  "name": "raid-manager-api",
+  "version": "1.0.0",
+  "description": "Raid manager API",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rhogar",
+  "license": "ISC",
+  "dependencies": {
+    "blizzard.js": "^3.2.0",
+    "bull": "^3.13.0",
+    "mysql": "^2.18.1",
+    "q": "^1.5.1",
+    "reflect-metadata": "^0.1.13",
+    "restify": "^8.5.1",
+    "socket.io": "^2.3.0",
+    "typeorm": "^0.2.24",
+    "winston": "^3.2.1"
+  }
+}
