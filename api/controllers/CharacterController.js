@@ -193,7 +193,7 @@ class CharacterController extends DefaultController {
                 next();
             })
             .catch(err => {
-                Logger.error('Character deletion failed', { id: req.params.id })
+                Logger.error('Character deletion failed', err)
                 next(new Errs.InternalError('Character deletion failed'))
             });
     }
