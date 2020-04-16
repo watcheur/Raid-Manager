@@ -19,7 +19,7 @@ module.exports = {
             target: "Encounter",
             type: "one-to-one",
             joinColumn: {
-                name: 'boss',
+                name: 'encounter',
                 referencedColumnName: 'id'
             },
             inverseSide: 'id',
@@ -34,6 +34,8 @@ module.exports = {
                 referencedColumnName: 'id'
             },
             inverseSide: 'id',
+            cascade: true,
+            onDelete: 'CASCADE'
         },
         event: {
             target: "Event",

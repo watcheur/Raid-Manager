@@ -13,10 +13,13 @@ module.exports = {
         schedule: {
             type: "datetime"
         },
+        difficulty: {
+            type: "tinyint"
+        },
         created: {
             type: "datetime"
         },
-        udpated: {
+        updated: {
             type: "datetime",
             nullable: true
         }

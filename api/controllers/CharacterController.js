@@ -131,13 +131,7 @@ class CharacterController extends DefaultController {
     Update = (req, res, next) => {
         Logger.info('Start character update', { id: req.params.id, body: req.body });
         const repo = TypeORM.getRepository(Entities.Character);
-        const props = [ 'type' ];
-
-        let update = {};
-        props.forEach((p) => {
-            if (req.body.hasOwnProperty(p))
-                update[p] = req.body[p]
-        });
+        const update = this.ClearProps(req.body, [ 'type' ]);
 
         repo
             .createQueryBuilder("c")

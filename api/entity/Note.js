@@ -9,6 +9,10 @@ module.exports = {
         text: {
             type: "text",
             nullable: true
+        },
+        favorite: {
+            type: "boolean",
+            default: false
         }
     }
 };
