@@ -43,69 +43,31 @@ class CharacterController extends DefaultController {
                     name: 'ASC'
                 }
             })
-            .then(chars => res.send(chars))
-            .catch(err => console.log(err))
-        return;
-
-        let p = TypeORM.getRepository(Entities.Character)
-            .createQueryBuilder('c')
-            .leftJoinAndMapMany('c.dungeons', Entities.Weekly, 'dungeons', `dungeons.character = c.id AND dungeons.period >= ${Context.CurrentPeriod - 5}`)
-            .groupBy('c.id')
-            .orderBy('c.type', 'ASC')
-            .addOrderBy(reqs['orderBy'] || 'name', reqs['orderDir'] || 'ASC')
-
-        if (reqs['name'])
-            p = p.where('c.name like :name', { name: `%${reqs['name']}%` });
-
-        if (reqs['realm'])
-            p = p.andWhere('c.realm like :realm', { realm: `%${reqs['realm']}%` });
-
-        if (reqs['type'])
-            p = p.andWhere('c.type = :type', { type: reqs['type'] });
-
-        if (reqs['class'])
-            p = p.andWhere('c.class = :class', { type: reqs['class'] });
-
-        if (reqs['spec'])
-            p = p.andWhere('c.spec = :spec', { spec: reqs['spec'] });
-
-        if (reqs['role'])
-            p = p.andWhere('c.spec IN (:role)', { role: Utils.GetSpecsByRole(reqs['role']) });
-
-        if (reqs['equipped'])
-            p = p.andWhere('c.equipped >= :equipped', { equipped: reqs['equipped'] });
-
-        if (reqs['avg'])
-            p = p.andWhere('c.avg >= :avg', { avg: reqs['avg'] });
-
-        if (reqs['azerite'])
-            p = p.andWhere('c.azerite >= :azerite', { azerite: reqs['azerite'] });
-
-        if (reqs['weekly'])
-            p = p.andWhere('dungeons.period = :weekly', { weekly: Context.CurrentPeriod })
-
-        p.getMany()
-            .then((chars) => {
-                res.send({
-                    err: false,
-                    data: chars
-                })
-
-                chars.forEach((c) => {
+            .then(chars => {
+                chars = chars.map(c => {
                     if (reqs.refresh)
                         Queues.Character.add({ character: c.id });
                     
                     if (reqs.refreshWeekly)
                         Queues.Weekly.add({ character: c.id });
+
+                    c.dungeons = c.dungeons.filter(d => d.period >= Context.CurrentPeriod - 3);
+                    c.weekly = c.dungeons.map(d => d.period).indexOf(reqs['weekly'] || Context.CurrentPeriod) >= 0;
+
+                    return c;
                 });
 
-            next();
-        })
-        .catch(err => {
-            console.log(err);
-            Logger.error('Character retrieve failed', { id: req.params.id });
-            next(new Errs.InternalError('Character retrieve failed'));
-        })
+                if (reqs['weekly'] >= 0)
+                    res.send({ err: false, data: chars.filter(c => c.weekly)});
+                else
+                    res.send({err: false, data: chars });
+
+                next();
+            })
+            .catch(err => {
+                Logger.error('Character retrieve failed', err);
+                next(new Errs.InternalError('Character retrieve failed'));
+            })
     }
 
     Get = (req, res, next) => {
