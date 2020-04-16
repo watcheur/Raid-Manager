@@ -53,6 +53,32 @@ class RaidController extends DefaultController {
             })
     }
 
+    GetEncounters = (req, res, next) => {
+        Logger.info('Raid encounters search', req.params);
+        const reqs = this.ClearProps(req.query, [ 'name' ]);
+        Logger.info('Raid encounters found params: ', reqs);
+
+        if (reqs['name'])
+            reqs['name'] = TypeORM.Like(`%${reqs['name']}%`)
+        reqs.raid = req.params.id;
+
+        TypeORM.getRepository(Entities.Encounter)
+            .find({
+                where: reqs
+            })
+            .then(encounters => {
+                res.send({
+                    err: false,
+                    data: encounters
+                });
+                next();
+            })
+            .catch(err => {
+                Logger.error('Error retrieving raids', err);
+                next(new Errs.InternalError('Database error'));
+            })
+    }
+
     RefreshRaids = (req, res, next) => {
         const repo = TypeORM.getRepository(Entities.Raid);
 

@@ -46,15 +46,12 @@ TypeORM
         server.get('/weeklys/:id', Controllers.Weekly.Get);
         server.put('/weeklys/:id', Controllers.Weekly.Update);
         server.del('/weeklys/:id', Controllers.Weekly.Delete);
-
+        
         // Raids endpoints
         server.get('/raids', Controllers.Raid.GetAll);
         server.get('/raids/:id', Controllers.Raid.Get);
+        server.get('/raids/:id/encounters', Controllers.Raid.GetEncounters)
         server.get('/raids/refresh', Controllers.Raid.RefreshRaids);
-
-        // Encounters endpoints
-        server.get('/encounters/:raidid', Controllers.Encounter.GetAll);
-        server.get('/encounters/:raidid/:id', Controllers.Encounter.Get);
 
         // Queues endpoints
         server.get('/queues/character/:id', (req, res, next) => {
