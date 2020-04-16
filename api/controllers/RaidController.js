@@ -7,11 +7,50 @@ const blizzard = require('blizzard.js').initialize(require('../config.json').bli
 
 class RaidController extends DefaultController {
     Get = (req, res, next) => {
-
+        TypeORM.getRepository(Entities.Raid)
+        .findOne({
+            relations: [ "encounters", "expansion" ],
+            where: {
+                id: req.params.id
+            }
+        })
+        .then(raid => {
+            res.send({
+                err: false,
+                data: raid
+            });
+            next();
+        })
+        .catch(err => {
+            Logger.error('Error retrieving raid', err);
+            next(new Errs.InternalError('Database error'));
+        })
     }
 
     GetAll = (req, res, next) => {
+        Logger.info('Raids search', req.params);
+        const reqs = this.ClearProps(req.query, [ 'name', 'expansion', 'level' ]);
+        Logger.info('Raids search found params: ', reqs);
 
+        if (reqs['name'])
+            reqs['name'] = TypeORM.Like(`%${reqs['name']}%`)
+
+        TypeORM.getRepository(Entities.Raid)
+            .find({
+                relations: [ "encounters", "expansion" ],
+                where: reqs
+            })
+            .then(raids => {
+                res.send({
+                    err: false,
+                    data: raids
+                });
+                next();
+            })
+            .catch(err => {
+                Logger.error('Error retrieving raids', err);
+                next(new Errs.InternalError('Database error'));
+            })
     }
 
     RefreshRaids = (req, res, next) => {
