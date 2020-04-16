@@ -4,14 +4,46 @@ const Errs = require('restify-errors');
 const Logger = require('../utils/Logger');
 const DefaultController = require('./DefaultController');
 const blizzard = require('blizzard.js').initialize(require('../config.json').blizzard);
+const Context = require('../utils/Context');
 
 class ExpansionController extends DefaultController  {
     Get = (req, res, next) => {
-
+        TypeORM.getRepository(Entities.Expansion)
+            .findOne({
+                relations: [ "raids" ],
+                where: {
+                    id: Context.CurrentExpansion.id
+                }
+            })
+            .then(exp => {
+                res.send({
+                    err: false,
+                    data: exp
+                });
+                next();
+            })
+            .catch(err => {
+                Logger.error('Error retrieving current expansion', err);
+                next(new Errs.InternalError('Database error'));
+            })
     }
 
     GetAll = (req, res, next) => {
-
+        TypeORM.getRepository(Entities.Expansion)
+            .find({
+                relations: [ "raids" ]
+            })
+            .then(exps => {
+                res.send({
+                    err: false,
+                    data: exps
+                });
+                next();
+            })
+            .catch(err => {
+                Logger.error('Error retrieving current expansion', err);
+                next(new Errs.InternalError('Database error'));
+            })
     }
 
     Refresh = (req, res, next) => {

@@ -7,7 +7,7 @@ const Context = require('../utils/Context');
 const Entities = require('../entity/Entities');
 
 module.exports = () => {
-    // Every hours - Refresh current period
+    // Every hours - Refresh current period & current xpac
     new CronJob('0 0 */1 * * *', () => {
         Logger.info('Start refresh current period cron');
 
@@ -20,7 +20,10 @@ module.exports = () => {
                     Context.CurrentPeriod = p;
                     Logger.info('Current period is now :', Context.CurrentPeriod)
                 }
-            });
+            })
+            .catch(err => {
+                Logger.error('Error while retrieving current xpac', err);
+            })
         
         TypeORM.getRepository(Entities.Expansion)
             .createQueryBuilder('a')
@@ -33,7 +36,7 @@ module.exports = () => {
                 }
             })
             .catch(err => {
-                Logger.error('Error while retrieving current xpac', err)
+                Logger.error('Error while retrieving current xpac', err);
             })
     }, null, true, 'Europe/Paris', null, true);
 

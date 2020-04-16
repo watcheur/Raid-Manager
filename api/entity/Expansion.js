@@ -17,6 +17,7 @@ module.exports = {
                 name: 'id',
                 referencedColumnName: 'expansion'
             },
+            inverseSide: 'expansion',
             cascade: false
         }
     }
