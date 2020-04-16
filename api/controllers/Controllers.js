@@ -1,9 +1,12 @@
-const cController = require('./CharacterController');
-const wController = require('./WeeklyController');
-const eController = require('./EncounterController');
-const rController = require('./RaidController');
-const pController = require('./PeriodController');
-const exController = require('./ExpansionController');
+const cController   = require('./CharacterController');
+const wController   = require('./WeeklyController');
+const eController   = require('./EncounterController');
+const rController   = require('./RaidController');
+const pController   = require('./PeriodController');
+const exController  = require('./ExpansionController');
+const evController  = require('./EventController');
+const coController  = require('./CompositionController');
+const nController   = require('./NoteController');
 
 module.exports = {
     Expansion: new exController(),
@@ -13,5 +16,9 @@ module.exports = {
     Weekly: new wController(),
 
     Encounter: new eController(),
-    Raid: new rController()
+    Raid: new rController(),
+
+    Event: new evController(),
+    Composition: new coController(),
+    Note: new nController()
 }

@@ -53,6 +53,23 @@ TypeORM
         server.get('/raids/:id/encounters', Controllers.Raid.GetEncounters)
         server.get('/raids/refresh', Controllers.Raid.RefreshRaids);
 
+        // Events
+        server.get('/events', Controllers.Event.GetAll);
+        server.post('/events', Controllers.Event.Create);
+        server.get('/events/:id', Controllers.Event.Get);
+        server.put('/events/:id', Controllers.Event.Update);
+
+        // Compositions
+        server.post('/compositions', Controllers.Composition.Create);
+        server.get('/compositions/:schedule', Controllers.Composition.GetAll);
+        server.put('/compositions/:schedule/:id', Controllers.Composition.Get);
+
+        // Notes
+        server.get('/notes/:composition', Controllers.Note.GetAll);
+        server.post('/notes/:composition', Controllers.Note.Create);
+        server.get('/notes/:composition/:id', Controllers.Note.Get)
+        server.put('/notes/:composition/:id', Controllers.Note.Update);
+
         // Queues endpoints
         server.get('/queues/character/:id', (req, res, next) => {
             Queues.character.add({ character: req.params.id });

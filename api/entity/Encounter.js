@@ -21,6 +21,7 @@ module.exports = {
                 name: 'raid',
                 referencedColumnName: 'id'
             },
+            inverseSide: 'id',
             cascade: false
         }
     }

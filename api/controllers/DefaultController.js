@@ -24,6 +24,10 @@ class DefaultController {
         next(new Errs.NotImplementedError());
     }
 
+    GetAll = (req, res, next) => {
+        next(new Errs.NotImplementedError());
+    }
+
     Create = (req, res, next) => {
         next(new Errs.NotImplementedError());
     }
