@@ -22,6 +22,10 @@ TypeORM
     .then((connection) => {
         Logger.info('Database initialized');
 
+        server.get('/expansions', Controllers.Expansion.GetAll);
+        server.get('/expansions/current', Controllers.Expansion.Get)
+        server.get('/expansions/refresh', Controllers.Expansion.Refresh);
+
         // Characters endpoints
         server.get('/characters', Controllers.Character.GetAll);
         server.post('/characters', Controllers.Character.Create);
@@ -31,29 +35,26 @@ TypeORM
         server.get('/characters/:id/refresh', Controllers.Character.ForceRefresh);
         server.get('/characters/:id/refresh-mythic', Controllers.Character.ForceRefreshMythic);
 
-        // Weekly endpoints
-        server.post('/weekly', Controllers.Weekly.Create);
-        server.get('/weekly/:id', Controllers.Weekly.Get);
-        server.put('/weekly/:id', Controllers.Weekly.Update);
-        server.del('/weekly/:id', Controllers.Weekly.Delete);
-
-        // Raids endpoints
-        server.post('/raids', Controllers.Raid.Create);
-        server.get('/raids/:id', Controllers.Raid.Get);
-        server.put('/raids/:id', Controllers.Raid.Update);
-        server.del('/raids/:id', Controllers.Raid.Delete);
-
-        // Boss endpoints
-        server.post('/bosses', Controllers.Boss.Create);
-        server.get('/bosses/:id', Controllers.Boss.Get);
-        server.put('/bosses/:id', Controllers.Boss.Update);
-        server.del('/bosses/:id', Controllers.Boss.Delete);
-
         // Period
         server.get('/periods', Controllers.Period.GetAll);
         server.get('/periods/:id', Controllers.Period.Get);
-        server.get('/period/current', Controllers.Period.GetCurrent);
-        server.get('/period/refresh', Controllers.Period.RefreshPeriods);
+        server.get('/periods/current', Controllers.Period.GetCurrent);
+        server.get('/periods/refresh', Controllers.Period.RefreshPeriods);
+
+        // Weekly endpoints
+        server.post('/weeklys', Controllers.Weekly.Create);
+        server.get('/weeklys/:id', Controllers.Weekly.Get);
+        server.put('/weeklys/:id', Controllers.Weekly.Update);
+        server.del('/weeklys/:id', Controllers.Weekly.Delete);
+
+        // Raids endpoints
+        server.get('/raids', Controllers.Raid.GetAll);
+        server.get('/raids/:id', Controllers.Raid.Get);
+        server.get('/raids/refresh', Controllers.Raid.RefreshRaids);
+
+        // Encounters endpoints
+        server.get('/encounters/:raidid', Controllers.Encounter.GetAll);
+        server.get('/encounters/:raidid/:id', Controllers.Encounter.Get);
 
         // Queues endpoints
         server.get('/queues/character/:id', (req, res, next) => {

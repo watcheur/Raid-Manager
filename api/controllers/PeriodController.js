@@ -1,5 +1,5 @@
 const TypeORM = require('typeorm');
-const PeriodEntity = require('../entity/Period');
+const Entities = require('../entity/Entities');
 const Errs = require('restify-errors');
 const Logger = require('../utils/Logger');
 const DefaultController = require('./DefaultController');
@@ -9,7 +9,7 @@ class PeriodController extends DefaultController  {
     Get = (req, res, next) => {
         Logger.info('Retrieve boss informations', req.params);
 
-        TypeORM.getRepository(PeriodEntity.name).createQueryBuilder()
+        TypeORM.getRepository(Entities.Period).createQueryBuilder()
             .where("id = :id", { id : req.params.id })
             .getOne()
             .then((el) => {
@@ -39,7 +39,7 @@ class PeriodController extends DefaultController  {
 
     RefreshPeriods = (req, res, next) => {
 
-        TypeORM.getRepository(PeriodEntity.name)
+        TypeORM.getRepository(Entities.Period)
             .createQueryBuilder()
             .select('MAX(id) as max_id')
             .getRawOne()
@@ -67,7 +67,6 @@ class PeriodController extends DefaultController  {
                                         promises.push(new Promise((resolve, reject) => {
                                             blizzard.get(`/data/wow/mythic-keystone/period/${period.id}`, params)
                                                 .then(periodResponse => {
-                                                    console.log(periodResponse.data);
                                                     resolve({
                                                         id : periodResponse.data.id,
                                                         start: new Date(periodResponse.data.start_timestamp),
@@ -81,7 +80,7 @@ class PeriodController extends DefaultController  {
 
                                 Promise.all(promises).then(values => {
                                     TypeORM
-                                        .getRepository(PeriodEntity.name)
+                                        .getRepository(Entities.Period)
                                         .save(values)
                                         .then(saved => {
                                             res.send({

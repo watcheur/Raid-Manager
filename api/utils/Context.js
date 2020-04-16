@@ -1,5 +1,6 @@
 class Context {
-    CurrentPeriod = 0;
+    CurrentPeriod = { };
+    CurrentExpansion = { };
 }
 
 module.exports = new Context();

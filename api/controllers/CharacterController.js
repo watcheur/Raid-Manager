@@ -27,12 +27,6 @@ class CharacterController extends DefaultController {
             reqs['avg'] = TypeORM.MoreThanOrEqual(reqs['avg']);
         if (reqs['azerite'])
             reqs['azerite'] = TypeORM.MoreThanOrEqual(reqs['azerite']);
-            /*
-        if (reqs['weekly'])
-            p = p.andWhere('dungeons.period = :weekly', { weekly: Context.CurrentPeriod })
-            */
-
-            console.log(reqs);
 
         TypeORM.getRepository(Entities.Character)
             .find({
@@ -51,8 +45,8 @@ class CharacterController extends DefaultController {
                     if (reqs.refreshWeekly)
                         Queues.Weekly.add({ character: c.id });
 
-                    c.dungeons = c.dungeons.filter(d => d.period >= Context.CurrentPeriod - 3);
-                    c.weekly = c.dungeons.map(d => d.period).indexOf(reqs['weekly'] || Context.CurrentPeriod) >= 0;
+                    c.dungeons = c.dungeons.filter(d => d.period >= Context.CurrentPeriod.id - 3);
+                    c.weekly = c.dungeons.map(d => d.period).indexOf(reqs['weekly'] || Context.CurrentPeriod.id) >= 0;
 
                     return c;
                 });

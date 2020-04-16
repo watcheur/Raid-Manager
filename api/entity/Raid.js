@@ -3,25 +3,37 @@ module.exports = {
     columns: {
         id: {
             primary: true,
-            type: "int",
-            generated: true
-        },
-        zone: {
             type: "int"
         },
-        difficulty: {
-            type: "tinyint"
+        name: {
+            type: "varchar"
         },
-        date: {
-            type: "datetime"
+        minimum_level: {
+            type: "int"
         }
     },
     relations: {
-        bosses: {
-            target: "Boss",
+        expansion: {
+            target: "Expansion",
+            type: "many-to-one",
+            joinColumn: {
+                name: 'expansion',
+                referencedColumnName: 'id'
+            },
+            inverseSide: 'id',
+            cascade: true,
+            onDelete: 'CASCADE'
+        },
+        encounters: {
+            target: "Encounter",
             type: "one-to-many",
-            joinTable: true,
-            cascade: true
+            joinColumn: {
+                name: 'id',
+                referencedColumnName: 'raid'
+            },
+            inverseSide: 'raid',
+            cascade: true,
+            onDelete: "CASCADE"
         }
     }
 }

@@ -10,15 +10,7 @@ class BossController extends DefaultController  {
         Logger.info('Retrieve boss informations', req.params);
     }
 
-    Create = (req, res, next) => {
-
-    }
-
-    Update = (req, res, next) => {
-
-    }
-
-    Delete = (req, res, next) => {
+    GetAll = (req, res, next) => {
 
     }
 }
