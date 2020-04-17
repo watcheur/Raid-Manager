@@ -27,6 +27,9 @@ module.exports = {
                 id: c.character.id,
                 name: c.character.name,
                 realm: c.character.realm,
+                faction: c.character.faction,
+                race: c.character.race,
+                gender: c.character.gender,
                 class: c.character.class,
                 spec: c.character.spec,
                 role: c.role

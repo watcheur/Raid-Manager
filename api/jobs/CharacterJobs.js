@@ -3,6 +3,7 @@ const CharacterEntity = require('../entity/Character');
 const WeeklyEntity = require('../entity/Weekly');
 const blizzard = require('blizzard.js').initialize(require('../config.json').blizzard);
 const Logger = require('../utils/Logger');
+const Enums = require('../utils/Enums');
 
 function CharacterUpdate(id, cb)
 {
@@ -30,6 +31,19 @@ function CharacterUpdate(id, cb)
                     {
                         blizzard.wow.character('index', { origin: 'eu', realm: char.realm, name: char.name.toLowerCase(), params: params })
                             .then(res => {
+                                switch (res.data.gender.type) {
+                                    case "MALE": char.gender = Enums.Characters.Gender.Male; break;
+                                    case "FEMALE": char.gender = Enums.Characters.Gender.Female; break;
+                                    default: char.gender = Enums.Characters.Gender.Unknown; break;
+                                }
+
+                                switch (res.data.faction.type) {
+                                    case "HORDE": char.faction = Enums.Characters.Faction.Horde; break;
+                                    case "ALLIANCE": char.faction = Enums.Characters.Faction.Alliance; break;
+                                    default: char.faction = Enums.Characters.Faction.Unknown; break;
+                                }
+
+                                char.race = res.data.race.id;
                                 char.class = res.data.character_class.id;
                                 char.spec = res.data.active_spec.id;
                                 char.level = res.data.level;

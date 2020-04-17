@@ -21,6 +21,18 @@ module.exports = {
             type: "int",
             nullable: true
         },
+        race: {
+            type: "int",
+            nullable: true
+        },
+        gender: {
+            type: "int",
+            nullable: true
+        },
+        faction: {
+            type: "int",
+            nullable: true
+        },
         class: {
             type: "int",
             nullable: true

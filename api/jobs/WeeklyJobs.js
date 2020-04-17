@@ -29,11 +29,13 @@ function WeeklyUpdate(id, cb) {
                     {
                         blizzard.wow.character('mythic-keystone-profile', { origin: 'eu', realm: char.realm, name: char.name.toLowerCase(), params: params })
                             .then(res => {
+                                let max = {};
+
                                 if (res.data.current_period.best_runs) {
                                     if (res.data.current_period.best_runs.length == 0)
                                         return cb(null, { });
 
-                                    const max = res.data.current_period.best_runs.reduce((prev, current) => {
+                                    max = res.data.current_period.best_runs.reduce((prev, current) => {
                                         if (prev.keystone_level == current.keystone_level)
                                             return (prev.is_completed_within_time ? prev : current);
                                         return (prev.keystone_level > current.keystone_level) ? prev : current
@@ -54,8 +56,8 @@ function WeeklyUpdate(id, cb) {
                                 var repo = Typeorm.getRepository(WeeklyEntity.name);
 
                                 Logger.info('Found this weekly', weekly);
-                                repo.createQueryBuilder()
-                                .where("level = :level AND timed = :timed AND characterId = :character AND period = :period AND zone = :zone AND timestamp = :timestamp", weekly)
+                                repo.createQueryBuilder('w')
+                                .where("w.level = :level AND w.timed = :timed AND w.character = :character AND w.period = :period AND w.zone = :zone AND w.timestamp = :timestamp", weekly)
                                 .getCount()
                                 .then((nb) => {
                                     if (nb > 0) {
@@ -69,17 +71,17 @@ function WeeklyUpdate(id, cb) {
                                             cb(null, field);
                                         })
                                         .catch(err => {
-                                            Logger.error('Weekly save failed', { id: id, weekly: weekly })
+                                            Logger.error('Weekly save failed', err)
                                             cb(new Error('Weekly save failed'))
                                         });
                                 })
                                 .catch(err => {
-                                    Logger.error('Weekly Count verification failed', { weekly: weekly });
+                                    Logger.error('Weekly Count verification failed', err);
                                     cb(new Error('Weekly Count verification failed'));
                                 })
                             })
                             .catch(err => {
-                                Logger.error('Blizzard API Mythic Keystone Profile failed', { status: err.response.status, statusText: err.response.statusText, character: { id: id, name: char.name, realm: char.realm } });
+                                Logger.error('Blizzard API Mythic Keystone Profile failed', err);
                                 cb(new Error('Blizzard API Failed'));
                             });
                     }

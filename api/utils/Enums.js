@@ -140,11 +140,54 @@ const Specs = {
     ]
 }
 
+const Races = {
+    Human: 1,
+    Orc: 2,
+    Dwarf: 3,
+    NightElf: 4,
+    Undead: 5,
+    Tauren: 6,
+    Gnome: 7,
+    Troll: 8,
+    Goblin: 9,
+    BloodElf: 10,
+    Draenei: 11,
+    Worgen: 22,
+    PandarenN: 24,
+    PandarenA: 25,
+    PandarenH: 26,
+    Nightborne: 27,
+    HighmountainTauren: 28,
+    VoidElf: 29,
+    LightforgedDraenei: 30,
+    ZandalariTroll: 31,
+    KulTiran: 32,
+    DarkIronDwarf: 34,
+    Vulpera: 35,
+    MagharOrc: 36,
+    Mechagnome: 37
+}
+
+const Genders = {
+    Male: 0,
+    Female: 1,
+    Unknown: 2
+}
+
+const Factions = {
+    Horde: 0,
+    Alliance: 1,
+    Neutral: 2
+}
+
 module.exports = {
     Characters: {
         Type: CharacterType,
         Role: CharacterRole,
         Classes: Classes,
-        Specs: Specs
+        Specs: Specs,
+        Race: Races,
+        Gender: Genders,
+        Faction: Factions
     }
 }
