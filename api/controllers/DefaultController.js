@@ -6,7 +6,7 @@ class DefaultController {
         props.forEach((p) => {
             if (!obj.hasOwnProperty(p))
                 throw new Errs.BadRequestError('Missing `'+ p +'` property');
-            ret[p] = ret;
+            ret[p] = obj[p];
         });
 
         return ret;

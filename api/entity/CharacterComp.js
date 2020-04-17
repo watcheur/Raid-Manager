@@ -24,14 +24,12 @@ module.exports = {
         },
         composition: {
             target: "Composition",
-            type: "one-to-one",
+            type: "many-to-one",
             joinColumn: {
                 name: 'composition',
                 referencedColumnName: 'id'
             },
-            inverseSide: 'id',
-            cascade: true,
-            onDelete: "CASCADE"
+            inverseSide: 'id'
         },
     }
 }

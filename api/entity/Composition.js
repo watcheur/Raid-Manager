@@ -28,12 +28,12 @@ module.exports = {
         },
         characters: {
             target: "CharacterComp",
-            type: "many-to-many",
+            type: "one-to-many",
             joinColumn: {
-                name: 'characters',
-                referencedColumnName: 'id'
+                name: 'id',
+                referencedColumnName: 'composition'
             },
-            inverseSide: 'id',
+            inverseSide: 'composition',
             cascade: true,
             onDelete: 'CASCADE'
         },
