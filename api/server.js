@@ -1,6 +1,7 @@
 const Config = require('./config.json');
 const TypeORM = require('typeorm');
 const Restify = require('restify');
+const corsMiddleware = require('restify-cors-middleware')
 const Controllers = require('./controllers/Controllers');
 const Logger = require('./utils/Logger');
 const Queues = require('./utils/Queues');
@@ -11,6 +12,15 @@ const server = Restify.createServer({
     name: 'raid-manager-api',
     handleUncaughtExceptions: true
 });
+const cors = corsMiddleware({
+    preflightMaxAge: 5, //Optional
+    origins: ['*'],
+    allowHeaders: [],
+    exposeHeaders: []
+})
+  
+server.pre(cors.preflight)
+server.use(cors.actual)
 server.use(Restify.plugins.queryParser());
 server.use(Restify.plugins.bodyParser({ mapParams: false }));
 

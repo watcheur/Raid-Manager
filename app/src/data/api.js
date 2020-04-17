@@ -7,7 +7,7 @@ class Api {
     }
 
     Get = (endpoint, args) => {
-        return this.axios.get(`${this.endpoint}/${endpoint}`, {
+        return this.axios.get(`${this.endpoint}${endpoint}`, {
             headers: {
                 'Accept': 'application/json'
             },
@@ -18,7 +18,7 @@ class Api {
     }
 
     Delete = (endpoint, args) => {
-        return this.axios.delete(`${this.endpoint}/${endpoint}`, {
+        return this.axios.delete(`${this.endpoint}${endpoint}`, {
             headers: {
                 'Accept': 'application/json'
             },
@@ -29,7 +29,7 @@ class Api {
     }
 
     Post = (endpoint, data, args) => {
-        return this.axios.post(`${this.endpoint}/${endpoint}`, {...data }, {
+        return this.axios.post(`${this.endpoint}${endpoint}`, {...data }, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -41,7 +41,7 @@ class Api {
     }
 
     Put = (endpoint, data, args) => {
-        return this.axios.put(`${this.endpoint}/${endpoint}`, {...data }, {
+        return this.axios.put(`${this.endpoint}${endpoint}`, {...data }, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -56,7 +56,7 @@ class Api {
     GetCharacter = (id) => this.Get(`/characters/${id}`);
     CreateCharacter = (data) => this.Post('/characters', data);
     UpdateCharacter = (id, data) => this.Put(`/characters/${id}`, data);
-    DeleteCharacter = (id) => this.Delete(`/characters/${id}`, data);
+    DeleteCharacter = (id) => this.Delete(`/characters/${id}`);
 
     GetRaids = (args) => this.Get('/raids', args);
     GetRaid = (id) => this.Get(`/raids/${id}`);

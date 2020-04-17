@@ -180,6 +180,70 @@ const Factions = {
     Neutral: 2
 }
 
+function GenderToObj(gender) {
+    switch (gender) {
+        case Genders.Female:
+            return { label: "Female", slug: 'female' }
+        case Genders.Male:
+            return { label: "Male", slug: 'male' }
+        default:
+            return { label: "Unknown", slug: 'unknown' }
+    }
+}
+
+function RaceToObj(race) {
+    switch (race) {
+        case Races.Human:
+            return { label: 'Human', slug: 'human' }
+        case Races.Orc:
+            return { label: 'Orc', slug: 'orc' }
+        case Races.Dwarf:
+            return { label: 'Dwarf', slug: 'dwarf' }
+        case Races.NightElf:
+            return { label: 'Night Elf', slug: 'nightelf' }
+        case Races.Undead:
+            return { label: 'Undead', slug: 'undead' }
+        case Races.Tauren:
+            return { label: 'Tauren', slug: 'tauren' }
+        case Races.Gnome:
+            return { label: 'Gnome', slug: 'gnome' }
+        case Races.Troll:
+            return { label: 'Troll', slug: 'troll' }
+        case Races.Goblin:
+            return { label: 'Goblin', slug: 'goblin' }
+        case Races.BloodElf:
+            return { label: 'BloodElf', slug: 'bloodelf' }
+        case Races.Draenei:
+            return { label: 'Draenei', slug: 'draenei' }
+        case Races.Worgen:
+            return { label: 'Worgen', slug: 'worgen' }
+        case Races.PandarenN:
+        case Races.PandarenA:
+        case Races.PandarenH:
+            return { label: 'Pandaren', slug: 'pandaren' }
+        case Races.Nightborne:
+            return { label: 'Nightborne', slug: 'nightborne' }
+        case Races.HighmountainTauren:
+            return { label: 'Highmountain Tauren', slug: 'highmountaintauren' }
+        case Races.VoidElf:
+            return { label: 'Void Elf', slug: 'voidelf' }
+        case Races.LightforgedDraenei:
+            return { label: 'Lightforged Draenei', slug: 'lightforgeddraenei' }
+        case Races.ZandalariTroll:
+            return { label: 'Zandalari Troll', slug: 'zandalaritroll' }
+        case Races.KulTiran:
+            return { label: 'Kul Tiran', slug: 'kultiran' }
+        case Races.DarkIronDwarf:
+            return { label: 'Dark Iron Dwarf', slug: 'darkirondwarf' }
+        case Races.Vulpera:
+            return { label: 'Vulpera', slug: 'vulpera' }
+        case Races.MagharOrc:
+            return { label: 'MagharOrc', slug: 'magharorc' }
+        case Races.Mechagnome:
+            return { label: 'Mechagnome', slug: 'mechagnome' }
+    }
+}
+
 export default {
     Characters: {
         Type: CharacterType,
@@ -209,11 +273,11 @@ export default {
     RoleToObj: (role) => {
         switch (role) {
             case CharacterRole.DPS:
-                return { label: "Dps", classes: [".damage"] }
+                return { label: "Dps", slug: "damage" }
             case CharacterRole.HEAL:
-                return { label: "Heal", classes: [".healer"] }
+                return { label: "Heal", slug: "healer" }
             case CharacterRole.TANK:
-                return { label: "Tank", classes: [".tank"] }
+                return { label: "Tank", slug: "tank" }
         }
     },
     /**
@@ -221,32 +285,32 @@ export default {
      */
     ClassToObj: (cl) => {
         switch (cl) {
-            case Classes.Warrior:
-                return { label: "Warrior", classes: ['.warrior'] }
-            case Classes.Warlock:
-                return { label: "Warlock", classes: ['.warlock'] }
-            case Classes.Shaman:
-                return { label: "Shaman", classes: ['.shaman'] }
-            case Classes.Rogue:
-                return { label: "Rogue", classes: ['.rogue'] }
-            case Classes.Priest:
-                return { label: "Priest", classes: ['.priest'] }
-            case Classes.Paladin:
-                return { label: "Paladin", classes: ['.paladin'] }
-            case Classes.Monk:
-                return { label: "Monk", classes: ['.monk'] }
-            case Classes.Mage:
-                return { label: "Mage", classes: ['.mage'] }
-            case Classes.Hunter:
-                return { label: "Hunter", classes: ['.hunter'] }
-            case Classes.Druid:
-                return { label: "Druid", classes: ['.druid'] }
-            case Classes.DeathKnight:
-                return { label: "DeathKnight", classes: ['.deathknight'] }
-            case Classes.DemonHunter:
-                return { label: "DemonHunter", classes: ['.demonhunter'] }
+            case Classes.Warrior.ClassID:
+                return { label: "Warrior", slug: 'warrior' }
+            case Classes.Warlock.ClassID:
+                return { label: "Warlock", slug: 'warlock' }
+            case Classes.Shaman.ClassID:
+                return { label: "Shaman", slug: 'shaman' }
+            case Classes.Rogue.ClassID:
+                return { label: "Rogue", slug: 'rogue' }
+            case Classes.Priest.ClassID:
+                return { label: "Priest", slug: 'priest' }
+            case Classes.Paladin.ClassID:
+                return { label: "Paladin", slug: 'paladin' }
+            case Classes.Monk.ClassID:
+                return { label: "Monk", slug: 'monk' }
+            case Classes.Mage.ClassID:
+                return { label: "Mage", slug: 'mage' }
+            case Classes.Hunter.ClassID:
+                return { label: "Hunter", slug: 'hunter' }
+            case Classes.Druid.ClassID:
+                return { label: "Druid", slug: 'druid' }
+            case Classes.DeathKnight.ClassID:
+                return { label: "DeathKnight", slug: 'deathknight' }
+            case Classes.DemonHunter.ClassID:
+                return { label: "DemonHunter", slug: 'demonhunter' }
             default:
-                return { label: "Unknown", classes: ['.unknown'] }
+                return { label: "Unknown", slug: 'unknown' }
         }
     },
     /**
@@ -329,70 +393,13 @@ export default {
     /**
      * @param {Race} race
      */
-    RaceToObj: (race) => {
-        switch (race) {
-            case Races.Human:
-                return { label: 'Human', classes: ['.human'] }
-            case Races.Orc:
-                return { label: 'Orc', classes: ['.prc'] }
-            case Races.Dwarf:
-                return { label: 'Dwarf', classes: ['.dwarf'] }
-            case Races.NightElf:
-                return { label: 'Night Elf', classes: ['.nightelf'] }
-            case Races.Undead:
-                return { label: 'Undead', classes: ['.undead'] }
-            case Races.Tauren:
-                return { label: 'Tauren', classes: ['.tauren'] }
-            case Races.Gnome:
-                return { label: 'Gnome', classes: ['.gnome'] }
-            case Races.Troll:
-                return { label: 'Troll', classes: ['.troll'] }
-            case Races.Goblin:
-                return { label: 'Goblin', classes: ['.goblin'] }
-            case Races.BloodElf:
-                return { label: 'BloodElf', classes: ['.bloodelf'] }
-            case Races.Draenei:
-                return { label: 'Draenei', classes: ['.draenei'] }
-            case Races.Worgen:
-                return { label: 'Worgen', classes: ['.worgen'] }
-            case Races.PandarenN:
-            case Races.PandarenA:
-            case Races.PandarenH:
-                return { label: 'Pandaren', classes: ['.pandaren'] }
-            case Races.Nightborne:
-                return { label: 'Nightborne', classes: ['.nightborne'] }
-            case Races.HighmountainTauren:
-                return { label: 'Highmountain Tauren', classes: ['.highmountaintauren'] }
-            case Races.VoidElf:
-                return { label: 'Void Elf', classes: ['.voidelf'] }
-            case Races.LightforgedDraenei:
-                return { label: 'Lightforged Draenei', classes: ['.lightforgeddraenei'] }
-            case Races.ZandalariTroll:
-                return { label: 'Zandalari Troll', classes: ['.zandalaritroll'] }
-            case Races.KulTiran:
-                return { label: 'Kul Tiran', classes: ['.kultiran'] }
-            case Races.DarkIronDwarf:
-                return { label: 'Dark Iron Dwarf', classes: ['.darkirondwarf'] }
-            case Races.Vulpera:
-                return { label: 'Vulpera', classes: ['.vulpera'] }
-            case Races.MagharOrc:
-                return { label: 'MagharOrc', classes: ['.magharorc'] }
-            case Races.Mechagnome:
-                return { label: 'Mechagnome', classes: ['.mechagnome'] }
-        }
-    },
+    RaceToObj: RaceToObj,
     /**
      * @param {Gender} gender
      */
-    GenderToObj: (gender) => {
-        switch (gender) {
-            case Genders.Female:
-                return { label: "Female", classes: ['.female'] }
-            case Genders.Male:
-                return { label: "Male", classes: ['.male'] }
-            default:
-                return { label: "Unknown", classes: ['.unknown'] }
-        }
+    GenderToObj: GenderToObj,
+    CharToRaceIc: (char) => {
+        return `GameIcon--${RaceToObj(char.race).slug}_${GenderToObj(char.gender).slug}`
     },
     /**
      * @param {Faction} faction
@@ -428,7 +435,40 @@ export default {
                 return Specs.TANK;
             case CharacterRole.DPS:
             default:
-                return Enums.Characters.Specs.DPS;
+                return CharacterRole.Specs.DPS;
         }
     },
+    /**
+     * @param {Classes} cl
+     */
+    ClassToColor: (cl) => {
+        switch (cl) {
+            case Classes.Warrior:
+                return "#C79C6E";
+            case Classes.Warlock:
+                return "#8787ED";
+            case Classes.Shaman:
+                return "#0070DE";
+            case Classes.Rogue:
+                return "#FFF569";
+            case Classes.Priest:
+                return "#FFFFFF";
+            case Classes.Paladin:
+                return "#F58CBA";
+            case Classes.Monk:
+                return "#00FF96";
+            case Classes.Mage:
+                return "#40C7EB";
+            case Classes.Hunter:
+                return "#ABD473";
+            case Classes.Druid:
+                return "#FF7D0A";
+            case Classes.DeathKnight:
+                return "#C41F3B";
+            case Classes.DemonHunter:
+                return "#A330C9";
+            default:
+                return "#000000";
+        }
+    }
 }

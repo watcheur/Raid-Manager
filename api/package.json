@@ -16,6 +16,7 @@
     "q": "^1.5.1",
     "reflect-metadata": "^0.1.13",
     "restify": "^8.5.1",
+    "restify-cors-middleware": "^1.1.1",
     "socket.io": "^2.3.0",
     "typeorm": "^0.2.24",
     "winston": "^3.2.1"

@@ -45,6 +45,7 @@ class CharacterController extends DefaultController {
                     if (reqs.refreshWeekly)
                         Queues.Weekly.add({ character: c.id });
 
+                    c.role = Utils.GetRoleBySpec(c.spec);
                     c.dungeons = c.dungeons.filter(d => d.period >= Context.CurrentPeriod.id - 3);
                     c.weekly = c.dungeons.map(d => d.period).indexOf(reqs['weekly'] || Context.CurrentPeriod.id) >= 0;
 

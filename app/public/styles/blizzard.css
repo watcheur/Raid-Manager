@@ -1,73 +1,174 @@
-.GameIcon-slot {
-    border: 1px solid #333
+.GameColorClass.deathknight {
+	color: #C41F3B;
 }
 
-.GameIcon-slot {
-    background-image: url(/images/blizzard/GameIcon-slots.png);
-    border-radius: 0
+.GameColorClass.demonhunter {
+	color: #A330C9;
 }
 
-.GameIcon-slot.head {
-    background-position: 0 0
+.GameColorClass.druid {
+	color: #FF7D0A;
 }
 
-.GameIcon-slot.neck {
-    background-position: 0 -100%
+.GameColorClass.hunter {
+	color: #ABD473;
 }
 
-.GameIcon-slot.shoulder {
-    background-position: 0 -200%
+.GameColorClass.mage {
+	color: #40C7EB;
 }
 
-.GameIcon-slot.back,
-.GameIcon-slot.chest {
-    background-position: 0 -300%
+.GameColorClass.monk {
+	color: #00FF96;
 }
 
-.GameIcon-slot.tabard {
-    background-position: 0 -400%
+.GameColorClass.paladin {
+	color: #F58CBA;
 }
 
-.GameIcon-slot.shirt {
-    background-position: 0 -500%
+.GameColorClass.priest {
+	color: #FFFFFF;
 }
 
-.GameIcon-slot.wrist {
-    background-position: 0 -600%
+.GameColorClass.rogue {
+	color: #FFF569;
 }
 
-.GameIcon-slot.hand {
-    background-position: 0 -700%
+.GameColorClass.shaman {
+	color: #0070DE;
 }
 
-.GameIcon-slot.waist {
-    background-position: 0 -800%
+.GameColorClass.warrior {
+	color: #C79C6E;
 }
 
-.GameIcon-slot.leg {
-    background-position: 0 -900%
+.GameColorClass.warlock {
+	color: #8787ED;
 }
-
-.GameIcon-slotFoot {
-    background-position: 0 -1000%
+.GameIcon {
+    position:relative;
+    -webkit-box-sizing:border-box;
+    box-sizing:border-box;
+    background-color:#000;
+    display:inline-block;
+    max-width:168px;
+    width:48px;
+    border:1px solid #504137
 }
-
-.GameIcon-slot.left-finger,
-.GameIcon-slot.right-finger {
-    background-position: 0 -1100%
+.GameIcon:before {
+    content:"";
+    display:block;
+    padding-top:100%
 }
-
-.GameIcon-slot.left-trinket,
-.GameIcon-slot.right-trinket {
-    background-position: 0 -1200%
+.GameIcon-icon {
+    position:absolute;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    background-color:#000;
+    background-size:cover;
+    border-radius:9%
 }
-
-.GameIcon-slot.weapon {
-    background-position: 0 -1300%
+.GameIcon--huge {
+    width:64px
 }
-
-.GameIcon-slot.off-hand {
-    background-position: 0 -1400%
+.GameIcon--large {
+    width:56px
+}
+.GameIcon--medium {
+    width:32px
+}
+.GameIcon--small {
+    width:24px
+}
+.GameIcon--tiny {
+    width:16px
+}
+.GameIcon--full {
+    width:100%
+}
+.GameIcon--check {
+    opacity:.6
+}
+.GameIcon--centered {
+    position:absolute;
+    top:50%;
+    left:50%;
+    -webkit-transform:translate(-50%,-50%);
+    transform:translate(-50%,-50%)
+}
+.GameIcon--check:after {
+    content:"";
+    display:block;
+    border:3px solid #fff;
+    border-width:0 0 4px 4px;
+    height:16px;
+    width:32px;
+    margin:6px 0;
+    -webkit-transform:rotate(-45deg) scale(.5);
+    transform:rotate(-45deg) scale(.5);
+    position:absolute;
+    top:8px;
+    left:8px
+}
+.GameIcon[disabled] {
+    opacity:.5
+}
+.GameIcon--slot {
+    border:1px solid #333
+}
+.GameIcon--slot .GameIcon-icon {
+    background-image:url(/images/blizzard/slots.png);
+    border-radius:0
+}
+.GameIcon--slotHead .GameIcon-icon {
+    background-position:0 0
+}
+.GameIcon--slotNeck .GameIcon-icon {
+    background-position:0 -100%
+}
+.GameIcon--slotShoulder .GameIcon-icon {
+    background-position:0 -200%
+}
+.GameIcon--slotBack .GameIcon-icon,
+.GameIcon--slotChest .GameIcon-icon {
+    background-position:0 -300%
+}
+.GameIcon--slotTabard .GameIcon-icon {
+    background-position:0 -400%
+}
+.GameIcon--slotShirt .GameIcon-icon {
+    background-position:0 -500%
+}
+.GameIcon--slotWrist .GameIcon-icon {
+    background-position:0 -600%
+}
+.GameIcon--slotHand .GameIcon-icon {
+    background-position:0 -700%
+}
+.GameIcon--slotWaist .GameIcon-icon {
+    background-position:0 -800%
+}
+.GameIcon--slotLeg .GameIcon-icon {
+    background-position:0 -900%
+}
+.GameIcon--slotFoot .GameIcon-icon {
+    background-position:0 -1000%
+}
+.GameIcon--slotLeftFinger .GameIcon-icon,
+.GameIcon--slotRightFinger .GameIcon-icon {
+    background-position:0 -1100%
+}
+.GameIcon--slotLeftTrinket .GameIcon-icon,
+.GameIcon--slotRightTrinket .GameIcon-icon {
+    background-position:0 -1200%
+}
+.GameIcon--slotWeapon .GameIcon-icon {
+    background-position:0 -1300%
+}
+.GameIcon--slotOffhand .GameIcon-icon {
+    background-position:0 -1400%
 }
 
 .GameIcon-quality.poor {
@@ -102,315 +203,243 @@
     border-color: #0cf
 }
 
-.GameIcon-class.warrior {
-    background-image: url(/images/blizzard/GameIcon-class-warrior.jpg)
+.GameIcon--WARRIOR .GameIcon-icon {
+    background-image:url(/images/blizzard/class-warrior.jpg)
 }
-
-.GameIcon-class.warlock {
-    background-image: url(/images/blizzard/GameIcon-class-warlock.jpg)
+.GameIcon--WARLOCK .GameIcon-icon {
+    background-image:url(/images/blizzard/class-warlock.jpg)
 }
-
-.GameIcon-class.shaman {
-    background-image: url(/images/blizzard/GameIcon-class-shaman.jpg)
+.GameIcon--SHAMAN .GameIcon-icon {
+    background-image:url(/images/blizzard/class-shaman.jpg)
 }
-
-.GameIcon-class.rogue {
-    background-image: url(/images/blizzard/GameIcon-class-rogue.jpg)
+.GameIcon--ROGUE .GameIcon-icon {
+    background-image:url(/images/blizzard/class-rogue.jpg)
 }
-
-.GameIcon-class.priest {
-    background-image: url(/images/blizzard/GameIcon-class-priest.jpg)
+.GameIcon--PRIEST .GameIcon-icon {
+    background-image:url(/images/blizzard/class-priest.jpg)
 }
-
-.GameIcon-class.paladin {
-    background-image: url(/images/blizzard/GameIcon-class-paladin.jpg)
+.GameIcon--PALADIN .GameIcon-icon {
+    background-image:url(/images/blizzard/class-paladin.jpg)
 }
-
-.GameIcon-class.monk {
-    background-image: url(/images/blizzard/GameIcon-class-monk.jpg)
+.GameIcon--MONK .GameIcon-icon {
+    background-image:url(/images/blizzard/class-monk.jpg)
 }
-
-.GameIcon-class.mage {
-    background-image: url(/images/blizzard/GameIcon-class-mage.jpg)
+.GameIcon--MAGE .GameIcon-icon {
+    background-image:url(/images/blizzard/class-mage.jpg)
 }
-
-.GameIcon-class.hunter {
-    background-image: url(/images/blizzard/GameIcon-class-hunter.jpg)
+.GameIcon--HUNTER .GameIcon-icon {
+    background-image:url(/images/blizzard/class-hunter.jpg)
 }
-
-.GameIcon-class.druid {
-    background-image: url(/images/blizzard/GameIcon-class-druid.jpg)
+.GameIcon--DRUID .GameIcon-icon {
+    background-image:url(/images/blizzard/class-druid.jpg)
 }
-
-.GameIcon-class.deathknight {
-    background-image: url(/images/blizzard/GameIcon-class-death-knight.jpg)
+.GameIcon--DEATHKNIGHT .GameIcon-icon {
+    background-image:url(/images/blizzard/class-death-knight.jpg)
 }
-
-.GameIcon-class.demonhunter {
-    background-image: url(/images/blizzard/GameIcon-class-demon-hunter.jpg)
+.GameIcon--DEMONHUNTER .GameIcon-icon {
+    background-image:url(/images/blizzard/class-demon-hunter.jpg)
 }
-
-.GameIcon-vector,
-.GameIcon-vector {
-    border: none;
-    background-color: transparent
+.GameIcon--vector,
+.GameIcon--vector .GameIcon-icon {
+ border:none;
+ background-color:transparent
 }
 
-.GameIcon-vector {
-    border-radius: 0
+.GameIcon--vector .GameIcon-icon {
+ border-radius:0
 }
-
-.GameIcon-vector.GameIcon-class.warrior {
-    background-image: url(/images/blizzard/GameIcon-class-warrior-vector.png)
+.GameIcon--vector.GameIcon--WARRIOR .GameIcon-icon {
+ background-image:url(/images/blizzard/class-warrior-vector.png)
 }
-
-.GameIcon-vector.GameIcon-class.warlock {
-    background-image: url(/images/blizzard/GameIcon-class-warlock-vector.png)
+.GameIcon--vector.GameIcon--WARLOCK .GameIcon-icon {
+ background-image:url(/images/blizzard/class-warlock-vector.png)
 }
-
-.GameIcon-vector.GameIcon-class.shaman {
-    background-image: url(/images/blizzard/GameIcon-class-shaman-vector.png)
+.GameIcon--vector.GameIcon--SHAMAN .GameIcon-icon {
+ background-image:url(/images/blizzard/class-shaman-vector.png)
 }
-
-.GameIcon-vector.GameIcon-class.rogue {
-    background-image: url(/images/blizzard/GameIcon-class-rogue-vector.png)
+.GameIcon--vector.GameIcon--ROGUE .GameIcon-icon {
+ background-image:url(/images/blizzard/class-rogue-vector.png)
 }
-
-.GameIcon-vector.GameIcon-class.priest {
-    background-image: url(/images/blizzard/GameIcon-class-priest-vector.png)
+.GameIcon--vector.GameIcon--PRIEST .GameIcon-icon {
+ background-image:url(/images/blizzard/class-priest-vector.png)
 }
-
-.GameIcon-vector.GameIcon-class.paladin {
-    background-image: url(/images/blizzard/GameIcon-class-paladin-vector.png)
+.GameIcon--vector.GameIcon--PALADIN .GameIcon-icon {
+ background-image:url(/images/blizzard/class-paladin-vector.png)
 }
-
-.GameIcon-vector.GameIcon-class.monk {
-    background-image: url(/images/blizzard/GameIcon-class-monk-vector.png)
+.GameIcon--vector.GameIcon--MONK .GameIcon-icon {
+ background-image:url(/images/blizzard/class-monk-vector.png)
 }
-
-.GameIcon-vector.GameIcon-class.mage {
-    background-image: url(/images/blizzard/GameIcon-class-mage-vector.png)
+.GameIcon--vector.GameIcon--MAGE .GameIcon-icon {
+ background-image:url(/images/blizzard/class-mage-vector.png)
 }
-
-.GameIcon-vector.GameIcon-class.hunter {
-    background-image: url(/images/blizzard/GameIcon-class-hunter-vector.png)
+.GameIcon--vector.GameIcon--HUNTER .GameIcon-icon {
+ background-image:url(/images/blizzard/class-hunter-vector.png)
 }
-
-.GameIcon-vector.GameIcon-class.druid {
-    background-image: url(/images/blizzard/GameIcon-class-druid-vector.png)
+.GameIcon--vector.GameIcon--DRUID .GameIcon-icon {
+ background-image:url(/images/blizzard/class-druid-vector.png)
 }
-
-.GameIcon-vector.GameIcon-class.deathknight {
-    background-image: url(/images/blizzard/GameIcon-class-death-knight-vector.png)
+.GameIcon--vector.GameIcon--DEATHKNIGHT .GameIcon-icon {
+ background-image:url(/images/blizzard/class-death-knight-vector.png)
 }
-
-.GameIcon-vector.GameIcon-class.demonhunter {
-    background-image: url(/images/blizzard/GameIcon-class-demon-hunter-vector.png)
+.GameIcon--vector.GameIcon--DEMONHUNTER .GameIcon-icon {
+ background-image:url(/images/blizzard/class-demon-hunter-vector.png)
 }
 
-.GameIcon-class.vulpera.male {
-    background-image: url(/images/blizzard/vulpera_male.jpg)
+.GameIcon--vulpera_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-vulpera_male.jpg)
 }
-
-.GameIcon-class.vulpera.female {
-    background-image: url(/images/blizzard/vulpera_female.jpg)
+.GameIcon--vulpera_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-vulpera_female.jpg)
 }
-
-.GameIcon-class.mechagnome.male {
-    background-image: url(/images/blizzard/mechagnome_male.jpg)
+.GameIcon--mechagnome_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-mechagnome_male.jpg)
 }
-
-.GameIcon-class.mechagnome.female {
-    background-image: url(/images/blizzard/mechagnome_female.jpg)
+.GameIcon--mechagnome_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-mechagnome_female.jpg)
 }
-
-.GameIcon-class.zandalaritroll.male {
-    background-image: url(/images/blizzard/zandalaritroll_male.jpg)
+.GameIcon--zandalaritroll_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-zandalaritroll_male.jpg)
 }
-
-.GameIcon-class.zandalaritroll.female {
-    background-image: url(/images/blizzard/zandalaritroll_female.jpg)
+.GameIcon--zandalaritroll_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-zandalaritroll_female.jpg)
 }
-
-.GameIcon-class.voidelf.male {
-    background-image: url(/images/blizzard/voidelf_male.jpg)
+.GameIcon--voidelf_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-voidelf_male.jpg)
 }
-
-.GameIcon-class.voidelf.female {
-    background-image: url(/images/blizzard/voidelf_female.jpg)
+.GameIcon--voidelf_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-voidelf_female.jpg)
 }
-
-.GameIcon-class.nightborne.male {
-    background-image: url(/images/blizzard/nightborne_male.jpg)
+.GameIcon--nightborne_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-nightborne_male.jpg)
 }
-
-.GameIcon-class.nightborne.female {
-    background-image: url(/images/blizzard/nightborne_female.jpg)
+.GameIcon--nightborne_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-nightborne_female.jpg)
 }
-
-.GameIcon-class.magharorc.male {
-    background-image: url(/images/blizzard/magharorc_male.jpg)
+.GameIcon--magharorc_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-magharorc_male.jpg)
 }
-
-.GameIcon-class.magharorc.female {
-    background-image: url(/images/blizzard/magharorc_female.jpg)
+.GameIcon--magharorc_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-magharorc_female.jpg)
 }
-
-.GameIcon-class.lightforgeddraenei.male {
-    background-image: url(/images/blizzard/lightforgeddraenei_male.jpg)
+.GameIcon--lightforgeddraenei_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-lightforgeddraenei_male.jpg)
 }
-
-.GameIcon-class.lightforgeddraenei.female {
-    background-image: url(/images/blizzard/lightforgeddraenei_female.jpg)
+.GameIcon--lightforgeddraenei_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-lightforgeddraenei_female.jpg)
 }
-
-.GameIcon-class.kultiran.male {
-    background-image: url(/images/blizzard/kultiran_male.jpg)
+.GameIcon--kultiran_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-kultiran_male.jpg)
 }
-
-.GameIcon-class.kultiran.female {
-    background-image: url(/images/blizzard/kultiran_female.jpg)
+.GameIcon--kultiran_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-kultiran_female.jpg)
 }
-
-.GameIcon-class.highmountaintauren.male {
-    background-image: url(/images/blizzard/highmountaintauren_male.jpg)
+.GameIcon--highmountaintauren_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-highmountaintauren_male.jpg)
 }
-
-.GameIcon-class.highmountaintauren.female {
-    background-image: url(/images/blizzard/highmountaintauren_female.jpg)
+.GameIcon--highmountaintauren_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-highmountaintauren_female.jpg)
 }
-
-.GameIcon-class.darkirondwarf.male {
-    background-image: url(/images/blizzard/darkirondwarf_male.jpg)
+.GameIcon--darkirondwarf_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-darkirondwarf_male.jpg)
 }
-
-.GameIcon-class.darkirondwarf.female {
-    background-image: url(/images/blizzard/darkirondwarf_female.jpg)
+.GameIcon--darkirondwarf_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-darkirondwarf_female.jpg)
 }
-
-.GameIcon-class.goblin.male {
-    background-image: url(/images/blizzard/goblin_male.jpg)
+.GameIcon--goblin_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-goblin_male.jpg)
 }
-
-.GameIcon-class.goblin.female {
-    background-image: url(/images/blizzard/goblin_female.jpg)
+.GameIcon--goblin_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-goblin_female.jpg)
 }
-
-.GameIcon-class.bloodelf.male {
-    background-image: url(/images/blizzard/bloodelf_male.jpg)
+.GameIcon--bloodelf_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-bloodelf_male.jpg)
 }
-
-.GameIcon-class.bloodelf.female {
-    background-image: url(/images/blizzard/bloodelf_female.jpg)
+.GameIcon--bloodelf_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-bloodelf_female.jpg)
 }
-
-.GameIcon-class.troll.male {
-    background-image: url(/images/blizzard/troll_male.jpg)
+.GameIcon--troll_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-troll_male.jpg)
 }
-
-.GameIcon-class.troll.female {
-    background-image: url(/images/blizzard/troll_female.jpg)
+.GameIcon--troll_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-troll_female.jpg)
 }
-
-.GameIcon-class.tauren.male {
-    background-image: url(/images/blizzard/tauren_male.jpg)
+.GameIcon--tauren_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-tauren_male.jpg)
 }
-
-.GameIcon-class.tauren.female {
-    background-image: url(/images/blizzard/tauren_female.jpg)
+.GameIcon--tauren_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-tauren_female.jpg)
 }
-
-.GameIcon-class.undead.male {
-    background-image: url(/images/blizzard/undead_male.jpg)
+.GameIcon--undead_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-undead_male.jpg)
 }
-
-.GameIcon-class.undead.female {
-    background-image: url(/images/blizzard/undead_female.jpg)
+.GameIcon--undead_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-undead_female.jpg)
 }
-
-.GameIcon-class.pandaren.male {
-    background-image: url(/images/blizzard/pandaren_male.jpg)
+.GameIcon--pandaren_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-pandaren_male.jpg)
 }
-
-.GameIcon-class.pandaren.female {
-    background-image: url(/images/blizzard/pandaren_female.jpg)
+.GameIcon--pandaren_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-pandaren_female.jpg)
 }
-
-.GameIcon-class.worgen.male {
-    background-image: url(/images/blizzard/worgen_male.jpg)
+.GameIcon--worgen_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-worgen_male.jpg)
 }
-
-.GameIcon-class.worgen.female {
-    background-image: url(/images/blizzard/worgen_female.jpg)
+.GameIcon--worgen_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-worgen_female.jpg)
 }
-
-.GameIcon-class.draenei.male {
-    background-image: url(/images/blizzard/draenei_male.jpg)
+.GameIcon--draenei_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-draenei_male.jpg)
 }
-
-.GameIcon-class.draenei.female {
-    background-image: url(/images/blizzard/draenei_female.jpg)
+.GameIcon--draenei_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-draenei_female.jpg)
 }
-
-.GameIcon-class.gnome.male {
-    background-image: url(/images/blizzard/gnome_male.jpg)
+.GameIcon--gnome_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-gnome_male.jpg)
 }
-
-.GameIcon-class.gnome.female {
-    background-image: url(/images/blizzard/gnome_female.jpg)
+.GameIcon--gnome_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-gnome_female.jpg)
 }
-
-.GameIcon-class.nightelf.male {
-    background-image: url(/images/blizzard/nightelf_male.jpg)
+.GameIcon--nightelf_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-nightelf_male.jpg)
 }
-
-.GameIcon-class.nightelf.female {
-    background-image: url(/images/blizzard/nightelf_female.jpg)
+.GameIcon--nightelf_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-nightelf_female.jpg)
 }
-
-.GameIcon-class.dwarf.male {
-    background-image: url(/images/blizzard/dwarf_male.jpg)
+.GameIcon--dwarf_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-dwarf_male.jpg)
 }
-
-.GameIcon-class.dwarf.female {
-    background-image: url(/images/blizzard/dwarf_female.jpg)
+.GameIcon--dwarf_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-dwarf_female.jpg)
 }
-
-.GameIcon-class.human.male {
-    background-image: url(/images/blizzard/human_male.jpg)
+.GameIcon--human_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-human_male.jpg)
 }
-
-.GameIcon-class.human.female {
-    background-image: url(/images/blizzard/human_female.jpg)
+.GameIcon--human_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-human_female.jpg)
 }
-
-.GameIcon-class.orc.male {
-    background-image: url(/images/blizzard/orc_male.jpg)
+.GameIcon--orc_male .GameIcon-icon {
+    background-image:url(/images/blizzard/race-orc_male.jpg)
 }
-
-.GameIcon-class.orc.female {
-    background-image: url(/images/blizzard/orc_female.jpg)
+.GameIcon--orc_female .GameIcon-icon {
+    background-image:url(/images/blizzard/race-orc_female.jpg)
 }
-
-.GameIcon-race.unknown,
-.GameIcon-class.unknown {
-    background-image: url(/images/blizzard/RACE_GENDER_UNKNOWN.jpg)
+.GameIcon--RACE_GENDER_UNKNOWN .GameIcon-icon {
+    background-image:url(/images/blizzard/race-RACE_GENDER_UNKNOWN.jpg)
 }
-
-.GameIcon-role.unknown {
-    background-image: url(/images/blizzard/role-UNKNOWN.png)
+.GameIcon--UNKNOWN .GameIcon-icon {
+    background-image:url(/images/blizzard/role-UNKNOWN.png)
 }
-
-.GameIcon-role.tank {
-    background-image: url(/images/blizzard/role-TANK.png)
+.GameIcon--TANK .GameIcon-icon {
+    background-image:url(/images/blizzard/role-TANK.png)
 }
-
-.GameIcon-role.healer {
-    background-image: url(/images/blizzard/role-HEALER.png)
+.GameIcon--HEALER .GameIcon-icon {
+    background-image:url(/images/blizzard/role-HEALER.png)
 }
-
-.GameIcon-role.damage {
-    background-image: url(/images/blizzard/role-DAMAGE.png)
+.GameIcon--DAMAGE .GameIcon-icon {
+    background-image:url(/images/blizzard/role-DAMAGE.png)
+}
+.GameIconRace, .GameIconClass {
+    border: 1px solid black;
 }
 
 .GameIcon-tiny {
@@ -431,4 +460,8 @@
 
 .GameIcon-huge {
     width: 74px
+}
+
+th .GameIcon {
+    vertical-align: middle;
 }
