@@ -1,6 +1,6 @@
 const CharacterType = {
-    MAIN:   0,
-    ALT:    1,
+    MAIN: 0,
+    ALT: 1,
     ALT_FUN: 2
 };
 
@@ -89,12 +89,12 @@ const Specs = {
     DPS: [
         Classes.DeathKnight.Frost,
         Classes.DeathKnight.Unholy,
-        
+
         Classes.DemonHunter.Havoc,
-        
+
         Classes.Druid.Balance,
         Classes.Druid.Feral,
-        
+
         Classes.Hunter.BeastMastery,
         Classes.Hunter.Marksmanship,
         Classes.Hunter.Survival,
@@ -189,5 +189,246 @@ export default {
         Race: Races,
         Gender: Genders,
         Faction: Factions
-    }
+    },
+    /**
+     * @param {CharacterType} type
+     */
+    TypeToObj: (type) => {
+        switch (type) {
+            case CharacterType.MAIN:
+                return { label: "Main", classes: [".main"] }
+            case CharacterType.ALT:
+                return { label: "Alt", classes: [".alt"] }
+            case CharacterType.ALT_FUN:
+                return { label: "Alt fun", classes: [".alt-fun"] }
+        }
+    },
+    /**
+     * @param {CharacterRole} role
+     */
+    RoleToObj: (role) => {
+        switch (role) {
+            case CharacterRole.DPS:
+                return { label: "Dps", classes: [".damage"] }
+            case CharacterRole.HEAL:
+                return { label: "Heal", classes: [".healer"] }
+            case CharacterRole.TANK:
+                return { label: "Tank", classes: [".tank"] }
+        }
+    },
+    /**
+     * @param {Classes} cl
+     */
+    ClassToObj: (cl) => {
+        switch (cl) {
+            case Classes.Warrior:
+                return { label: "Warrior", classes: ['.warrior'] }
+            case Classes.Warlock:
+                return { label: "Warlock", classes: ['.warlock'] }
+            case Classes.Shaman:
+                return { label: "Shaman", classes: ['.shaman'] }
+            case Classes.Rogue:
+                return { label: "Rogue", classes: ['.rogue'] }
+            case Classes.Priest:
+                return { label: "Priest", classes: ['.priest'] }
+            case Classes.Paladin:
+                return { label: "Paladin", classes: ['.paladin'] }
+            case Classes.Monk:
+                return { label: "Monk", classes: ['.monk'] }
+            case Classes.Mage:
+                return { label: "Mage", classes: ['.mage'] }
+            case Classes.Hunter:
+                return { label: "Hunter", classes: ['.hunter'] }
+            case Classes.Druid:
+                return { label: "Druid", classes: ['.druid'] }
+            case Classes.DeathKnight:
+                return { label: "DeathKnight", classes: ['.deathknight'] }
+            case Classes.DemonHunter:
+                return { label: "DemonHunter", classes: ['.demonhunter'] }
+            default:
+                return { label: "Unknown", classes: ['.unknown'] }
+        }
+    },
+    /**
+     * @param {Specs} spec
+     */
+    SpecToObj: (spec) => {
+        switch (spec) {
+            case Classes.DeathKnight.Frost:
+                return { label: "Frost", classes: ['.deathknight', '.frost'] }
+            case Classes.DeathKnight.Unholy:
+                return { label: "Unholy", classes: ['.deathknight', '.unholy'] }
+            case Classes.DemonHunter.Havoc:
+                return { label: "Havoc", classes: ['.demonhunter', '.havoc'] }
+            case Classes.Druid.Balance:
+                return { label: "Balance", classes: ['.druid', '.balance'] }
+            case Classes.Druid.Feral:
+                return { label: "Feral", classes: ['.druid', '.feral'] }
+            case Classes.Hunter.BeastMastery:
+                return { label: "BeastMastery", classes: ['.hunter', '.beastMastery'] }
+            case Classes.Hunter.Marksmanship:
+                return { label: "Marksmanship", classes: ['.hunter', '.marksmanship'] }
+            case Classes.Hunter.Survival:
+                return { label: "Survival", classes: ['.hunter', '.survival'] }
+            case Classes.Mage.Arcane:
+                return { label: "Arcane", classes: ['.mage', '.arcane'] }
+            case Classes.Mage.Frost:
+                return { label: "Frost", classes: ['.mage', '.frost'] }
+            case Classes.Mage.Fire:
+                return { label: "Fire", classes: ['.mage', '.fire'] }
+            case Classes.Monk.Windwalker:
+                return { label: "Windwalker", classes: ['.monk', '.windwalker'] }
+            case Classes.Paladin.Retribution:
+                return { label: "Retribution", classes: ['.paladin', '.retribution'] }
+            case Classes.Priest.Shadow:
+                return { label: "Shadow", classes: ['.priest', '.shadow'] }
+            case Classes.Rogue.Assassination:
+                return { label: "Assassination", classes: ['.rogue', '.assassination'] }
+            case Classes.Rogue.Outlaw:
+                return { label: "Outlaw", classes: ['.rogue', '.outlaw'] }
+            case Classes.Rogue.Subtlety:
+                return { label: "Subtlety", classes: ['.rogue', '.subtlety'] }
+            case Classes.Shaman.Elemental:
+                return { label: "Elemental", classes: ['.shaman', '.elemental'] }
+            case Classes.Shaman.Enhancement:
+                return { label: "Enhancement", classes: ['.shaman', '.enhancement'] }
+            case Classes.Warlock.Affliction:
+                return { label: "Affliction", classes: ['.warlock', '.affliction'] }
+            case Classes.Warlock.Demonology:
+                return { label: "Demonology", classes: ['.warlock', '.demonology'] }
+            case Classes.Warlock.Destruction:
+                return { label: "Destruction", classes: ['.warlock', '.destruction'] }
+            case Classes.Warrior.Arms:
+                return { label: "Arms", classes: ['.warrior', '.arms'] }
+            case Classes.Warrior.Fury:
+                return { label: "Fury", classes: ['.warrior', '.fury'] }
+            case Classes.Druid.Restoration:
+                return { label: "Restoration", classes: ['.druid', '.restoration'] }
+            case Classes.Monk.Mistweaver:
+                return { label: "Mistweaver", classes: ['.monk', '.mistweaver'] }
+            case Classes.Paladin.Holy:
+                return { label: "Holy", classes: ['.paladin', '.holy'] }
+            case Classes.Shaman.Restoration:
+                return { label: "Restoration", classes: ['.shaman', '.restoration'] }
+            case Classes.Priest.Discipline:
+                return { label: "Discipline", classes: ['.priest', '.discipline'] }
+            case Classes.Priest.Holy:
+                return { label: "Holy", classes: ['.priest', '.holy'] }
+            case Classes.DeathKnight.Blood:
+                return { label: "Blood", classes: ['.deathknight', '.blood'] }
+            case Classes.DemonHunter.Vengeance:
+                return { label: "Vengeance", classes: ['.demonhunter', '.vengeance'] }
+            case Classes.Druid.Guardian:
+                return { label: "Guardian", classes: ['.druid', '.guardian'] }
+            case Classes.Warrior.Protection:
+                return { label: "Protection", classes: ['.warrior', '.protection'] }
+            case Classes.Paladin.Protection:
+                return { label: "Protection", classes: ['.paladin', '.protection'] }
+        }
+    },
+    /**
+     * @param {Race} race
+     */
+    RaceToObj: (race) => {
+        switch (race) {
+            case Races.Human:
+                return { label: 'Human', classes: ['.human'] }
+            case Races.Orc:
+                return { label: 'Orc', classes: ['.prc'] }
+            case Races.Dwarf:
+                return { label: 'Dwarf', classes: ['.dwarf'] }
+            case Races.NightElf:
+                return { label: 'Night Elf', classes: ['.nightelf'] }
+            case Races.Undead:
+                return { label: 'Undead', classes: ['.undead'] }
+            case Races.Tauren:
+                return { label: 'Tauren', classes: ['.tauren'] }
+            case Races.Gnome:
+                return { label: 'Gnome', classes: ['.gnome'] }
+            case Races.Troll:
+                return { label: 'Troll', classes: ['.troll'] }
+            case Races.Goblin:
+                return { label: 'Goblin', classes: ['.goblin'] }
+            case Races.BloodElf:
+                return { label: 'BloodElf', classes: ['.bloodelf'] }
+            case Races.Draenei:
+                return { label: 'Draenei', classes: ['.draenei'] }
+            case Races.Worgen:
+                return { label: 'Worgen', classes: ['.worgen'] }
+            case Races.PandarenN:
+            case Races.PandarenA:
+            case Races.PandarenH:
+                return { label: 'Pandaren', classes: ['.pandaren'] }
+            case Races.Nightborne:
+                return { label: 'Nightborne', classes: ['.nightborne'] }
+            case Races.HighmountainTauren:
+                return { label: 'Highmountain Tauren', classes: ['.highmountaintauren'] }
+            case Races.VoidElf:
+                return { label: 'Void Elf', classes: ['.voidelf'] }
+            case Races.LightforgedDraenei:
+                return { label: 'Lightforged Draenei', classes: ['.lightforgeddraenei'] }
+            case Races.ZandalariTroll:
+                return { label: 'Zandalari Troll', classes: ['.zandalaritroll'] }
+            case Races.KulTiran:
+                return { label: 'Kul Tiran', classes: ['.kultiran'] }
+            case Races.DarkIronDwarf:
+                return { label: 'Dark Iron Dwarf', classes: ['.darkirondwarf'] }
+            case Races.Vulpera:
+                return { label: 'Vulpera', classes: ['.vulpera'] }
+            case Races.MagharOrc:
+                return { label: 'MagharOrc', classes: ['.magharorc'] }
+            case Races.Mechagnome:
+                return { label: 'Mechagnome', classes: ['.mechagnome'] }
+        }
+    },
+    /**
+     * @param {Gender} gender
+     */
+    GenderToObj: (gender) => {
+        switch (gender) {
+            case Genders.Female:
+                return { label: "Female", classes: ['.female'] }
+            case Genders.Male:
+                return { label: "Male", classes: ['.male'] }
+            default:
+                return { label: "Unknown", classes: ['.unknown'] }
+        }
+    },
+    /**
+     * @param {Faction} faction
+     */
+    FactionToObj: (faction) => {
+        switch (faction) {
+            case Factions.Horde:
+                return { label: "Horde", classes: ['.horde'] };
+            case Factions.Alliance:
+                return { label: "Alliance", classes: ['.alliance'] };
+            case Factions.Unknown:
+                return { label: "Unknown", classes: ['.unknown'] };
+        }
+    },
+    /**
+     * @param {Specs} spec
+     */
+    GetRoleBySpec: (spec) => {
+        if (Specs.HEAL.indexOf(spec) >= 0)
+            return CharacterRole.HEAL;
+        if (Specs.TANK.indexOf(spec) >= 0)
+            return CharacterRole.TANK;
+        return CharacterRole.DPS;
+    },
+    /**
+     * @param {CharacterRole} role
+     */
+    GetSpecsByRole: (role) => {
+        switch (parseInt(role)) {
+            case CharacterRole.HEAL:
+                return Specs.HEAL;
+            case CharacterRole.TANK:
+                return Specs.TANK;
+            case CharacterRole.DPS:
+            default:
+                return Enums.Characters.Specs.DPS;
+        }
+    },
 }

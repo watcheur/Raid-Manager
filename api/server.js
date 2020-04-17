@@ -46,7 +46,7 @@ TypeORM
         server.get('/weeklys/:id', Controllers.Weekly.Get);
         server.put('/weeklys/:id', Controllers.Weekly.Update);
         server.del('/weeklys/:id', Controllers.Weekly.Delete);
-        
+
         // Raids endpoints
         server.get('/raids', Controllers.Raid.GetAll);
         server.get('/raids/:id', Controllers.Raid.Get);
@@ -68,6 +68,8 @@ TypeORM
         server.post('/notes', Controllers.Note.Create);
         server.get('/notes/favorites', Controllers.Note.Favorites);
 
+        // Stats
+
         // Queues endpoints
         server.get('/queues/character/:id', (req, res, next) => {
             Queues.character.add({ character: req.params.id });
@@ -76,7 +78,7 @@ TypeORM
         });
 
         server.get('/queues/weekly/:id', (req, res, next) => {
-            Queues.weekly.add({ character: req.params.id});
+            Queues.weekly.add({ character: req.params.id });
             res.send('Done');
             next();
         });
