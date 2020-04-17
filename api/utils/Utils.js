@@ -19,5 +19,18 @@ module.exports = {
             default:
                 return Enums.Characters.Specs.DPS;
         }
+    },
+
+    TransformsCharCompToChar: (chars) => {
+        return chars.map(c => {
+            return {
+                id: c.character.id,
+                name: c.character.name,
+                realm: c.character.realm,
+                class: c.character.class,
+                spec: c.character.spec,
+                role: c.role
+            }
+        });
     }
 }

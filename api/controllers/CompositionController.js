@@ -3,18 +3,15 @@ const Entities = require('../entity/Entities');
 const Errs = require('restify-errors');
 const Logger = require('../utils/Logger');
 const DefaultController = require('./DefaultController');
+const Utils = require('../utils/Utils');
 
 class CompositionController extends DefaultController  {
-    Replace() {
-
-    }
-
     Create = (req, res, next) => {
         Logger.info('Start composition create', req.body);
 
         let props = {};
         try {
-            props = this.RequiredProps(req.body, [ 'event', 'encounter', 'characters', 'note' ])
+            props = this.RequiredProps(req.body, [ 'event', 'encounter', 'characters' ]);
         }
         catch (err) {
             return next(err);
@@ -44,7 +41,7 @@ class CompositionController extends DefaultController  {
                         if (comp) {
                             let update = { event: props.event, encounter: props.encounter, note: (props.note.id || null), updated: new Date() };
                             await repo.createQueryBuilder().update(Entities.Composition).set(update).where('id = :id', { id : res.id }).execute();
-                            Object.assign(res, update);
+                            Object.assign(comp, update);
                         }
                         else
                             comp = repo.save({ event: props.event, encounter: props.encounter, note: (props.note.id || null), created: new Date() })
@@ -52,21 +49,11 @@ class CompositionController extends DefaultController  {
                         if (props.characters) {
                             await TypeORM.getConnection().createQueryBuilder().delete().from(Entities.CharacterComp).where('composition = :composition', { composition: comp.id }).execute();
                             props.characters.map(c => c.composition = comp.id);
-                            console.log(props.characters);
                             await TypeORM.getRepository(Entities.CharacterComp).save(props.characters);
                         }
 
                         let dataRet = await repo.findOne({ relations: [ 'encounter', 'characters', 'characters.character', 'note' ], where: { id: comp.id }});
-                        dataRet.characters = dataRet.characters.map(c => {
-                            return {
-                                id: c.character.id,
-                                name: c.character.name,
-                                realm: c.character.realm,
-                                class: c.character.class,
-                                spec: c.character.spec,
-                                role: c.role
-                            }
-                        });
+                        dataRet.characters = Utils.TransformsCharCompToChar(dataRet.characters);
 
                         res.send({
                             err: false,
@@ -85,6 +72,34 @@ class CompositionController extends DefaultController  {
             });
 
         repo.findAndCount({ where: { event: props.event, boss: props.boss }})
+    }
+
+    Get = (req, res, next) => {
+        Logger.info('Start retrieving compositions for given event', req.params);
+
+        let where = {
+            event: req.params.event
+        };
+        if (req.params.encounter)
+            where.encounter = req.params.encounter;
+
+        TypeORM.getRepository(Entities.Composition)
+            .find({
+                relations: [ 'encounter', 'characters', 'characters.character', 'note' ],
+                where: where
+            })
+            .then(comps => {
+                comps.map(c => c.characters = Utils.TransformsCharCompToChar(c.characters));
+
+                res.send({
+                    err: false,
+                    data: comps
+                })
+            })
+            .catch(err => {
+                Logger.error('Error retrieving compositions expansion', err);
+                next(new Errs.InternalError('Database error'));
+            })
     }
 }
 

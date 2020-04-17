@@ -61,14 +61,12 @@ TypeORM
 
         // Compositions
         server.post('/compositions', Controllers.Composition.Create);
-        server.get('/compositions/:schedule', Controllers.Composition.GetAll);
-        server.put('/compositions/:schedule/:id', Controllers.Composition.Get);
+        server.get('/compositions/:event', Controllers.Composition.Get);
+        server.get('/compositions/:event/:encounter', Controllers.Composition.Get);
 
         // Notes
-        server.get('/notes/:composition', Controllers.Note.GetAll);
-        server.post('/notes/:composition', Controllers.Note.Create);
-        server.get('/notes/:composition/:id', Controllers.Note.Get)
-        server.put('/notes/:composition/:id', Controllers.Note.Update);
+        server.post('/notes', Controllers.Note.Create);
+        server.get('/notes/favorites', Controllers.Note.Favorites);
 
         // Queues endpoints
         server.get('/queues/character/:id', (req, res, next) => {

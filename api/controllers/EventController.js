@@ -3,6 +3,7 @@ const Entities = require('../entity/Entities');
 const Errs = require('restify-errors');
 const Logger = require('../utils/Logger');
 const DefaultController = require('./DefaultController');
+const Utils = require('../utils/Utils');
 
 class EventController extends DefaultController  {
     GetAll = (req, res, next) => {
@@ -37,7 +38,7 @@ class EventController extends DefaultController  {
         TypeORM
             .getRepository(Entities.Event)
             .findOne({
-                relations: [ 'raid', 'compositions', 'compositions.encounter' ],
+                relations: [ 'raid', 'compositions', 'compositions.encounter', 'compositions.characters', 'compositions.characters.character' ],
                 where: {
                     id: req.params.id
                 }
@@ -45,7 +46,7 @@ class EventController extends DefaultController  {
             .then(ev => {
                 if (ev == null)
                     return next(new Errs.NotFoundError('Event not found'));
-                
+                ev.compositions = ev.compositions.map(c => c.characters = Utils.TransformsCharCompToChar(c.characters));
                 res.send({
                     err: false,
                     data: ev
