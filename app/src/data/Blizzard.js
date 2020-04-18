@@ -8,8 +8,8 @@ const CharacterType = {
 
 const CharacterRole = {
     DPS: 0,
-    TANK: 1,
-    HEAL: 2
+    HEAL: 1,
+    TANK: 2,
 };
 
 const Classes = {

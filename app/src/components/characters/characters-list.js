@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Card, CardHeader, CardBody, CardFooter, Button } from "shards-react";
+import { Row, Col, Card, CardHeader, CardBody, CardFooter, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "shards-react";
 
 import Blizzard from '../../data/blizzard';
 import Api from '../../data/api';
@@ -19,6 +19,7 @@ export default class CharactersList extends React.Component {
 
         this.dispatcherToken = null;
         this.refreshCharacter.bind(this);
+        this.deleteCharacter.bind(this);
         this.error.bind(this);
         this.success.bind(this);
     }
@@ -51,8 +52,26 @@ export default class CharactersList extends React.Component {
         }
     }
 
-    refreshCharacter(event, char) {
-        let target = event.target;
+    deleteCharacter(target, char) {
+        let characters = [...this.state.characters];
+        let index = this.state.characters.indexOf(this.state.characters.find(c => c.id == char.id));
+        if (index >= 0) {
+            characters.splice(index, 1);
+            this.setState({characters: characters});
+        }
+
+        Api.DeleteCharacter(char.id)
+            .then(res => {
+            })
+            .catch(err => {
+                alert('An error occured while deleting this character');
+                
+                characters.splice(index, 0, char);
+                this.setState({ characters: characters })
+            })
+    }
+
+    refreshCharacter(target, char) {
         this.spin(target);
         Api.RefreshCharacter(char.id)
             .then(res => {
@@ -165,13 +184,16 @@ export default class CharactersList extends React.Component {
                                 <th scope="col" className="border-0">
                                     <a style={{cursor:'pointer'}} onClick={ev => this.loadCharacters(ev.target)} class='material-icons'>refresh</a>
                                 </th>
+                                <th scope="col" class="border-0"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.characters.sort(c => c.type).map((character, index) => {
+                            {this.state.characters.sort((a, b) => { return (a.role > b.role ? 1 : -1) }).map((character, index) => {
                                 return (
                                     <tr key={index}>
-                                        <td className={`GameColorClass ${Blizzard.ClassToObj(character.class).slug}`} style={{textTransform: 'capitalize'}}>{character.name}</td>
+                                        <td className={`GameColorClass ${Blizzard.ClassToObj(character.class).slug}`} style={{textTransform: 'capitalize'}}>
+                                            {character.name}
+                                        </td>
                                         <td>{character.level}</td>
                                         <td>
                                             <div className={`GameIcon GameIconRace ${Blizzard.CharToRaceIc(character)} GameIcon--small`}>
@@ -203,7 +225,8 @@ export default class CharactersList extends React.Component {
                                                 </td>
                                             )
                                         })}
-                                        <td><a style={{cursor:'pointer'}} onClick={ev => this.refreshCharacter(ev, character)} class="material-icons">refresh</a></td>
+                                        <td><a style={{cursor:'pointer'}} onClick={ev => this.refreshCharacter(ev.target, character)} class="material-icons">refresh</a></td>
+                                        <td><a style={{cursor:'pointer'}} onClick={ev => this.deleteCharacter(ev.target, character)} class="material-icons text-danger">clear</a></td>
                                     </tr>
                                 )
                             })}

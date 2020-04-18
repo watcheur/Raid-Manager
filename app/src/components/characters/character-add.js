@@ -144,8 +144,8 @@ class CharacterAdd extends React.Component {
 											/>
 											<FormFeedback invalid>{this.state.errorNameText}</FormFeedback>
 										</Col>
-										<Col md="1" className="form-group">
-											<Button type="submit" className="ml-auto">
+										<Col md="1" className="form-group d-flex flex-column">
+											<Button type="submit" className="mt-auto">
 												<i className="material-icons">file_copy</i> Add
 											</Button>
 										</Col>
