@@ -269,6 +269,7 @@ export default {
                 return { label: "Alt", classes: [".alt"] }
             case CharacterType.ALT_FUN:
                 return { label: "Alt fun", classes: [".alt-fun"] }
+            default:
         }
         return { label: "Unknown", classes: ['unknown'] }
     },
@@ -283,6 +284,7 @@ export default {
                 return { label: "Heal", slug: "healer" }
             case CharacterRole.TANK:
                 return { label: "Tank", slug: "tank" }
+            default:
         }
         return { label: "Unknown", slug: 'unknown' }
     },
@@ -315,6 +317,7 @@ export default {
                 return { label: "DeathKnight", slug: 'deathknight' }
             case Classes.DemonHunter.ClassID:
                 return { label: "DemonHunter", slug: 'demonhunter' }
+            default:
         }
         return { label: "Unknown", slug: 'unknown' }
     },
@@ -393,6 +396,7 @@ export default {
                 return { label: "Protection", class: 'warrior-protection' }
             case Classes.Paladin.Protection:
                 return { label: "Protection", class: 'paladin-protection' }
+            default:
         }
         return { label: "Unknown", slug: 'unknown' }
     },
@@ -416,6 +420,7 @@ export default {
                 return { label: "Horde", classes: ['horde'] };
             case Factions.Alliance:
                 return { label: "Alliance", classes: ['alliance'] };
+            default:
         }
         return { label: "Unknown", classes: ['unknown'] };
     },

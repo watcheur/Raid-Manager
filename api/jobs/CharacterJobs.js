@@ -4,6 +4,7 @@ const WeeklyEntity = require('../entity/Weekly');
 const blizzard = require('blizzard.js').initialize(require('../config.json').blizzard);
 const Logger = require('../utils/Logger');
 const Enums = require('../utils/Enums');
+const Socket = require('../utils/Socket');
 
 function CharacterUpdate(id, cb)
 {
@@ -71,6 +72,12 @@ function CharacterUpdate(id, cb)
                                                 .then(query => {
                                                     Logger.info('End Character update job', { char: id })
                                                     cb(null, char);
+                                                    Socket.Emit(Socket.Channels.Character, {
+                                                        action: Socket.Action.Character.Update,
+                                                        data: {
+                                                            character: char
+                                                        }
+                                                    });
                                                 })
                                                 .catch(err => {
                                                     Logger.error('Update query error', err);

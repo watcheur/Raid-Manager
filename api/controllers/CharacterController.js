@@ -10,6 +10,7 @@ const Utils = require('../utils/Utils');
 const DefaultController = require('./DefaultController');
 const Entities = require('../entity/Entities');
 const Context = require('../utils/Context');
+const Socket = require('../utils/Socket');
 
 class CharacterController extends DefaultController {
     GetAll = (req, res, next) => {
@@ -173,6 +174,13 @@ class CharacterController extends DefaultController {
                         Queues.Character.add({ character: saved.id });
                         Queues.Weekly.add({ character: saved.id });
 
+                        Socket.Emit(Socket.Channels.Character, {
+                            action: Socket.Action.Character.Create,
+                            data: {
+                                character: saved
+                            }
+                        });
+
                         Logger.info('End character create', req.body);
                         next()
                     })
@@ -236,6 +244,14 @@ class CharacterController extends DefaultController {
                     err: false,
                     data: true
                 })
+
+                Socket.Emit(Socket.Channels.Character, {
+                    action: Socket.Action.Character.Delete,
+                    data: {
+                        character: req.params.id
+                    }
+                });
+
                 Logger.info('Character deleted');
                 next();
             })

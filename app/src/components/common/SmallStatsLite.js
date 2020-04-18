@@ -4,8 +4,6 @@ import classNames from "classnames";
 import shortid from "shortid";
 import { Card, CardBody } from "shards-react";
 
-import Chart from "../../utils/chart";
-
 class SmallStatsLite extends React.Component {
   constructor(props) {
     super(props);

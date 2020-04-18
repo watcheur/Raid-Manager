@@ -5,6 +5,7 @@ const corsMiddleware = require('restify-cors-middleware')
 const Controllers = require('./controllers/Controllers');
 const Logger = require('./utils/Logger');
 const Queues = require('./utils/Queues');
+const Socket = require('./utils/Socket');
 const Jobs = require('./jobs/Jobs');
 const Entities = require('./entity/Entities');
 
@@ -12,6 +13,7 @@ const server = Restify.createServer({
     name: 'raid-manager-api',
     handleUncaughtExceptions: true
 });
+
 const cors = corsMiddleware({
     preflightMaxAge: 5, //Optional
     origins: ['*'],
@@ -102,8 +104,11 @@ TypeORM
             next();
         });
 
-        server.listen(3005, () => {
-            Logger.info('Server started');
+        server.listen(Config.server.port, () => {
+            Logger.info(`Server listening at ${server.url}`);
+
+            // We start Socket.IO
+            require('./utils/Socket').Init(server);
         });
 
         // We start CRONs

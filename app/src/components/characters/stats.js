@@ -1,9 +1,8 @@
 import React from 'react';
-import { Row, Col, Card, CardHeader, CardBody, CardFooter, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "shards-react";
+import { Row, Col } from "shards-react";
 
 import SmallStatsLike from "../common/SmallStatsLite";
 import Api from '../../data/api';
-import Context from "../../utils/context"
 import { Dispatcher, Constants } from "../../flux";
 import Blizzard from '../../data/blizzard';
 
@@ -69,9 +68,9 @@ export default class Stats extends React.Component {
                     this.loadStats();
                     break;
                 case Constants.OPTIONS_LOADED:
-                    console.log("ok");
                     this.setState({ ...this.state });
                     break;
+                default:
             }
         });
         this.loadStats();
@@ -91,7 +90,7 @@ export default class Stats extends React.Component {
                 ) : ''}
                 { this.state.azerite ? (
                     <Col className="col-lg-4 mb-4">
-                        <SmallStatsLike label="Average neck level" variation="1" value={this.state.azerite.mains} value-classes={Blizzard.IlvlToClass(this.state.azerite.mains)} increase={true} />
+                        <SmallStatsLike label="Average neck level" variation="1" value={this.state.azerite.mains} value-classes={Blizzard.AzeriteToClass(this.state.azerite.mains)} increase={true} />
                     </Col>
                 ) : ''}
                 { this.state.weekly.mains ? (

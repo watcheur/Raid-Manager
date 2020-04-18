@@ -1,9 +1,8 @@
 import React from 'react';
-import { Row, Col, Card, CardHeader, CardBody, CardFooter, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "shards-react";
+import { Card, CardHeader, CardBody } from "shards-react";
 
 import Blizzard from '../../data/blizzard';
 import Api from '../../data/api';
-import Context from "../../utils/context"
 import { Dispatcher, Constants } from "../../flux";
 
 /**
@@ -54,7 +53,7 @@ export default class CharactersList extends React.Component {
 
     deleteCharacter(target, char) {
         let characters = [...this.state.characters];
-        let index = this.state.characters.indexOf(this.state.characters.find(c => c.id == char.id));
+        let index = this.state.characters.indexOf(this.state.characters.find(c => c.id === char.id));
         if (index >= 0) {
             characters.splice(index, 1);
             this.setState({characters: characters});
@@ -68,10 +67,6 @@ export default class CharactersList extends React.Component {
                 
                 characters.splice(index, 0, char);
                 this.setState({ characters: characters });
-                Dispatcher.dispatch({
-                    actionType: Constants.CHAR_DELETED,
-                    char: char
-                });
             })
     }
 
@@ -81,7 +76,7 @@ export default class CharactersList extends React.Component {
             .then(res => {
                 if (!res.data.err) {
                    let characters = [...this.state.characters];
-                   let index = this.state.characters.indexOf(this.state.characters.find(c => c.id == res.data.data.id));
+                   let index = this.state.characters.indexOf(this.state.characters.find(c => c.id === res.data.data.id));
                    if (index >= 0) {
                         Object.assign(characters[index], res.data.data)
                         this.setState({characters: characters });
@@ -116,10 +111,12 @@ export default class CharactersList extends React.Component {
     componentDidMount() {
         this.dispatcherToken = Dispatcher.register(payload => {
             switch (payload.actionType) {
-                case Constants.NEW_CHAR:
+                case Constants.CHAR_CREATED:
                 case Constants.CHAR_UPDATE:
+                    case Constants.CHAR_DELETED:
                     this.loadCharacters();
                     break;
+                default:
             }
         });
         this.loadCharacters();
@@ -135,7 +132,7 @@ export default class CharactersList extends React.Component {
         
         return (
             <Card small className="mb-4 overflow-hidden text-center">
-                {this.props.title.length ? (<CardHeader className="bg-dark"><h5 className="m-0 text-white">{this.props.title}</h5></CardHeader>) : ''}
+                {title.length ? (<CardHeader className="bg-dark"><h5 className="m-0 text-white">{title}</h5></CardHeader>) : ''}
                 <CardBody className="bg-dark p-0 pb-3">
                     <table className="table table-dark mb-0">
                         <thead className="thead-dark">

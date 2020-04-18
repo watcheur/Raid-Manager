@@ -1,10 +1,8 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { Container, Row, Col, Card, CardHeader, CardBody } from "shards-react";
+import { Container, Row, Col } from "shards-react";
 
 import PageTitle from "../components/common/PageTitle";
 import Blizzard from "../data/blizzard";
-import Context from "../utils/context"
 import CharactersList from "../components/characters/characters-list";
 import CharacterAdd from "../components/characters/character-add";
 import Stat from "../components/characters/stats";

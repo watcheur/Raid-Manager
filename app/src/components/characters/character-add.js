@@ -5,20 +5,14 @@ import {
   ListGroupItem,
   Row,
   Col,
-  Form,
   FormInput,
-  FormGroup,
-  FormCheckbox,
   FormFeedback,
   FormSelect,
   Button,
   Card,
-  CardBody,
-  CardHeader,
-  CardFooter
+  CardHeader
 } from "shards-react";
 
-import { Dispatcher, Constants } from "../../flux";
 import Api from '../../data/api';
 
 class CharacterAdd extends React.Component {
@@ -26,7 +20,6 @@ class CharacterAdd extends React.Component {
 		realms: [],
 		realm: '',
 		name: '',
-		errorNameText: '',
 		type: 0,
 		invalidName : false,
 		errorNameText: '',
@@ -45,11 +38,11 @@ class CharacterAdd extends React.Component {
 		event.preventDefault();
 
 		this.setState({
-			invalidName: this.state.name.length == 0,
-			invalidRealm: this.state.realm.length == 0
+			invalidName: this.state.name.length === 0,
+			invalidRealm: this.state.realm.length === 0
 		})
 
-		if (this.state.name.length == 0)
+		if (this.state.name.length === 0)
 			return this.setState({ errorNameText: 'You must specify a character name' })
 
 		const { name, realm, type } = this.state;
@@ -61,11 +54,7 @@ class CharacterAdd extends React.Component {
 			})
 			.then(res => {
 				if (!res.data.err) {
-					this.setState({ ... this.defaultState });
-					Dispatcher.dispatch({
-						actionType: Constants.NEW_CHAR,
-						char: res.data
-					});
+					this.setState({ ...this.defaultState });
 				}
 			})
 			.catch(err => {
