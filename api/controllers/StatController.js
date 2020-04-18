@@ -117,11 +117,11 @@ class StatController extends DefaultController  {
             })
 
             if (mains.roster > 0)
-                mains.percent = ((100 * mains.runs) / mains.roster).toFixed(2);
+                mains.percent = ((100 * mains.runs) / mains.roster);
             if (alts.roster > 0)
-                alts.percent = ((100 * alts.runs) / alts.roster).toFixed(2);
+                alts.percent = ((100 * alts.runs) / alts.roster);
             if (altsFun.roster > 0)
-                altsFun.percent = ((100 * altsFun.runs) / altsFun.roster).toFixed(2);
+                altsFun.percent = ((100 * altsFun.runs) / altsFun.roster);
 
             res.send({
                 err: false,

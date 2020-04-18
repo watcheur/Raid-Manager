@@ -79,6 +79,10 @@ class Api {
     CreateOptions = (data) => this.Post('/options', data);
 
     GetRealms = (args) => this.Get('/blizzard/realms', args);
+
+    GetAverageIlvl = () => this.Get('/stats/ilvl');
+    GetAverageAzerite = () => this.Get('/stats/azerite');
+    GetWeeklyRuns = () => this.Get('/stats/weekly');
 }
 
 export default new Api()

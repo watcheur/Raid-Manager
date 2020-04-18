@@ -1,4 +1,5 @@
 import Api from '../data/api'
+import { Dispatcher, Constants } from "../flux";
 
 class Context {
     Options = {
@@ -11,8 +12,13 @@ class Context {
 
     constructor() {
         Api.GetOptions().then(res => {
-            if (!res.data.err)
+            if (!res.data.err) {
                 res.data.data.forEach(opt => this.Options[opt.key] = opt.value );
+
+                Dispatcher.dispatch({
+                    actionType: Constants.OPTIONS_LOADED
+                });
+            }
         })
     }
 

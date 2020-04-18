@@ -133,8 +133,7 @@ module.exports = {
                 name: 'id',
                 referencedColumnName: 'character'
             },
-            inverseSide: 'character',
-            cascade: false
+            inverseSide: 'character'
         }
     }
 };

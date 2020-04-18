@@ -146,7 +146,7 @@ class CharacterAdd extends React.Component {
 										</Col>
 										<Col md="1" className="form-group d-flex flex-column">
 											<Button type="submit" className="mt-auto">
-												<i className="material-icons">file_copy</i> Add
+												<i className="material-icons">save</i> Add
 											</Button>
 										</Col>
 									</Row>

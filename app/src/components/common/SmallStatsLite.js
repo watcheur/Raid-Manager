@@ -47,7 +47,8 @@ class SmallStatsLite extends React.Component {
     const valueClasses = classNames(
       "stats-small__value",
       "count",
-      variation === "1" ? "my-3" : "m-0"
+      variation === "1" ? "my-3" : "m-0",
+      this.props['value-classes']
     );
 
     const innerDataFieldClasses = classNames(
@@ -72,7 +73,7 @@ class SmallStatsLite extends React.Component {
             </div>
             {percentage ? (
             <div className={innerDataFieldClasses}>
-              <span className={percentageClasses}>{percentage}</span>
+              <span className={percentageClasses}>{parseFloat(percentage).toFixed(2)} %</span>
             </div>
             ) : ''}
           </div>
@@ -99,7 +100,11 @@ SmallStatsLite.propTypes = {
   /**
    * The value.
    */
-  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  'value-classes': PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  /**
+   * Value class (for color purpose for exemple)
+   */
+  valueClasses: PropTypes.string,
   /**
    * The percentage number or string.
    */
@@ -114,7 +119,8 @@ SmallStatsLite.defaultProps = {
   increase: true,
   percentage: 0,
   value: 0,
-  label: "Label"
+  label: "Label",
+  'value-classes': ""
 };
 
 export default SmallStatsLite;

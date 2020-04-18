@@ -67,7 +67,11 @@ export default class CharactersList extends React.Component {
                 alert('An error occured while deleting this character');
                 
                 characters.splice(index, 0, char);
-                this.setState({ characters: characters })
+                this.setState({ characters: characters });
+                Dispatcher.dispatch({
+                    actionType: Constants.CHAR_DELETED,
+                    char: char
+                });
             })
     }
 
@@ -88,7 +92,6 @@ export default class CharactersList extends React.Component {
             .catch(err => {
                 this.error(target);
                 alert('An error occured while refreshing this character');
-                //event.target.className = 'material-icons';
             })
     }
 
