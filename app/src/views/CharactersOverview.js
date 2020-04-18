@@ -10,7 +10,8 @@ import NewDraft from "../components/blog/NewDraft";
 import Discussions from "../components/blog/Discussions";
 import TopReferrals from "../components/common/TopReferrals";
 
-import CharactersList from "../components/characters/characters-list"
+import Blizzard from "../data/blizzard";
+import CharactersList from "../components/characters/characters-list";
 
 const BlogOverview = ({ smallStats }) => (
   <Container fluid className="main-content-container px-4">
@@ -39,8 +40,23 @@ const BlogOverview = ({ smallStats }) => (
     </Row>
 
     <Row>
+      <PageTitle subtitle="Mains" className="text-sm-left mb-3" />
       <Col>
-        <CharactersList title='Mains' />
+        <CharactersList parameters={ { type: Blizzard.Characters.Type.MAIN } } />
+      </Col>
+    </Row>
+    
+    <Row>
+      <PageTitle subtitle="Alts" className="text-sm-left mb-3" />
+      <Col>
+        <CharactersList parameters={ { type: Blizzard.Characters.Type.ALT } } />
+      </Col>
+    </Row>
+    
+    <Row>
+      <PageTitle subtitle="Alts fun" className="text-sm-left mb-3" />
+      <Col>
+        <CharactersList parameters={ { type: Blizzard.Characters.Type.ALT_FUN } } />
       </Col>
     </Row>
   </Container>

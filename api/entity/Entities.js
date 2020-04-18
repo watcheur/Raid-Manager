@@ -16,6 +16,8 @@ const CharacterCompSchema   = new TypeORM.EntitySchema(require('./CharacterComp'
 const NoteSchema            = new TypeORM.EntitySchema(require('./Note'));
 const LogSchema             = new TypeORM.EntitySchema(require('./Log'));
 
+const OptionSchema          = new TypeORM.EntitySchema(require('./Option'));
+
 module.exports = {
     All : [
         CharacterSchema,
@@ -32,7 +34,9 @@ module.exports = {
         CompositionSchema,
         CharacterCompSchema,
         NoteSchema,
-        LogSchema
+        LogSchema,
+
+        OptionSchema
     ],
     Expansion: ExpansionSchema,
     Character: CharacterSchema,
@@ -47,5 +51,7 @@ module.exports = {
     Composition: CompositionSchema,
     CharacterComp: CharacterCompSchema,
     Note: NoteSchema,
-    Log: LogSchema
+    Log: LogSchema,
+    // Misc
+    Option: OptionSchema
 }

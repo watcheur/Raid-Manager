@@ -73,6 +73,9 @@ class Api {
 
     LoadComp = (event) => this.Get(`/compositions/${event}`);
     CreateComp = (event, data) => this.Post(`/compositions/${event}`, data);
+
+    GetOptions = () => this.Get('/options');
+    CreateOptions = (data) => this.Post('/options', data);
 }
 
 export default new Api()

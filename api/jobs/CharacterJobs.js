@@ -58,6 +58,8 @@ function CharacterUpdate(id, cb)
                                         });
 
                                         char.azerite = 1 + ((char.neck - 280 - 45 - 10) / 2); // baselevel + ((neck - base - magni - mother) / 2)
+                                        if (char.azerite < 0)
+                                            char.azerite = null;
                                         char.updated = new Date();
 
                                         Typeorm.getConnection()

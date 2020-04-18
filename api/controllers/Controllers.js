@@ -7,6 +7,7 @@ const exController  = require('./ExpansionController');
 const evController  = require('./EventController');
 const coController  = require('./CompositionController');
 const nController   = require('./NoteController');
+const oController   = require('./OptionController');
 
 module.exports = {
     Expansion: new exController(),
@@ -20,5 +21,7 @@ module.exports = {
 
     Event: new evController(),
     Composition: new coController(),
-    Note: new nController()
+    Note: new nController(),
+
+    Option: new oController()
 }

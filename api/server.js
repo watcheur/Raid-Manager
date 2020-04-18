@@ -80,6 +80,10 @@ TypeORM
 
         // Stats
 
+        // Options
+        server.get('/options', Controllers.Option.Get);
+        server.post('/options', Controllers.Option.Create);
+
         // Queues endpoints
         server.get('/queues/character/:id', (req, res, next) => {
             Queues.character.add({ character: req.params.id });

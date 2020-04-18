@@ -1,3 +1,5 @@
+import Context from '../utils/context'
+
 const CharacterType = {
     MAIN: 0,
     ALT: 1,
@@ -319,75 +321,75 @@ export default {
     SpecToObj: (spec) => {
         switch (spec) {
             case Classes.DeathKnight.Frost:
-                return { label: "Frost", classes: ['.deathknight', '.frost'] }
+                return { label: "Frost", class: 'deathknight-frost' }
             case Classes.DeathKnight.Unholy:
-                return { label: "Unholy", classes: ['.deathknight', '.unholy'] }
+                return { label: "Unholy", class: 'deathknight-unholy' }
             case Classes.DemonHunter.Havoc:
-                return { label: "Havoc", classes: ['.demonhunter', '.havoc'] }
+                return { label: "Havoc", class: 'demonhunter-havoc' }
             case Classes.Druid.Balance:
-                return { label: "Balance", classes: ['.druid', '.balance'] }
+                return { label: "Balance", class: 'druid-balance' }
             case Classes.Druid.Feral:
-                return { label: "Feral", classes: ['.druid', '.feral'] }
+                return { label: "Feral", class: 'druid-feral' }
             case Classes.Hunter.BeastMastery:
-                return { label: "BeastMastery", classes: ['.hunter', '.beastMastery'] }
+                return { label: "BeastMastery", class: 'hunter-beastMastery' }
             case Classes.Hunter.Marksmanship:
-                return { label: "Marksmanship", classes: ['.hunter', '.marksmanship'] }
+                return { label: "Marksmanship", class: 'hunter-marksmanship' }
             case Classes.Hunter.Survival:
-                return { label: "Survival", classes: ['.hunter', '.survival'] }
+                return { label: "Survival", class: 'hunter-survival' }
             case Classes.Mage.Arcane:
-                return { label: "Arcane", classes: ['.mage', '.arcane'] }
+                return { label: "Arcane", class: 'mage-arcane' }
             case Classes.Mage.Frost:
-                return { label: "Frost", classes: ['.mage', '.frost'] }
+                return { label: "Frost", class: 'mage-frost' }
             case Classes.Mage.Fire:
-                return { label: "Fire", classes: ['.mage', '.fire'] }
+                return { label: "Fire", class: 'mage-fire' }
             case Classes.Monk.Windwalker:
-                return { label: "Windwalker", classes: ['.monk', '.windwalker'] }
+                return { label: "Windwalker", class: 'monk-windwalker' }
             case Classes.Paladin.Retribution:
-                return { label: "Retribution", classes: ['.paladin', '.retribution'] }
+                return { label: "Retribution", class: 'paladin-retribution' }
             case Classes.Priest.Shadow:
-                return { label: "Shadow", classes: ['.priest', '.shadow'] }
+                return { label: "Shadow", class: 'priest-shadow' }
             case Classes.Rogue.Assassination:
-                return { label: "Assassination", classes: ['.rogue', '.assassination'] }
+                return { label: "Assassination", class: 'rogue-assassination' }
             case Classes.Rogue.Outlaw:
-                return { label: "Outlaw", classes: ['.rogue', '.outlaw'] }
+                return { label: "Outlaw", class: 'rogue-outlaw' }
             case Classes.Rogue.Subtlety:
-                return { label: "Subtlety", classes: ['.rogue', '.subtlety'] }
+                return { label: "Subtlety", class: 'rogue-subtlety' }
             case Classes.Shaman.Elemental:
-                return { label: "Elemental", classes: ['.shaman', '.elemental'] }
+                return { label: "Elemental", class: 'shaman-elemental' }
             case Classes.Shaman.Enhancement:
-                return { label: "Enhancement", classes: ['.shaman', '.enhancement'] }
+                return { label: "Enhancement", class: 'shaman-enhancement' }
             case Classes.Warlock.Affliction:
-                return { label: "Affliction", classes: ['.warlock', '.affliction'] }
+                return { label: "Affliction", class: 'warlock-affliction' }
             case Classes.Warlock.Demonology:
-                return { label: "Demonology", classes: ['.warlock', '.demonology'] }
+                return { label: "Demonology", class: 'warlock-demonology' }
             case Classes.Warlock.Destruction:
-                return { label: "Destruction", classes: ['.warlock', '.destruction'] }
+                return { label: "Destruction", class: 'warlock-destruction' }
             case Classes.Warrior.Arms:
-                return { label: "Arms", classes: ['.warrior', '.arms'] }
+                return { label: "Arms", class: 'warrior-arms' }
             case Classes.Warrior.Fury:
-                return { label: "Fury", classes: ['.warrior', '.fury'] }
+                return { label: "Fury", class: 'warrior-fury' }
             case Classes.Druid.Restoration:
-                return { label: "Restoration", classes: ['.druid', '.restoration'] }
+                return { label: "Restoration", class: 'druid-restoration' }
             case Classes.Monk.Mistweaver:
-                return { label: "Mistweaver", classes: ['.monk', '.mistweaver'] }
+                return { label: "Mistweaver", class: 'monk-mistweaver' }
             case Classes.Paladin.Holy:
-                return { label: "Holy", classes: ['.paladin', '.holy'] }
+                return { label: "Holy", class: 'paladin-holy' }
             case Classes.Shaman.Restoration:
-                return { label: "Restoration", classes: ['.shaman', '.restoration'] }
+                return { label: "Restoration", class: 'shaman-restoration' }
             case Classes.Priest.Discipline:
-                return { label: "Discipline", classes: ['.priest', '.discipline'] }
+                return { label: "Discipline", class: 'priest-discipline' }
             case Classes.Priest.Holy:
-                return { label: "Holy", classes: ['.priest', '.holy'] }
+                return { label: "Holy", class: 'priest-holy' }
             case Classes.DeathKnight.Blood:
-                return { label: "Blood", classes: ['.deathknight', '.blood'] }
+                return { label: "Blood", class: 'deathknight-blood' }
             case Classes.DemonHunter.Vengeance:
-                return { label: "Vengeance", classes: ['.demonhunter', '.vengeance'] }
+                return { label: "Vengeance", class: 'demonhunter-vengeance' }
             case Classes.Druid.Guardian:
-                return { label: "Guardian", classes: ['.druid', '.guardian'] }
+                return { label: "Guardian", class: 'druid-guardian' }
             case Classes.Warrior.Protection:
-                return { label: "Protection", classes: ['.warrior', '.protection'] }
+                return { label: "Protection", class: 'warrior-protection' }
             case Classes.Paladin.Protection:
-                return { label: "Protection", classes: ['.paladin', '.protection'] }
+                return { label: "Protection", class: 'paladin-protection' }
         }
     },
     /**
@@ -407,11 +409,11 @@ export default {
     FactionToObj: (faction) => {
         switch (faction) {
             case Factions.Horde:
-                return { label: "Horde", classes: ['.horde'] };
+                return { label: "Horde", classes: ['horde'] };
             case Factions.Alliance:
-                return { label: "Alliance", classes: ['.alliance'] };
+                return { label: "Alliance", classes: ['alliance'] };
             case Factions.Unknown:
-                return { label: "Unknown", classes: ['.unknown'] };
+                return { label: "Unknown", classes: ['unknown'] };
         }
     },
     /**
@@ -469,6 +471,56 @@ export default {
                 return "#A330C9";
             default:
                 return "#000000";
+        }
+    },
+    /**
+     * @param {Number} azerite
+     */
+    AzeriteToClass: (azerite) => {
+        if (azerite == null)
+            return 'poor';
+        if (azerite <= 50)
+            return 'common';
+        if (azerite <= 70)
+            return 'rare';
+        if (azerite <= 80)
+            return 'epic';
+        if (azerite <= 85)
+            return 'legendary';
+        if (azerite > 85)
+            return 'artifact';
+    },
+    /**
+     * @param {Number} ilvl
+     */
+    IlvlToClass: (ilvl) => {
+        if (ilvl >= Context.Options.legendary_ilvl)
+            return 'legendary';
+        if (ilvl >= Context.Options.epic_ilvl)
+            return 'epic';
+        if (ilvl >= Context.Options.rare_ilvl)
+            return 'rare';
+        if (ilvl >= Context.Options.uncommon_ilvl)
+            return 'uncommon';
+        if (ilvl >= Context.Options.poor_ilvl)
+            return 'poor';
+        return 'poor';
+    },
+    /**
+     * @param {String} val
+     */
+    TrSlot: (val) => {
+        switch (val) {
+            case 'Hand': return 'hands';
+            case 'Foot': return 'feet';
+            case 'Leg': return 'legs';
+            case 'LeftFinger': return 'finger_1';
+            case 'RightFinger': return 'finger_2';
+            case 'LeftTrinket': return 'trinket_1';
+            case 'RightTrinket': return 'trinket_2';
+            case 'Weapon': return 'main_hand';
+            case 'Offhand': return 'off_hand';
+            default: return val.toLowerCase();
         }
     }
 }

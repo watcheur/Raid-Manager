@@ -1,8 +1,12 @@
-import Api from '../../data/api';
 import React from 'react';
-import { Row, Col, Card, CardHeader, CardBody } from "shards-react";
-import Blizzard from '../../data/blizzard';
+import { Row, Col, Card, CardHeader, CardBody, CardFooter } from "shards-react";
 
+import Blizzard from '../../data/blizzard';
+import Api from '../../data/api';
+
+/**
+ * @param {Object} parameters
+ */
 export default class CharactersList extends React.Component {
     state = {
         characters: []
@@ -13,7 +17,7 @@ export default class CharactersList extends React.Component {
     }
 
     componentDidMount() {
-        Api.GetCharacters()
+        Api.GetCharacters(this.props.parameters || {})
             .then(res => {
                 if (!res.data.err)
                     this.setState({ characters: res.data.data })
@@ -27,9 +31,6 @@ export default class CharactersList extends React.Component {
         
         return (
             <Card small className="mb-4 overflow-hidden">
-                <CardHeader className="bg-dark">
-                    <h6 className="m-0 text-white">{title}</h6>
-                </CardHeader>
                 <CardBody className="bg-dark p-0 pb-3">
                     <table className="table table-dark mb-0">
                         <thead className="thead-dark">
@@ -53,21 +54,24 @@ export default class CharactersList extends React.Component {
                                     Role
                                 </th>
                                 <th scope="col" className="border-0">
-                                    Azerite
+                                    <div className={`GameIcon GameIconUtils GameIcon--Utils-HeartOfAzeroth GameIcon--small`} data-tip="Heart of Azeroth">
+                                        <div class="GameIcon-icon"></div>
+                                    </div>
                                 </th>
                                 <th scope="col" className="border-0">
-                                    Role
+                                    <div className={`GameIcon GameIconUtils GameIcon--Utils-Weekly GameIcon--small`} data-tip="Weekly chest">
+                                        <div class="GameIcon-icon"></div>
+                                    </div>
                                 </th>
                                 <th scope="col" className="border-0">
-                                    WHM
-                                </th>
-                                <th scope="col" className="border-0">
-                                    Gear
+                                    <div className={`GameIcon GameIconUtils GameIcon--Utils-Gear GameIcon--small`} data-tip="Equipped gear">
+                                        <div class="GameIcon-icon"></div>
+                                    </div>
                                 </th>
                                 {slots.map((value, index) => {
                                     return (
                                         <th scope="col" key={index} className="border-0">
-                                            <div className={`GameIcon GameIcon--slot${value} GameIcon--slot GameIcon--small`}>
+                                            <div className={`GameIcon GameIcon--slot${value} GameIcon--slot GameIcon--small`} data-tip={value}>
                                                 <div class="GameIcon-icon"></div>
                                             </div>
                                         </th>
@@ -76,7 +80,7 @@ export default class CharactersList extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.characters.map((character, index) => {
+                            {this.state.characters.sort(c => c.type).map((character, index) => {
                                 return (
                                     <tr key={index}>
                                         <td className={`GameColorClass ${Blizzard.ClassToObj(character.class).slug}`}>{character.name}</td>
@@ -91,24 +95,33 @@ export default class CharactersList extends React.Component {
                                                 <div class="GameIcon-icon"></div>
                                             </div>
                                         </td>
-                                        <td>SPEC</td>
+                                        <td>
+                                            <div className={`GameIcon GameIconClass GameIcon--${Blizzard.SpecToObj(character.spec).class.toUpperCase()} GameIcon--small`}>
+                                                <div class="GameIcon-icon"></div>
+                                            </div>
+                                        </td>
                                         <td>
                                             <div className={`GameIcon GameIconRole GameIcon--${Blizzard.RoleToObj(character.role).slug.toUpperCase()} GameIcon--small`}>
                                                 <div class="GameIcon-icon"></div>
                                             </div>
                                         </td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td class={Blizzard.AzeriteToClass(character.azerite)}>{character.azerite || (<i class="material-icons">help_outline</i>)}</td>
+                                        <td class={character.weekly ? 'text-success': 'text-danger'}><i class="material-icons">{character.weekly ? 'done' : 'clear'}</i></td>
+                                        <td class={Blizzard.IlvlToClass(character.equipped)}>{character.equipped}</td>
+                                        {slots.map((value, index) => {
+                                            return (
+                                                <td key={index} class={Blizzard.IlvlToClass(character[Blizzard.TrSlot(value)])}>
+                                                    {character[Blizzard.TrSlot(value)]}
+                                                </td>
+                                            )
+                                        })}
                                     </tr>
                                 )
                             })}
                         </tbody>
                     </table>
                 </CardBody>
+
             </Card>
         )
     }
