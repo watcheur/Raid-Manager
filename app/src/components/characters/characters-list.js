@@ -114,10 +114,8 @@ export default class CharactersList extends React.Component {
         this.dispatcherToken = Dispatcher.register(payload => {
             switch (payload.actionType) {
                 case Constants.NEW_CHAR:
-                    this.loadCharacters();
-                    break;
                 case Constants.CHAR_UPDATE:
-
+                    this.loadCharacters();
                     break;
             }
         });

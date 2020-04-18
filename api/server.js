@@ -78,6 +78,9 @@ TypeORM
         server.get('/notes/favorites', Controllers.Note.Favorites);
 
         // Stats
+        server.get('/stats/ilvl', Controllers.Stat.AvgIlvl);
+        server.get('/stats/azerite', Controllers.Stat.AvgAzerite);
+        server.get('/stats/weekly', Controllers.Stat.WeeklyDone);
 
         // Blizzard
         server.get('/blizzard/realms', Controllers.Blizzard.Realms);

@@ -9,6 +9,7 @@ const coController  = require('./CompositionController');
 const nController   = require('./NoteController');
 const oController   = require('./OptionController');
 const bController   = require('./BlizzardController');
+const sController   = require('./StatController');
 
 module.exports = {
     Expansion: new exController(),
@@ -25,5 +26,7 @@ module.exports = {
     Note: new nController(),
 
     Option: new oController(),
-    Blizzard: new bController()
+    Blizzard: new bController(),
+
+    Stat: new sController()
 }

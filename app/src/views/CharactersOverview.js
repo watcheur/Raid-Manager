@@ -9,6 +9,7 @@ import UsersByDevice from "../components/blog/UsersByDevice";
 import NewDraft from "../components/blog/NewDraft";
 import Discussions from "../components/blog/Discussions";
 import TopReferrals from "../components/common/TopReferrals";
+import SmallStatsLike from "../components/common/SmallStatsLite";
 
 import Blizzard from "../data/blizzard";
 import Context from "../utils/context"
@@ -22,7 +23,7 @@ const BlogOverview = ({ smallStats }) => (
       <PageTitle title="Characters" subtitle="Dashboard" className="text-sm-left mb-3" />
     </Row>
 
-    {/* Small Stats Blocks */}
+    {/* Small Stats Blocks
     <Row>
       {smallStats.map((stats, idx) => (
         <Col className="col-lg mb-4" key={idx} {...stats.attrs}>
@@ -39,6 +40,19 @@ const BlogOverview = ({ smallStats }) => (
           />
         </Col>
       ))}
+    </Row>
+    */}
+    
+    <Row>
+      <Col className="col-lg-4 mb-4">
+        <SmallStatsLike label="Average mains ilvl" variation="1" value={42} increase={true} />
+      </Col>
+      <Col className="col-lg-4 mb-4">
+        <SmallStatsLike label="Weekly dones" variation="1" value="42/74" increase={true} />
+      </Col>
+      <Col className="col-lg-4 mb-4">
+        <SmallStatsLike label="Average neck level" variation="1" value={42} increase={true} />
+      </Col>
     </Row>
 
     <Row>
