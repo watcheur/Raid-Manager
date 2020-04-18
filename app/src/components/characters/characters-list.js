@@ -1,8 +1,10 @@
 import React from 'react';
-import { Row, Col, Card, CardHeader, CardBody, CardFooter } from "shards-react";
+import { Row, Col, Card, CardHeader, CardBody, CardFooter, Button } from "shards-react";
 
 import Blizzard from '../../data/blizzard';
 import Api from '../../data/api';
+import Context from "../../utils/context"
+import { Dispatcher, Constants } from "../../flux";
 
 /**
  * @param {Object} parameters
@@ -14,15 +16,97 @@ export default class CharactersList extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.dispatcherToken = null;
+        this.refreshCharacter.bind(this);
+        this.error.bind(this);
+        this.success.bind(this);
+    }
+
+    spin(target) {
+        if (target) {
+            target.className = 'material-icons spin';
+        }
+    }
+
+    error(target) {
+        if (target) {
+            target.className = 'material-icons text-danger';
+            target.textContent = 'clear';
+            setTimeout(() => {
+                target.textContent = 'refresh'
+                target.className = 'material-icons';
+            }, 2000);
+        }
+    }
+
+    success(target) {
+        if (target) {
+            target.className = 'material-icons text-success';
+            target.textContent = 'check';
+            setTimeout(() => {
+                target.textContent = 'refresh'
+                target.className = 'material-icons';
+            }, 2000);
+        }
+    }
+
+    refreshCharacter(event, char) {
+        let target = event.target;
+        this.spin(target);
+        Api.RefreshCharacter(char.id)
+            .then(res => {
+                if (!res.data.err) {
+                   let characters = [...this.state.characters];
+                   let index = this.state.characters.indexOf(this.state.characters.find(c => c.id == res.data.data.id));
+                   if (index >= 0) {
+                        Object.assign(characters[index], res.data.data)
+                        this.setState({characters: characters });
+                        this.success(target);
+                   }
+                }
+            })
+            .catch(err => {
+                this.error(target);
+                alert('An error occured while refreshing this character');
+                //event.target.className = 'material-icons';
+            })
+    }
+
+    loadCharacters(target = null) {
+        this.spin(target);
+        Api.GetCharacters(this.props.parameters)
+            .then(res => {
+                if (!res.data.err) {
+                    this.setState({ characters: res.data.data })
+                    this.success(target);
+                }
+                else {
+                    this.error(target);
+                }
+            })
+            .catch(err => {
+                this.error(target);
+                alert(err);
+            });
     }
 
     componentDidMount() {
-        Api.GetCharacters(this.props.parameters || {})
-            .then(res => {
-                if (!res.data.err)
-                    this.setState({ characters: res.data.data })
-            })
-            .catch(err => alert(err))
+        this.dispatcherToken = Dispatcher.register(payload => {
+            switch (payload.actionType) {
+                case Constants.NEW_CHAR:
+                    this.loadCharacters();
+                    break;
+                case Constants.CHAR_UPDATE:
+
+                    break;
+            }
+        });
+        this.loadCharacters();
+    }
+
+    componentWillUnmount() {
+        Dispatcher.unregister(this.dispatcherToken);
     }
 
     render() {
@@ -30,7 +114,8 @@ export default class CharactersList extends React.Component {
         const slots = ['Head', 'Neck', 'Shoulder', 'Back', 'Chest', 'Wrist', 'Hand', 'Waist', 'Leg', 'Foot', 'LeftFinger', 'RightFinger', 'LeftTrinket', 'RightTrinket', 'Weapon', 'Offhand'];
         
         return (
-            <Card small className="mb-4 overflow-hidden">
+            <Card small className="mb-4 overflow-hidden text-center">
+                {this.props.title.length ? (<CardHeader className="bg-dark"><h5 className="m-0 text-white">{this.props.title}</h5></CardHeader>) : ''}
                 <CardBody className="bg-dark p-0 pb-3">
                     <table className="table table-dark mb-0">
                         <thead className="thead-dark">
@@ -77,20 +162,23 @@ export default class CharactersList extends React.Component {
                                         </th>
                                     )
                                 })}
+                                <th scope="col" className="border-0">
+                                    <a style={{cursor:'pointer'}} onClick={ev => this.loadCharacters(ev.target)} class='material-icons'>refresh</a>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             {this.state.characters.sort(c => c.type).map((character, index) => {
                                 return (
                                     <tr key={index}>
-                                        <td className={`GameColorClass ${Blizzard.ClassToObj(character.class).slug}`}>{character.name}</td>
+                                        <td className={`GameColorClass ${Blizzard.ClassToObj(character.class).slug}`} style={{textTransform: 'capitalize'}}>{character.name}</td>
                                         <td>{character.level}</td>
                                         <td>
                                             <div className={`GameIcon GameIconRace ${Blizzard.CharToRaceIc(character)} GameIcon--small`}>
                                                 <div class="GameIcon-icon"></div>
                                             </div>
                                         </td>
-                                        <td>
+                                        <td> 
                                             <div className={`GameIcon GameIconClass GameIcon--${Blizzard.ClassToObj(character.class).slug.toUpperCase()} GameIcon--small`}>
                                                 <div class="GameIcon-icon"></div>
                                             </div>
@@ -106,7 +194,7 @@ export default class CharactersList extends React.Component {
                                             </div>
                                         </td>
                                         <td class={Blizzard.AzeriteToClass(character.azerite)}>{character.azerite || (<i class="material-icons">help_outline</i>)}</td>
-                                        <td class={character.weekly ? 'text-success': 'text-danger'}><i class="material-icons">{character.weekly ? 'done' : 'clear'}</i></td>
+                                        <td class={character.weekly ? 'text-success': 'text-danger'}>{character.weekly || ''} <i class="material-icons">{character.weekly ? 'done' : 'clear'}</i> </td>
                                         <td class={Blizzard.IlvlToClass(character.equipped)}>{character.equipped}</td>
                                         {slots.map((value, index) => {
                                             return (
@@ -115,6 +203,7 @@ export default class CharactersList extends React.Component {
                                                 </td>
                                             )
                                         })}
+                                        <td><a style={{cursor:'pointer'}} onClick={ev => this.refreshCharacter(ev, character)} class="material-icons">refresh</a></td>
                                     </tr>
                                 )
                             })}

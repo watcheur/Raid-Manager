@@ -1,3 +1,5 @@
+const blizzard = require('blizzard.js').initialize(require('../config.json').blizzard);
+
 const TypeORM = require('typeorm');
 const Errs = require('restify-errors');
 const Jobs = require('../jobs/Jobs');
@@ -12,7 +14,7 @@ const Context = require('../utils/Context');
 class CharacterController extends DefaultController {
     GetAll = (req, res, next) => {
         Logger.info('Characters search', req.params);
-        const reqs = this.ClearProps(req.query, [ 'name', 'realm', 'type', 'class', 'spec', 'role', 'equipped', 'avg', 'azerite', 'weekly', 'refresh', 'refreshWeekly' ]);
+        const reqs = this.ClearProps(req.query, [ 'name', 'realm', 'level', 'type', 'class', 'spec', 'role', 'equipped', 'avg', 'azerite', 'weekly', 'refresh', 'refreshWeekly' ]);
         Logger.info('Characters search found params: ', reqs);
 
         if (reqs['name'])
@@ -27,6 +29,9 @@ class CharacterController extends DefaultController {
             reqs['avg'] = TypeORM.MoreThanOrEqual(reqs['avg']);
         if (reqs['azerite'])
             reqs['azerite'] = TypeORM.MoreThanOrEqual(reqs['azerite']);
+
+        if (req.weekly === undefined)
+            req.weekly = Context.CurrentPeriod.Id;
 
         TypeORM.getRepository(Entities.Character)
             .find({
@@ -45,9 +50,13 @@ class CharacterController extends DefaultController {
                     if (reqs.refreshWeekly)
                         Queues.Weekly.add({ character: c.id });
 
+                    c = Utils.CharToCharRet(c)
+                    /*
                     c.role = Utils.GetRoleBySpec(c.spec);
                     //c.dungeons = c.dungeons.filter(d => d.period >= Context.CurrentPeriod.id - 3);
-                    c.weekly = c.dungeons.find(d => d.period == (reqs['weekly'] || Context.CurrentPeriod.Id));
+                    c.weekly = Math.max.apply(Math, c.dungeons.map(d => d.level));
+                    */
+                    delete c.dungeons;
 
                     return c;
                 });
@@ -69,55 +78,100 @@ class CharacterController extends DefaultController {
         Logger.info('Retrieve character', req.params);
 
         TypeORM.getRepository(Entities.Character)
-        .createQueryBuilder("char")
-        .where("char.id = :id", { id : req.params.id })
-        .getOne()
-        .then((el) => {
-            if (el == null) {
-                Logger.info('Character not found');
-                return next(new Errs.NotFoundError('Character not found'));
-            }
-
-            res.send({
-                err: false,
-                data: el
+            .findOne({
+                relations: ["dungeons"],
+                where: {
+                    id: req.params.id
+                }
             })
-        })
-        .catch(err => {
-            console.log(err);
-            Logger.error('Character retrieve failed', { id: req.params.id });
-            next(new Errs.InternalError('Character retrieve failed'));
-        })
+            .then(c => {
+                if (c == null) {
+                    Logger.info('Character not found');
+                    return next(new Errs.NotFoundError('Character not found'));
+                }
+
+                c = Utils.CharToCharRet(c)
+                c.dungeons = c.dungeons.filter(d => d.period >= Context.CurrentPeriod.id - 3);
+
+                res.send({
+                    err: false,
+                    data: c
+                })
+            })
+            .catch(err => {
+                console.log(err);
+                Logger.error('Character retrieve failed', { id: req.params.id });
+                next(new Errs.InternalError('Character retrieve failed'));
+            })
     }
 
     Create = (req, res, next) => {
         Logger.info('Start character create', req.body);
 
+        let char = {};
         try {
-            this.RequiredProps(req.body, [ 'name', 'realm', 'type' ]);
+            char = this.RequiredProps(req.body, [ 'name', 'realm', 'type' ]);
         } catch (err) {
             return next(err);
         }
 
+        char.created = new Date();
+
         const repo = TypeORM.getRepository(Entities.Character);
         repo
             .createQueryBuilder("c")
-            .where("c.name = :name AND c.realm = :realm", { name: req.body.name, realm: req.body.realm })
+            .where("c.name = :name AND c.realm = :realm", { name: char.name, realm: char.realm })
             .getCount()
-            .then((nb) => {
+            .then(async (nb) => {
                 if (nb > 0)
                     return next(new Errs.BadRequestError('Character already registered'));
 
-                repo
-                    .save({ name: req.body.name, realm: req.body.realm, type: req.body.type, created: new Date() })
-                    .then((char) => {
+                try {
+                    const tokenRes = await blizzard.getApplicationToken();
+                    blizzard.defaults.token = tokenRes.data.access_token;
+
+                    const resChar = await blizzard.wow.character('index', { origin: 'eu', realm: char.realm.toLowerCase(), name: char.name.toLowerCase(), params: {
+                        access_token: blizzard.defaults.token,
+                        locale: 'en_GB',
+                        namespace: 'profile-EU'
+                    }});
+                    
+                    if (resChar) {
+                        switch (resChar.data.gender.type) {
+                            case "MALE": char.gender = Enums.Characters.Gender.Male; break;
+                            case "FEMALE": char.gender = Enums.Characters.Gender.Female; break;
+                            default: char.gender = Enums.Characters.Gender.Unknown; break;
+                        }
+
+                        switch (resChar.data.faction.type) {
+                            case "HORDE": char.faction = Enums.Characters.Faction.Horde; break;
+                            case "ALLIANCE": char.faction = Enums.Characters.Faction.Alliance; break;
+                            default: char.faction = Enums.Characters.Faction.Unknown; break;
+                        }
+
+                        char.race = resChar.data.race.id;
+                        char.class = resChar.data.character_class.id;
+                        char.spec = resChar.data.active_spec.id;
+                        char.level = resChar.data.level;
+                        char.avg = resChar.data.average_item_level;
+                        char.equipped = resChar.data.equipped_item_level;
+                    }
+                }
+                catch (err) {
+                    if (err.response && err.response.status == 404)
+                        return next(new Errs.NotFoundError('This character doesn\'t exist'));
+                    return next(new Errs.InternalError('Blizzard API error'));
+                }
+
+                repo.save(char)
+                    .then(saved => {
                         res.send({
                             err: false,
-                            data: char
-                        })
+                            data: saved
+                        });
 
-                        Queues.Character.add({ character: char.id });
-                        Queues.Weekly.add({ character: char.id });
+                        Queues.Character.add({ character: saved.id });
+                        Queues.Weekly.add({ character: saved.id });
 
                         Logger.info('End character create', req.body);
                         next()
@@ -134,6 +188,7 @@ class CharacterController extends DefaultController {
         const repo = TypeORM.getRepository(Entities.Character);
         const update = this.ClearProps(req.body, [ 'type' ]);
 
+        update.updated = new Date();
         repo
             .createQueryBuilder("c")
             .where("c.id = :id", { id: req.params.id })
@@ -191,21 +246,28 @@ class CharacterController extends DefaultController {
     }
 
     ForceRefresh = (req, res, next) => {
-        Jobs.Character.Update(req.params.id, (err, data) => {
-            if (err)
-                return next(new Errs.InternalServerError(err));
-            res.send({ data: data });
-            next();
-        });
-    }
-
-    ForceRefreshMythic = (req, res, next) => {
-        Jobs.Weekly.Update(req.params.id, (err, data) => {
-            if (err)
-                return next(new Errs.InternalServerError(err));
-            res.send({ data: data });
-            next();
-        });
+        Promise.all([
+            new Promise(function (res, rej) { Jobs.Character.Update(req.params.id, res) }),
+            new Promise(function (res, rej) { Jobs.Weekly.Update(req.params.id, res) })
+        ])
+        .then(values => {
+            TypeORM.getRepository(Entities.Character).findOne({ relations: ['dungeons'], where: { id: req.params.id }})
+                .then(char => {
+                    char = Utils.CharToCharRet(char)
+                    char.dungeons = char.dungeons.filter(d => d.period >= Context.CurrentPeriod.id - 3);
+                    
+                    res.send({ err: false, data: char })
+                    next();
+                })
+                .catch(err => {
+                    Logger.error(err);
+                    next(new Errs.InternalError('Database error'));
+                })
+        })
+        .catch(err => {
+            Logger.error(err);
+            next(new Errs.InternalError('Error'));
+        })
     }
 }
 

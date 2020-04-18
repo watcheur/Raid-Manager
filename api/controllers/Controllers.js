@@ -8,6 +8,7 @@ const evController  = require('./EventController');
 const coController  = require('./CompositionController');
 const nController   = require('./NoteController');
 const oController   = require('./OptionController');
+const bController   = require('./BlizzardController');
 
 module.exports = {
     Expansion: new exController(),
@@ -23,5 +24,6 @@ module.exports = {
     Composition: new coController(),
     Note: new nController(),
 
-    Option: new oController()
+    Option: new oController(),
+    Blizzard: new bController()
 }

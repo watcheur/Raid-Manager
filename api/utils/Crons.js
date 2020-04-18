@@ -94,4 +94,13 @@ module.exports = () => {
             Logger.info('End refresh expansions cron');
         });
     }, null, true, 'Europe/Paris');
+
+    // Every first of month
+    new CronJob('0 0 0 1 * *', () => {
+        Logger.info('Start refresh realms cron');
+
+        Controllers.Blizzard.LoadRealms(null, null, () => {
+            Logger.info('End refresh realms cron');
+        });
+    }, null, true, 'Europe/Paris');
 }

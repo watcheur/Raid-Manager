@@ -14,5 +14,7 @@ module.exports = {
         Queues.Weekly.process((job, done) => {
             WeeklyJobs.Update(job.data.character, done);
         }).catch(err => { Logger.error('Weekly queue processing failed '); })
-    }
+    },
+    Character: CharacterJobs,
+    Weekly: WeeklyJobs
 }

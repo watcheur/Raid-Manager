@@ -1,13 +1,15 @@
 const Enums = require('./Enums');
 
+function GetRoleBySpec(spec) {
+    if (Enums.Characters.Specs.HEAL.indexOf(spec) >= 0)
+        return Enums.Characters.Role.HEAL;
+    if (Enums.Characters.Specs.TANK.indexOf(spec) >= 0)
+        return Enums.Characters.Role.TANK;
+    return Enums.Characters.Role.DPS;
+}
+
 module.exports = {
-    GetRoleBySpec: (spec) => {
-        if (Enums.Characters.Specs.HEAL.indexOf(spec) >= 0)
-            return Enums.Characters.Role.HEAL;
-        if (Enums.Characters.Specs.TANK.indexOf(spec) >= 0)
-            return Enums.Characters.Role.TANK;
-        return Enums.Characters.Role.DPS;
-    },
+    GetRoleBySpec: GetRoleBySpec,
 
     GetSpecsByRole: (role) => {
         switch (parseInt(role)) {
@@ -35,5 +37,14 @@ module.exports = {
                 role: c.role
             }
         });
+    },
+
+    CharToCharRet: (char) => {
+        char.role = GetRoleBySpec(char.spec);
+        //c.dungeons = c.dungeons.filter(d => d.period >= Context.CurrentPeriod.id - 3);
+        if (char.dungeons)
+            char.weekly = Math.max.apply(Math, char.dungeons.map(d => d.level));
+
+        return char;
     }
 }

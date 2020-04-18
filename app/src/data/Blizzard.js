@@ -243,6 +243,8 @@ function RaceToObj(race) {
             return { label: 'MagharOrc', slug: 'magharorc' }
         case Races.Mechagnome:
             return { label: 'Mechagnome', slug: 'mechagnome' }
+        default:
+            return { label: 'Unknown', slug: 'unknown' }
     }
 }
 
@@ -268,6 +270,7 @@ export default {
             case CharacterType.ALT_FUN:
                 return { label: "Alt fun", classes: [".alt-fun"] }
         }
+        return { label: "Unknown", classes: ['unknown'] }
     },
     /**
      * @param {CharacterRole} role
@@ -281,6 +284,7 @@ export default {
             case CharacterRole.TANK:
                 return { label: "Tank", slug: "tank" }
         }
+        return { label: "Unknown", slug: 'unknown' }
     },
     /**
      * @param {Classes} cl
@@ -311,9 +315,8 @@ export default {
                 return { label: "DeathKnight", slug: 'deathknight' }
             case Classes.DemonHunter.ClassID:
                 return { label: "DemonHunter", slug: 'demonhunter' }
-            default:
-                return { label: "Unknown", slug: 'unknown' }
         }
+        return { label: "Unknown", slug: 'unknown' }
     },
     /**
      * @param {Specs} spec
@@ -391,6 +394,7 @@ export default {
             case Classes.Paladin.Protection:
                 return { label: "Protection", class: 'paladin-protection' }
         }
+        return { label: "Unknown", slug: 'unknown' }
     },
     /**
      * @param {Race} race
@@ -412,9 +416,8 @@ export default {
                 return { label: "Horde", classes: ['horde'] };
             case Factions.Alliance:
                 return { label: "Alliance", classes: ['alliance'] };
-            case Factions.Unknown:
-                return { label: "Unknown", classes: ['unknown'] };
         }
+        return { label: "Unknown", classes: ['unknown'] };
     },
     /**
      * @param {Specs} spec

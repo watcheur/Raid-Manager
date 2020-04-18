@@ -11,7 +11,9 @@ import Discussions from "../components/blog/Discussions";
 import TopReferrals from "../components/common/TopReferrals";
 
 import Blizzard from "../data/blizzard";
+import Context from "../utils/context"
 import CharactersList from "../components/characters/characters-list";
+import CharacterAdd from "../components/characters/character-add";
 
 const BlogOverview = ({ smallStats }) => (
   <Container fluid className="main-content-container px-4">
@@ -40,23 +42,26 @@ const BlogOverview = ({ smallStats }) => (
     </Row>
 
     <Row>
-      <PageTitle subtitle="Mains" className="text-sm-left mb-3" />
       <Col>
-        <CharactersList parameters={ { type: Blizzard.Characters.Type.MAIN } } />
+        <CharacterAdd parameters={{ category: 'French' }} realm='Ysondre' />
+      </Col>
+    </Row>
+
+    <Row>
+      <Col>
+        <CharactersList title="Mains" parameters={ { type: Blizzard.Characters.Type.MAIN } } />
       </Col>
     </Row>
     
     <Row>
-      <PageTitle subtitle="Alts" className="text-sm-left mb-3" />
       <Col>
-        <CharactersList parameters={ { type: Blizzard.Characters.Type.ALT } } />
+        <CharactersList title="Alts" parameters={ { type: Blizzard.Characters.Type.ALT } } />
       </Col>
     </Row>
     
     <Row>
-      <PageTitle subtitle="Alts fun" className="text-sm-left mb-3" />
       <Col>
-        <CharactersList parameters={ { type: Blizzard.Characters.Type.ALT_FUN } } />
+        <CharactersList title="Alts fun" parameters={ { type: Blizzard.Characters.Type.ALT_FUN } } />
       </Col>
     </Row>
   </Container>

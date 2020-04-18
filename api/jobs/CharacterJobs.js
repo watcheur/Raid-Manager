@@ -29,7 +29,7 @@ function CharacterUpdate(id, cb)
 
                     try
                     {
-                        blizzard.wow.character('index', { origin: 'eu', realm: char.realm, name: char.name.toLowerCase(), params: params })
+                        blizzard.wow.character('index', { origin: 'eu', realm: char.realm.toLowerCase(), name: char.name.toLowerCase(), params: params })
                             .then(res => {
                                 switch (res.data.gender.type) {
                                     case "MALE": char.gender = Enums.Characters.Gender.Male; break;
@@ -50,7 +50,7 @@ function CharacterUpdate(id, cb)
                                 char.avg = res.data.average_item_level;
                                 char.equipped = res.data.equipped_item_level;
                                 
-                                blizzard.wow.character('equipment', { origin: 'eu', realm: char.realm, name: char.name.toLowerCase(), params: params })
+                                blizzard.wow.character('equipment', { origin: 'eu', realm: char.realm.toLowerCase(), name: char.name.toLowerCase(), params: params })
                                     .then(res => {
                                         res.data.equipped_items.forEach(item => {
                                             if (props.indexOf(item.slot.type.toLowerCase()) >= 0)

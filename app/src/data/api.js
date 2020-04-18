@@ -54,6 +54,7 @@ class Api {
 
     GetCharacters = (args) => this.Get('/characters', args);
     GetCharacter = (id) => this.Get(`/characters/${id}`);
+    RefreshCharacter = (id) => this.Get(`/characters/${id}/refresh`);
     CreateCharacter = (data) => this.Post('/characters', data);
     UpdateCharacter = (id, data) => this.Put(`/characters/${id}`, data);
     DeleteCharacter = (id) => this.Delete(`/characters/${id}`);
@@ -76,6 +77,8 @@ class Api {
 
     GetOptions = () => this.Get('/options');
     CreateOptions = (data) => this.Post('/options', data);
+
+    GetRealms = (args) => this.Get('/blizzard/realms', args);
 }
 
 export default new Api()

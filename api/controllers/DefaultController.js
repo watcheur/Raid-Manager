@@ -2,7 +2,7 @@ const Errs = require('restify-errors');
 
 class DefaultController {
     RequiredProps = (obj, props) => {
-        let ret = [];
+        let ret = {};
         props.forEach((p) => {
             if (!obj.hasOwnProperty(p))
                 throw new Errs.BadRequestError('Missing `'+ p +'` property');

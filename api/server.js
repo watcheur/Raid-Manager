@@ -43,7 +43,6 @@ TypeORM
         server.put('/characters/:id', Controllers.Character.Update);
         server.del('/characters/:id', Controllers.Character.Delete);
         server.get('/characters/:id/refresh', Controllers.Character.ForceRefresh);
-        server.get('/characters/:id/refresh-mythic', Controllers.Character.ForceRefreshMythic);
 
         // Period
         server.get('/periods', Controllers.Period.GetAll);
@@ -79,6 +78,9 @@ TypeORM
         server.get('/notes/favorites', Controllers.Note.Favorites);
 
         // Stats
+
+        // Blizzard
+        server.get('/blizzard/realms', Controllers.Blizzard.Realms);
 
         // Options
         server.get('/options', Controllers.Option.Get);
