@@ -235,6 +235,10 @@
 	color: #0cf
 }
 
+.form-group.common {
+	color: gray;
+}
+
 .GameIcon--WARRIOR .GameIcon-icon {
 	background-image: url(/images/blizzard/class-warrior.jpg)
 }

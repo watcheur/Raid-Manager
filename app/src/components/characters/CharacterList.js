@@ -10,7 +10,9 @@ import { Dispatcher, Constants } from "../../flux";
  */
 export default class CharactersList extends React.Component {
     state = {
-        characters: []
+        characters: [],
+        isLoading: false,
+        error: null
     }
 
     constructor(props) {
@@ -92,20 +94,37 @@ export default class CharactersList extends React.Component {
 
     loadCharacters(target = null) {
         this.spin(target);
-        Api.GetCharacters(this.props.parameters)
-            .then(res => {
-                if (!res.data.err) {
-                    this.setState({ characters: res.data.data })
-                    this.success(target);
-                }
-                else {
-                    this.error(target);
-                }
-            })
-            .catch(err => {
+        const { name, realm, type, level, cl, spec, role, equipped, avg, azerite, weekly} = this.props;
+        
+        this.setState({ isLoading: true, error: null });
+        Api.GetCharacters({
+            name: name,
+            realm, realm,
+            type: type,
+            level: level,
+            class: cl,
+            spec: spec,
+            role: role,
+            equipped: equipped,
+            avg: avg,
+            azerite: azerite,
+            weekly: weekly
+        })
+        .then(res => {
+            this.setState({ isLoading: false });
+            if (!res.data.err) {
+                this.setState({ characters: res.data.data })
+                this.success(target);
+            }
+            else {
                 this.error(target);
-                alert(err);
-            });
+                this.setState({ error: res.data.message })
+            }
+        })
+        .catch(err => {
+            this.setState({ isLoading: false, error: err.message });
+            this.error(target);
+        });
     }
 
     componentDidMount() {
@@ -113,7 +132,10 @@ export default class CharactersList extends React.Component {
             switch (payload.actionType) {
                 case Constants.CHAR_CREATED:
                 case Constants.CHAR_UPDATE:
-                    case Constants.CHAR_DELETED:
+                    if (this.props.type === undefined || this.props.type == payload.character.type)
+                        this.loadCharacters();
+                    break;
+                case Constants.CHAR_DELETED:
                     this.loadCharacters();
                     break;
                 default:
@@ -157,35 +179,51 @@ export default class CharactersList extends React.Component {
                                 </th>
                                 <th scope="col" className="border-0">
                                     <div className={`GameIcon GameIconUtils GameIcon--Utils-HeartOfAzeroth GameIcon--small`} data-tip="Heart of Azeroth">
-                                        <div class="GameIcon-icon"></div>
+                                        <div className="GameIcon-icon"></div>
                                     </div>
                                 </th>
                                 <th scope="col" className="border-0">
                                     <div className={`GameIcon GameIconUtils GameIcon--Utils-Weekly GameIcon--small`} data-tip="Weekly chest">
-                                        <div class="GameIcon-icon"></div>
+                                        <div className="GameIcon-icon"></div>
                                     </div>
                                 </th>
                                 <th scope="col" className="border-0">
                                     <div className={`GameIcon GameIconUtils GameIcon--Utils-Gear GameIcon--small`} data-tip="Equipped gear">
-                                        <div class="GameIcon-icon"></div>
+                                        <div className="GameIcon-icon"></div>
                                     </div>
                                 </th>
                                 {slots.map((value, index) => {
                                     return (
                                         <th scope="col" key={index} className="border-0">
                                             <div className={`GameIcon GameIcon--slot${value} GameIcon--slot GameIcon--small`} data-tip={value}>
-                                                <div class="GameIcon-icon"></div>
+                                                <div className="GameIcon-icon"></div>
                                             </div>
                                         </th>
                                     )
                                 })}
                                 <th scope="col" className="border-0">
-                                    <a style={{cursor:'pointer'}} onClick={ev => this.loadCharacters(ev.target)} class='material-icons'>refresh</a>
+                                    <a style={{cursor:'pointer'}} onClick={ev => this.loadCharacters(ev.target)} className='material-icons'>refresh</a>
                                 </th>
-                                <th scope="col" class="border-0"></th>
+                                <th scope="col" className="border-0"></th>
                             </tr>
                         </thead>
                         <tbody>
+                            {this.state.isLoading && (
+                                <tr className="bg-dark p-0 pb-3">
+                                    <td colSpan={11+slots.length}>
+                                        <h1 className="material-icons spin ">refresh</h1>
+                                    </td>
+                                </tr>
+                            )}
+                            {this.state.error && (
+                                <tr className="bg-dark p-0 pb-3">
+                                    <td colSpan={11+slots.length}
+                                        className="bg-warning text-white text-center"
+                                        style={{ boxShadow: "inset 0 0 5px rgba(0,0,0,.2)" }}>
+                                        <i className="material-icons">warning</i> {this.state.error}
+                                    </td>
+                                </tr>
+                            )}
                             {this.state.characters.sort((a, b) => { return (a.role > b.role ? 1 : -1) }).map((character, index) => {
                                 return (
                                     <tr key={index}>
@@ -195,36 +233,36 @@ export default class CharactersList extends React.Component {
                                         <td>{character.level}</td>
                                         <td>
                                             <div className={`GameIcon GameIconRace ${Blizzard.CharToRaceIc(character)} GameIcon--small`}>
-                                                <div class="GameIcon-icon"></div>
+                                                <div className="GameIcon-icon"></div>
                                             </div>
                                         </td>
                                         <td> 
                                             <div className={`GameIcon GameIconClass GameIcon--${Blizzard.ClassToObj(character.class).slug.toUpperCase()} GameIcon--small`}>
-                                                <div class="GameIcon-icon"></div>
+                                                <div className="GameIcon-icon"></div>
                                             </div>
                                         </td>
                                         <td>
                                             <div className={`GameIcon GameIconClass GameIcon--${Blizzard.SpecToObj(character.spec).class.toUpperCase()} GameIcon--small`}>
-                                                <div class="GameIcon-icon"></div>
+                                                <div className="GameIcon-icon"></div>
                                             </div>
                                         </td>
                                         <td>
                                             <div className={`GameIcon GameIconRole GameIcon--${Blizzard.RoleToObj(character.role).slug.toUpperCase()} GameIcon--small`}>
-                                                <div class="GameIcon-icon"></div>
+                                                <div className="GameIcon-icon"></div>
                                             </div>
                                         </td>
-                                        <td class={Blizzard.AzeriteToClass(character.azerite)}>{character.azerite || (<i class="material-icons">help_outline</i>)}</td>
-                                        <td class={character.weekly ? 'text-success': 'text-danger'}>{character.weekly || ''} <i class="material-icons">{character.weekly ? 'done' : 'clear'}</i> </td>
-                                        <td class={Blizzard.IlvlToClass(character.equipped)}>{character.equipped}</td>
+                                        <td className={Blizzard.AzeriteToClass(character.azerite)}>{character.azerite || (<i className="material-icons">help_outline</i>)}</td>
+                                        <td className={character.weekly ? 'text-success': 'text-danger'}>{character.weekly || ''} <i className="material-icons">{character.weekly ? 'done' : 'clear'}</i> </td>
+                                        <td className={Blizzard.IlvlToClass(character.equipped)}>{character.equipped}</td>
                                         {slots.map((value, index) => {
                                             return (
-                                                <td key={index} class={Blizzard.IlvlToClass(character[Blizzard.TrSlot(value)])}>
+                                                <td key={index} className={Blizzard.IlvlToClass(character[Blizzard.TrSlot(value)])}>
                                                     {character[Blizzard.TrSlot(value)]}
                                                 </td>
                                             )
                                         })}
-                                        <td><a style={{cursor:'pointer'}} onClick={ev => this.refreshCharacter(ev.target, character)} class="material-icons">refresh</a></td>
-                                        <td><a style={{cursor:'pointer'}} onClick={ev => this.deleteCharacter(ev.target, character)} class="material-icons text-danger">clear</a></td>
+                                        <td><a style={{cursor:'pointer'}} onClick={ev => this.refreshCharacter(ev.target, character)} className="material-icons">refresh</a></td>
+                                        <td><a style={{cursor:'pointer'}} onClick={ev => this.deleteCharacter(ev.target, character)} className="material-icons text-danger">clear</a></td>
                                     </tr>
                                 )
                             })}

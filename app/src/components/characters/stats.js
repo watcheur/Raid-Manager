@@ -82,19 +82,19 @@ export default class Stats extends React.Component {
 
     render() {
         return (
-            <Row>
+            <Row className="justify-content-md-center">
                 { this.state.ilvl ? (
-                    <Col className="col-lg-4 mb-4">
+                    <Col className="col-lg-2 mb-4">
                         <SmallStatsLike label="Average mains ilvl" variation="1" value={this.state.ilvl.mains} value-classes={Blizzard.IlvlToClass(this.state.ilvl.mains)} increase={true} />
                     </Col>
                 ) : ''}
                 { this.state.azerite ? (
-                    <Col className="col-lg-4 mb-4">
+                    <Col className="col-lg-2 mb-4">
                         <SmallStatsLike label="Average neck level" variation="1" value={this.state.azerite.mains} value-classes={Blizzard.AzeriteToClass(this.state.azerite.mains)} increase={true} />
                     </Col>
                 ) : ''}
                 { this.state.weekly.mains ? (
-                    <Col className="col-lg-4 mb-4">
+                    <Col className="col-lg-2 mb-4">
                         <SmallStatsLike label="Weekly runs"
                             variation="1"
                             value={`${this.state.weekly.mains.runs} / ${this.state.weekly.mains.roster}`}

@@ -69,6 +69,7 @@ TypeORM
         server.post('/events', Controllers.Event.Create);
         server.get('/events/:id', Controllers.Event.Get);
         server.put('/events/:id', Controllers.Event.Update);
+        server.del('/events/:id', Controllers.Event.Delete);
 
         // Compositions
         server.post('/compositions', Controllers.Composition.Create);

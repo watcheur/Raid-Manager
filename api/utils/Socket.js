@@ -29,7 +29,8 @@ class Socket {
     Channels = {
         Character : 'CHARACTER',
         Event: 'EVENT',
-        Composition: 'Composition'
+        Composition: 'COMPOSITION',
+        Option: 'OPTION'
     }
 
     Action = {
@@ -47,6 +48,14 @@ class Socket {
             Create: 'COMPOSITION_CREATED',
             Update: 'COMPOSITION_UPDATED',
             Delete: 'COMPOSITION_DELETED'
+        },
+        Option: {
+            Changed: 'OPTION_CHANGED'
+        },
+        Event: {
+            Create: 'EVENT_CREATED',
+            Update: 'EVENT_UPDATED',
+            Delete: 'EVENT_DELETE'
         }
     }
 }

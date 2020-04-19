@@ -1,9 +1,19 @@
 export default function() {
   return [
     {
-      title: "Personnages",
+      title: "Characters",
       to: "/characters",
       htmlBefore: '<i class="material-icons">group</i>',
+    },
+    {
+      title: "Events",
+      to: "/events",
+      htmlBefore: '<i class="material-icons">event</i>'
+    },
+    {
+      title: "Options",
+      to: "/options",
+      htmlBefore: '<i class="material-icons">settings</i>'
     },
     {
       title: "Blog Dashboard",

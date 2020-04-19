@@ -4,6 +4,7 @@ const Errs = require('restify-errors');
 const Logger = require('../utils/Logger');
 const DefaultController = require('./DefaultController');
 const Utils = require('../utils/Utils');
+const Socket = require('../utils/Socket');
 
 class EventController extends DefaultController  {
     GetAll = (req, res, next) => {
@@ -96,6 +97,7 @@ class EventController extends DefaultController  {
                             .save({
                                 title: props.title,
                                 schedule: props.schedule,
+                                difficulty: props.difficulty,
                                 raid: props.raid,
                                 created: new Date()
                             })
@@ -103,6 +105,12 @@ class EventController extends DefaultController  {
                                 res.send({
                                     err: false,
                                     data: ev
+                                })
+                                Socket.Emit(Socket.Channels.Event, {
+                                    action: Socket.Action.Event.Create,
+                                    data: {
+                                        event: ev.id
+                                    }
                                 })
                                 next();
                             })
@@ -170,6 +178,14 @@ class EventController extends DefaultController  {
                                         err: false,
                                         data: Object.assign(ev, update)
                                     })
+                            
+                                    Socket.Emit(Socket.Channels.Event, {
+                                        action: Socket.Action.Event.Update,
+                                        data: {
+                                            event: ev.id
+                                        }
+                                    })
+
                                     next();
                                 })
                                 .catch(err => {
@@ -186,6 +202,14 @@ class EventController extends DefaultController  {
                                 err: false,
                                 data: Object.assign(ev, update)
                             })
+                            
+                            Socket.Emit(Socket.Channels.Event, {
+                                action: Socket.Action.Event.Update,
+                                data: {
+                                    event: ev.id
+                                }
+                            })
+
                             next();
                         }
                     })
@@ -198,6 +222,40 @@ class EventController extends DefaultController  {
                 Logger.error('Event get error', err);
                 next(new Errs.InternalError('Database error'));
             })
+    }
+
+    Delete = (req, res, next) => {
+        Logger.info("Event deletion", req.params.id);
+
+        TypeORM.getConnection()
+            .createQueryBuilder()
+            .delete()
+            .from(Entities.Event)
+            .where('id = :id', { id : req.params.id })
+            .execute()
+            .then((deleted) => {
+                if (deleted.affected == 0)
+                    return next(new Errs.NotFoundError('Event not found'));
+
+                res.send({
+                    err: false,
+                    data: true
+                })
+
+                Socket.Emit(Socket.Channels.Event, {
+                    action: Socket.Action.Event.Delete,
+                    data: {
+                        character: req.params.id
+                    }
+                });
+
+                Logger.info('Event deleted');
+                next();
+            })
+            .catch(err => {
+                Logger.error('Event deletion failed', err)
+                next(new Errs.InternalError('Event deletion failed'))
+            });
     }
 }
 

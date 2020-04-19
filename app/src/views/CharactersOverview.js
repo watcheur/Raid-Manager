@@ -3,9 +3,9 @@ import { Container, Row, Col } from "shards-react";
 
 import PageTitle from "../components/common/PageTitle";
 import Blizzard from "../data/blizzard";
-import CharactersList from "../components/characters/characters-list";
-import CharacterAdd from "../components/characters/character-add";
-import Stat from "../components/characters/stats";
+import CharactersList from "../components/characters/CharacterList";
+import CharacterAdd from "../components/characters/CharacterAdd";
+import Stats from "../components/characters/Stats";
 
 const CharactersOverview = () => (
   <Container fluid className="main-content-container px-4">
@@ -14,29 +14,29 @@ const CharactersOverview = () => (
       <PageTitle title="Characters" subtitle="Dashboard" className="text-sm-left mb-3" />
     </Row>
 
-    <Stat />
+    <Stats />
 
-    <Row>
-      <Col>
+    <Row className="justify-content-md-center">
+      <Col md="6">
         <CharacterAdd parameters={{ category: 'French' }} realm='ysondre' />
       </Col>
     </Row>
 
     <Row>
       <Col>
-        <CharactersList title="Mains" parameters={ { type: Blizzard.Characters.Type.MAIN } } />
+        <CharactersList title="Mains" type={Blizzard.Characters.Type.MAIN} />
       </Col>
     </Row>
     
     <Row>
       <Col>
-        <CharactersList title="Alts" parameters={ { type: Blizzard.Characters.Type.ALT } } />
+        <CharactersList title="Alts" type={Blizzard.Characters.Type.ALT} />
       </Col>
     </Row>
     
     <Row>
       <Col>
-        <CharactersList title="Alts fun" parameters={ { type: Blizzard.Characters.Type.ALT_FUN } } />
+        <CharactersList title="Alts fun" type={Blizzard.Characters.Type.ALT_FUN}/>
       </Col>
     </Row>
   </Container>

@@ -502,6 +502,8 @@ export default {
      * @param {Number} ilvl
      */
     IlvlToClass: (ilvl) => {
+        if (ilvl >= Context.Options.artifact_ilvl)
+            return 'artifact';
         if (ilvl >= Context.Options.legendary_ilvl)
             return 'legendary';
         if (ilvl >= Context.Options.epic_ilvl)
@@ -510,6 +512,8 @@ export default {
             return 'rare';
         if (ilvl >= Context.Options.uncommon_ilvl)
             return 'uncommon';
+        if (ilvl >= Context.Options.common_ilvl)
+            return 'common';
         if (ilvl >= Context.Options.poor_ilvl)
             return 'poor';
         return 'poor';

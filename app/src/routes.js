@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom";
 import { DefaultLayout } from "./layouts";
 
 // Route Views
-import CharactersOverview from "./views/CharactersOverview"
+
 import BlogOverview from "./views/BlogOverview";
 import UserProfileLite from "./views/UserProfileLite";
 import AddNewPost from "./views/AddNewPost";
@@ -13,6 +13,11 @@ import Errors from "./views/Errors";
 import ComponentsOverview from "./views/ComponentsOverview";
 import Tables from "./views/Tables";
 import BlogPosts from "./views/BlogPosts";
+
+
+import CharactersOverview from "./views/CharactersOverview"
+import EventsOverview from "./views/EventsOverview";
+import OptionsOverview from "./views/OptionsOverview";
 
 export default [
   {
@@ -26,6 +31,18 @@ export default [
     exact: true,
     layout: DefaultLayout,
     component: CharactersOverview
+  },
+  {
+    path: "/events",
+    exact: true,
+    layout: DefaultLayout,
+    component: EventsOverview
+  },
+  {
+    path: "/options",
+    exact: true,
+    layout: DefaultLayout,
+    component: OptionsOverview
   },
   {
     path: "/blog-overview",

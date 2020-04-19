@@ -3,12 +3,16 @@ import PropTypes from "prop-types";
 import { Container, Row, Col } from "shards-react";
 import ReactTooltip from "react-tooltip";
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import MainNavbar from "../components/layout/MainNavbar/MainNavbar";
 import MainSidebar from "../components/layout/MainSidebar/MainSidebar";
 import MainFooter from "../components/layout/MainFooter";
 
 const DefaultLayout = ({ children, noNavbar, noFooter }) => (
   <Container fluid>
+    <ToastContainer />
     <Row>
       <MainSidebar />
       <Col

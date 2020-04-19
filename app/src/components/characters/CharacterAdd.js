@@ -5,13 +5,16 @@ import {
   ListGroupItem,
   Row,
   Col,
+  Form,
   FormInput,
   FormFeedback,
   FormSelect,
   Button,
   Card,
-  CardHeader
+  CardHeader,
+  InputGroup
 } from "shards-react";
+import { toast } from 'react-toastify';
 
 import Api from '../../data/api';
 
@@ -23,7 +26,8 @@ class CharacterAdd extends React.Component {
 		type: 0,
 		invalidName : false,
 		errorNameText: '',
-		invalidRealm: false
+		invalidRealm: false,
+		loading: false
     }
 
     constructor(props) {
@@ -45,6 +49,7 @@ class CharacterAdd extends React.Component {
 		if (this.state.name.length === 0)
 			return this.setState({ errorNameText: 'You must specify a character name' })
 
+		this.setState({ loading: true });
 		const { name, realm, type } = this.state;
 		if (name.length > 0 && realm.length > 0) {
 			Api.CreateCharacter({
@@ -55,10 +60,17 @@ class CharacterAdd extends React.Component {
 			.then(res => {
 				if (!res.data.err) {
 					this.setState({ ...this.defaultState });
+					toast.success(`Character ${name.capitalize()}-${realm.capitalize()} added`)
 				}
+				else
+					this.setState({ loading: false });
 			})
 			.catch(err => {
-				this.setState({ errorNameText: err.response.data.message, invalidName: true });
+				this.setState({
+					errorNameText: err.response.data.message,
+					invalidName: true,
+					loading: false
+				});
 			})
 		}
 	}
@@ -88,9 +100,9 @@ class CharacterAdd extends React.Component {
 					<ListGroupItem className="p-3">
 						<Row>
 							<Col>
-								<form onSubmit={this.handleSubmit}>
+								<Form onSubmit={this.handleSubmit}>
 									<Row form>
-										<Col md="1" className="form-group">
+										<Col md="2" className="form-group">
 											<label htmlFor="feRealm">Type</label>
 											<FormSelect
 												id="feRealm"
@@ -118,28 +130,30 @@ class CharacterAdd extends React.Component {
 													);
 												})}
 											</FormSelect>
-											<FormFeedback invalid>A realm must be selected</FormFeedback>
+											<FormFeedback valid={false}>A realm must be selected</FormFeedback>
 										</Col>
 										<Col md="6" className="form-group">
 											<label htmlFor="feCharacter">Character</label>
-											<FormInput
-												id="feCharacter"
-												type="text"
-												placeholder="Name"
-												invalid={this.state.invalidName}
-												value={this.state.name}
-												required
-												onChange={(event) => { this.setState({ name: event.target.value, errorNameText: '', invalidName: false }); }}
-											/>
-											<FormFeedback invalid>{this.state.errorNameText}</FormFeedback>
-										</Col>
-										<Col md="1" className="form-group d-flex flex-column">
-											<Button type="submit" className="mt-auto">
-												<i className="material-icons">save</i> Add
-											</Button>
+											<InputGroup>
+												<FormInput
+													id="feCharacter"
+													type="text"
+													placeholder="Name"
+													invalid={this.state.invalidName}
+													value={this.state.name}
+													required
+													onChange={(event) => { this.setState({ name: event.target.value, errorNameText: '', invalidName: false }); }}
+												/>
+												<div className="input-group-append">
+													<Button type="submit">
+														<i className={`material-icons ${this.state.loading ? 'spin': ''}`}>{this.state.loading ? 'refresh' : 'save'}</i> Add
+													</Button>
+												</div>
+												<FormFeedback valid={false}>{this.state.errorNameText}</FormFeedback>
+											</InputGroup>
 										</Col>
 									</Row>
-								</form>
+								</Form>
 							</Col>
 						</Row>
 					</ListGroupItem>
