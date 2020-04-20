@@ -15,4 +15,11 @@ socket.on(Constants.CHANNEL_CHARACTER, data => {
     })
 });
 
+socket.on(Constants.CHANNEL_EVENT, data => {
+    dispatcher.dispatch({
+        actionType: data.action,
+        ...data.data
+    })
+});
+
 export default dispatcher;

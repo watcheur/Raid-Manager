@@ -18,11 +18,7 @@ const EventsOverview = () => (
         </Col>
     </Row>
 
-    <Row className="mb-4">
-      <Col>
-        <EventCalendar />
-      </Col>
-    </Row>
+    <EventCalendar />
   </Container>
 );
 

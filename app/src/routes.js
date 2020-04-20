@@ -18,6 +18,7 @@ import BlogPosts from "./views/BlogPosts";
 import CharactersOverview from "./views/CharactersOverview"
 import EventsOverview from "./views/EventsOverview";
 import OptionsOverview from "./views/OptionsOverview";
+import EventDetail from "./views/EventDetail";
 
 export default [
   {
@@ -37,6 +38,12 @@ export default [
     exact: true,
     layout: DefaultLayout,
     component: EventsOverview
+  },
+  {
+    path: "/events/:eventId",
+    exact: true,
+    layout: DefaultLayout,
+    component: EventDetail
   },
   {
     path: "/options",

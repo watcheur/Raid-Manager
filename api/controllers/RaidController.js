@@ -64,7 +64,10 @@ class RaidController extends DefaultController {
 
         TypeORM.getRepository(Entities.Encounter)
             .find({
-                where: reqs
+                where: reqs,
+                order: {
+                    order: 'ASC'
+                }
             })
             .then(encounters => {
                 res.send({

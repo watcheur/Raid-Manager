@@ -22,9 +22,7 @@ module.exports = {
                 name: 'encounter',
                 referencedColumnName: 'id'
             },
-            inverseSide: 'id',
-            cascade: true,
-            onDelete: "CASCADE"
+            inverseSide: 'id'
         },
         characters: {
             target: "CharacterComp",
@@ -44,7 +42,7 @@ module.exports = {
                 name: 'event',
                 referencedColumnName: 'id'
             },
-            inverseSide: 'id',
+            inverseSide: 'id'
         },
         note: {
             target: "Note",

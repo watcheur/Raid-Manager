@@ -253,6 +253,8 @@ export default {
         Type: CharacterType,
         Role: CharacterRole,
         Classes: Classes,
+        TankClasses: [ Classes.DeathKnight.ClassID, Classes.Druid.ClassID, Classes.Warrior.ClassID, Classes.DemonHunter.ClassID, Classes.Paladin.ClassID, Classes.Monk.ClassID ],
+        HealClasses: [ Classes.Druid.ClassID, Classes.Monk.ClassID, Classes.Paladin.ClassID, Classes.Priest.ClassID, Classes.Shaman.ClassID ],
         Specs: Specs,
         Race: Races,
         Gender: Genders,
@@ -279,9 +281,9 @@ export default {
     RoleToObj: (role) => {
         switch (role) {
             case CharacterRole.DPS:
-                return { label: "Dps", slug: "damage" }
+                return { label: "Dps", slug: "dps" }
             case CharacterRole.HEAL:
-                return { label: "Heal", slug: "healer" }
+                return { label: "Heal", slug: "heal" }
             case CharacterRole.TANK:
                 return { label: "Tank", slug: "tank" }
             default:
@@ -453,32 +455,32 @@ export default {
      */
     ClassToColor: (cl) => {
         switch (cl) {
-            case Classes.Warrior:
+            case Classes.Warrior.ClassID:
                 return "#C79C6E";
-            case Classes.Warlock:
+            case Classes.Warlock.ClassID:
                 return "#8787ED";
-            case Classes.Shaman:
+            case Classes.Shaman.ClassID:
                 return "#0070DE";
-            case Classes.Rogue:
+            case Classes.Rogue.ClassID:
                 return "#FFF569";
-            case Classes.Priest:
+            case Classes.Priest.ClassID:
                 return "#FFFFFF";
-            case Classes.Paladin:
+            case Classes.Paladin.ClassID:
                 return "#F58CBA";
-            case Classes.Monk:
+            case Classes.Monk.ClassID:
                 return "#00FF96";
-            case Classes.Mage:
+            case Classes.Mage.ClassID:
                 return "#40C7EB";
-            case Classes.Hunter:
+            case Classes.Hunter.ClassID:
                 return "#ABD473";
-            case Classes.Druid:
+            case Classes.Druid.ClassID:
                 return "#FF7D0A";
-            case Classes.DeathKnight:
+            case Classes.DeathKnight.ClassID:
                 return "#C41F3B";
-            case Classes.DemonHunter:
+            case Classes.DemonHunter.ClassID:
                 return "#A330C9";
             default:
-                return "#000000";
+                return "#FFFFFF";
         }
     },
     /**
@@ -534,5 +536,16 @@ export default {
             case 'Offhand': return 'off_hand';
             default: return val.toLowerCase();
         }
+    },
+    DifficultyToClass: (diff) => {
+        switch (diff) {
+            case 0: return 'lfr';
+            case 1: return 'normal';
+            case 2: return 'heroic';
+            case 3: return 'mythic';
+            default:
+        }
+
+        return '';
     }
 }

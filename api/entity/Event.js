@@ -42,7 +42,8 @@ module.exports = {
                 referencedColumnName: 'event'
             },
             inverseSide: 'event',
-            cascade: true
+            cascade: true,
+            onDelete: 'CASCADE'
         },
         logs: {
             target: "Log",

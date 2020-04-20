@@ -1,51 +1,64 @@
-
+:root {
+	--deathknight: #C41F3B;
+	--demonhunter: #A330C9;
+	--druid: #FF7D0A;
+	--hunter: #ABD473;
+	--mage: #40C7EB;
+	--monk: #00FF96;
+	--paladin: #F58CBA;
+	--priest: #FFFFFF;
+	--rogue: #FFF569;
+	--shaman: #0070DE;
+	--warrior: #C79C6E;
+	--warlock: #8787ED;
+}
 
 .GameColorClass.deathknight {
-	color: #C41F3B;
+	color: var(--deathknight);
 }
 
 .GameColorClass.demonhunter {
-	color: #A330C9;
+	color: var(--demonhunter);
 }
 
 .GameColorClass.druid {
-	color: #FF7D0A;
+	color: var(--druid);
 }
 
 .GameColorClass.hunter {
-	color: #ABD473;
+	color: var(--hunter);
 }
 
 .GameColorClass.mage {
-	color: #40C7EB;
+	color: var(--mage);
 }
 
 .GameColorClass.monk {
-	color: #00FF96;
+	color: var(--monk);
 }
 
 .GameColorClass.paladin {
-	color: #F58CBA;
+	color: var(--paladin);
 }
 
 .GameColorClass.priest {
-	color: #FFFFFF;
+	color: var(--priest);
 }
 
 .GameColorClass.rogue {
-	color: #FFF569;
+	color: var(--rogue);
 }
 
 .GameColorClass.shaman {
-	color: #0070DE;
+	color: var(--shaman);
 }
 
 .GameColorClass.warrior {
-	color: #C79C6E;
+	color: var(--warrior);
 }
 
 .GameColorClass.warlock {
-	color: #8787ED;
+	color: var(--warlock);
 }
 
 .GameIcon {
@@ -685,12 +698,12 @@
 	background-image: url(/images/blizzard/role-TANK.png)
 }
 
-.GameIcon--HEALER .GameIcon-icon {
-	background-image: url(/images/blizzard/role-HEALER.png)
+.GameIcon--HEAL .GameIcon-icon {
+	background-image: url(/images/blizzard/role-HEAL.png)
 }
 
-.GameIcon--DAMAGE .GameIcon-icon {
-	background-image: url(/images/blizzard/role-DAMAGE.png)
+.GameIcon--DPS .GameIcon-icon {
+	background-image: url(/images/blizzard/role-DPS.png)
 }
 
 .GameIcon--Utils-HeartOfAzeroth .GameIcon-icon {
@@ -748,40 +761,71 @@ th .GameIcon {
 	vertical-align: middle;
 }
 
-@-webkit-keyframes rotating /* Safari and Chrome */ {
-	from {
-		-webkit-transform: rotate(0deg);
-		-o-transform: rotate(0deg);
-		transform: rotate(0deg);
-	}
-	to {
-		-webkit-transform: rotate(360deg);
-		-o-transform: rotate(360deg);
-		transform: rotate(360deg);
-	}
+/** Raids **/
+.bg.uldir {
+	background-image: url(/images/blizzard/raids/uldir-small.jpg);
+}
+.bg.battle-of-dazar-alor {
+    background-image: url(/images/blizzard/raids/battle-of-dazaralor-small.jpg);
+}
+.bg.the-eternal-palace {
+    background-image: url(/images/blizzard/raids/the-eternal-palace-small.jpg);
+}
+.bg.crucible-of-storms {
+    background-image: url(/images/blizzard/raids/crucible-of-storms-small.jpg);
+}
+.bg.ny-alotha-the-waking-city {
+    background-image: url(/images/blizzard/raids/nyalotha-the-waking-city-small.jpg);
 }
 
-@keyframes rotating {
-	from {
-		-ms-transform: rotate(0deg);
-		-moz-transform: rotate(0deg);
-		-webkit-transform: rotate(0deg);
-		-o-transform: rotate(0deg);
-		transform: rotate(0deg);
-	}
-	to {
-		-ms-transform: rotate(360deg);
-		-moz-transform: rotate(360deg);
-		-webkit-transform: rotate(360deg);
-		-o-transform: rotate(360deg);
-		transform: rotate(360deg);
-	}
+.difficulty::before {
+    position: absolute;
+    right: 0;
+	margin: .4rem;
 }
 
-.spin {
-	-webkit-animation: rotating 2s linear infinite;
-	-moz-animation: rotating 2s linear infinite;
-	-ms-animation: rotating 2s linear infinite;
-	-o-animation: rotating 2s linear infinite;
-	animation: rotating 2s linear infinite;
+.card-post .difficulty::before {
+	right: 1rem;
+	margin: .2rem;
 }
+
+.card-post__image.difficulty::before {
+	right: 1rem;
+	top: 1rem;
+}
+
+.difficulty.mythic::before {
+    content: url(/images/blizzard/mythic.png);
+}
+
+.difficulty.heroic::before {
+    content: url(/images/blizzard/heroic.png);
+}
+
+.difficulty.lfr::before {
+    content: '🤡'
+}
+
+.character-card {
+	vertical-align: middle;
+	color: black;
+	cursor: pointer;
+}
+
+.character-card div {
+	vertical-align: middle;
+	display: inline-block;
+}
+
+.character-card.deathknight{ background-color: var(--deathknight); }
+.character-card.demonhunter{ background-color: var(--demonhunter); }
+.character-card.druid{ background-color: var(--druid); }
+.character-card.hunter{ background-color: var(--hunter); }
+.character-card.mage{ background-color: var(--mage); }
+.character-card.monk{ background-color: var(--monk); }
+.character-card.paladin{ background-color: var(--paladin); }
+.character-card.priest{ background-color: var(--priest); }
+.character-card.rogue{ background-color: var(--rogue); }
+.character-card.shaman{ background-color: var(--shaman); }
+.character-card.warrior{ background-color: var(--warrior); }
+.character-card.warlock{ background-color: var(--warlock); }

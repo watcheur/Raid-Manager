@@ -18,7 +18,7 @@ const SidebarActions = ({ title }) => (
     </CardHeader>
 
     <CardBody className="p-0">
-      <ListGroup flush>
+    <ListGroup flush>
         <ListGroupItem className="p-3">
           <span className="d-flex mb-2">
             <i className="material-icons mr-1">flag</i>

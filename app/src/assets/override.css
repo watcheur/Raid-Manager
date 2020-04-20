@@ -28,6 +28,7 @@
 .rbc-month-view {
     background-color: white;
     box-shadow: 0 2px 0 rgba(90,97,105,.11),0 4px 8px rgba(90,97,105,.12),0 10px 10px rgba(90,97,105,.06),0 7px 70px rgba(90,97,105,.1);
+    border-radius: .625rem;
 }
 
 .rbc-month-header {
@@ -76,24 +77,6 @@
     height: 100%;
 }
 
-.rbc-event-main::before {
-    position: absolute;
-    right: 0;
-    margin: .4rem;
-}
-
-.rbc-event-main.mythic::before {
-    content: url(/images/blizzard/mythic.png);
-}
-
-.rbc-event-main.heroic::before {
-    content: url(/images/blizzard/heroic.png);
-}
-
-.rbc-event-main.lfr::before {
-    content: '🤡'
-}
-
 .rbc-overlay .rbc-event {
     margin: .5rem;
 }
@@ -104,29 +87,58 @@
     color: #3d5170;
 }
 
-/** Raids **/
-.rbc-event .uldir {
-    background: url(/images/blizzard/raids/uldir-small.jpg) transparent;
+.rbc-event .bg {
     background-size: cover;
     background-position: 100% 100%;
+    background-color: transparent;
 }
-.rbc-event .battle-of-dazar-alor {
-    background: url(/images/blizzard/raids/battle-of-dazaralor-small.jpg) transparent;
-    background-size: cover;
-    background-position: 100% 100%;
+
+.rbc-event-content a {
+    color: white;
 }
-.rbc-event .the-eternal-palace {
-    background: url(/images/blizzard/raids/the-eternal-palace-small.jpg) transparent;
-    background-size: cover;
-    background-position: 100% 100%;
+
+@-webkit-keyframes rotating /* Safari and Chrome */ {
+	from {
+		-webkit-transform: rotate(0deg);
+		-o-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	to {
+		-webkit-transform: rotate(360deg);
+		-o-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
 }
-.rbc-event .crucible-of-storms {
-    background: url(/images/blizzard/raids/crucible-of-storms-small.jpg) transparent;
-    background-size: cover;
-    background-position: 100% 100%;
+
+@keyframes rotating {
+	from {
+		-ms-transform: rotate(0deg);
+		-moz-transform: rotate(0deg);
+		-webkit-transform: rotate(0deg);
+		-o-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	to {
+		-ms-transform: rotate(360deg);
+		-moz-transform: rotate(360deg);
+		-webkit-transform: rotate(360deg);
+		-o-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
 }
-.rbc-event .ny-alotha-the-waking-city {
-    background: url(/images/blizzard/raids/nyalotha-the-waking-city-small.jpg) transparent;
-    background-size: cover;
-    background-position: 100% 100%;
+
+.spin {
+	-webkit-animation: rotating 2s linear infinite;
+	-moz-animation: rotating 2s linear infinite;
+	-ms-animation: rotating 2s linear infinite;
+	-o-animation: rotating 2s linear infinite;
+	animation: rotating 2s linear infinite;
+}
+
+.min-vh-50 {
+    min-height: 50vh!important;
+}
+
+.min-vh-10 {
+    min-height: 10vh!important;
 }

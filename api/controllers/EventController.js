@@ -245,7 +245,7 @@ class EventController extends DefaultController  {
                 Socket.Emit(Socket.Channels.Event, {
                     action: Socket.Action.Event.Delete,
                     data: {
-                        character: req.params.id
+                        event: req.params.id
                     }
                 });
 

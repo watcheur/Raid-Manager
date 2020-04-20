@@ -2,6 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import moment from 'moment'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
+import { Dispatcher, Constants } from "../../flux";
+import { Container, Row, Col } from "shards-react";
+import Blizzard from "../../data/blizzard";
 
 import Api from '../../data/api'
 
@@ -11,29 +14,23 @@ moment.locale('fr', {
         doy: 1
     }
 });
-const localizer = momentLocalizer(moment)
+const localizer = momentLocalizer(moment);
 
 const Event = (ev) => {
-    console.log(ev);
-    let difficulty =  '';
-    switch (ev.event.resource.difficulty) {
-        case 0: difficulty = 'lfr'; break;
-        case 1: difficulty = 'normal'; break;
-        case 2: difficulty = 'heroic'; break;
-        case 3: difficulty = 'mythic'; break;
-    }
-
     return(
-        <div className={`rbc-event-main ${ev.event.resource.raid.name.slugify()} ${difficulty}`}>
-            <span className="time">{moment(ev.event.start).format('HH:mm')}</span>
-            <span className="title" title={ev.event.title}>{ev.event.title}</span>
-        </div>
+        <a href={`/events/${ev.event.resource.id}`}>
+            <div className={`rbc-event-main bg ${ev.event.resource.raid.name.slugify()} difficulty ${Blizzard.DifficultyToClass(ev.event.resource.difficulty)}`}>
+                <span className="time">{moment(ev.event.start).format('HH:mm')}</span>
+                <span className="title" title={ev.event.title}>{ev.event.title}</span>
+            </div>
+        </a>
     )
 }
 
 class EventCalendar extends React.Component {
 	defaultState = {
-        events: []
+        events: [],
+        event: null
     }
 
     constructor(props) {
@@ -42,6 +39,7 @@ class EventCalendar extends React.Component {
 		this.state = {...this.defaultState, ...props}
         this.defaultState = {...this.state}
         this.eventPropGetter = this.eventPropGetter.bind(this);
+        this.loadEvents = this.loadEvents.bind(this);
     }
     
     eventPropGetter(event, start, end, selected) {
@@ -58,7 +56,7 @@ class EventCalendar extends React.Component {
         }
     }
 
-    componentDidMount() {
+    loadEvents() {
         Api.GetEvents()
             .then(res => {
                 if (!res.data.err) {
@@ -73,24 +71,53 @@ class EventCalendar extends React.Component {
                     });
 
                     this.setState({ events: events })
-					this.defaultState.events = events;
+                    this.defaultState.events = events;
 				}
             })
             .catch(err => alert(err))
-	}
+    }
+
+    componentDidMount() {
+        this.dispatcherToken = Dispatcher.register(payload => {
+            switch (payload.actionType) {
+                case Constants.EVENT_DELETED:
+                    if (this.state.event && this.state.event.id == payload.event.id)
+                        this.setState({ event: null });
+                case Constants.EVENT_CREATED:
+                case Constants.EVENT_UPDATED:
+                        this.loadEvents();
+                    break;
+                default:
+            }
+        });
+        this.loadEvents();
+    }
+    
+    componentWillUnmount() {
+        Dispatcher.unregister(this.dispatcherToken);
+    }
 	
 	render() {
 		return (
-            <Calendar
-                localizer={localizer}
-                events={this.state.events}
-                startAccessor="start"
-                endAccessor="end"
-                popup={true}
-                views={['month']}
-                components={ { event: Event } }
-                style={{ height: 1000 }}
-            />
+            <Row className="mb-4">
+                <Col>
+                    <Calendar
+                        localizer={localizer}
+                        events={this.state.events}
+                        startAccessor="start"
+                        endAccessor="end"
+                        popup={true}
+                        views={['month']}
+                        onSelectEvent={(event) => { this.setState({ event: event.resource }) }}
+                        components={ { event: Event } }
+                        style={{ height: 1000 }}
+                    />
+                </Col>
+                {/*
+                <Col md="2">
+                    <EventDetails event={this.state.event} />
+                </Col>*/}
+            </Row>
 		);
 	}
 }

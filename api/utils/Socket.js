@@ -55,7 +55,7 @@ class Socket {
         Event: {
             Create: 'EVENT_CREATED',
             Update: 'EVENT_UPDATED',
-            Delete: 'EVENT_DELETE'
+            Delete: 'EVENT_DELETED'
         }
     }
 }
