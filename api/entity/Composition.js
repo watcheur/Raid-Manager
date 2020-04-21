@@ -40,7 +40,9 @@ module.exports = {
                 name: 'event',
                 referencedColumnName: 'id'
             },
-            inverseSide: 'id'
+            inverseSide: 'id',
+            cascade: true,
+            onDelete: 'CASCADE'
         },
         note: {
             target: "Note",

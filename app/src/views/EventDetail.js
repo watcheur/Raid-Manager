@@ -12,7 +12,12 @@ import {
     Button,
     ListGroup,
     ListGroupItem,
-    Collapse
+    Collapse,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    ModalFooter,
+    CardFooter
 } from "shards-react";
 
 import Error from "./Errors";
@@ -29,7 +34,8 @@ class EventDetail extends React.Component {
         encounter : null,
         event: null,
         eventDeleted: false,
-        eventNotFound: false
+        eventNotFound: false,
+        modalOpened: false
     }
 
     constructor(props) {
@@ -41,6 +47,18 @@ class EventDetail extends React.Component {
         this.state = {...this.defaultState}
 
         this.loadEvent = this.loadEvent.bind(this);
+        this.delete = this.deleteEvent.bind(this);
+    }
+    
+    deleteEvent() {
+        this.setState({ deletion: true })
+        Api.DeleteEvent(this.state.eventId)
+            .then((res) => {
+
+            })
+            .catch((err) => {
+                alert(err)
+            });
     }
     
     loadEvent() {
@@ -64,16 +82,16 @@ class EventDetail extends React.Component {
 
     componentDidMount() {
         this.dispatcherToken = Dispatcher.register(payload => {
-            console.log("PAYLOAD", payload);
             switch (payload.actionType) {
                 case Constants.EVENT_DELETED:
                     if (this.state.event && this.state.event.id == payload.event)
                         this.setState({ eventDeleted: true });
                     break;
                 case Constants.EVENT_UPDATED:
-                    if (this.state.event && this.state.event.id == payload.event) {
-
-                    }
+                case Constants.COMPOSITION_CREATED:
+                case Constants.COMPOSITION_UPDATED:
+                case Constants.COMPOSITION_DELETE:
+                    this.loadEvent();
                     break;
                 default:
             }
@@ -92,8 +110,13 @@ class EventDetail extends React.Component {
         if (this.state.eventDeleted)
             return (
                 <Container fluid className="main-content-container px-4">
-                    <Row noGutters className="page-header pt-4 pb-1">
+                    <Row noGutters className="page-header p-0 mt-3">
+                        <Col className="py-2">
+                            <Button href={`/events`} pill className="m-0">&larr; Go Back</Button>
+                        </Col>
+                        <Col lg="11">
                         <PageTitle title={`Events`} subtitle="Dashboard" className="text-sm-left mb-3" />
+                        </Col>
                     </Row>
 
                     <Row className="mt-5">
@@ -101,7 +124,7 @@ class EventDetail extends React.Component {
                             <div
                                 className="bg-danger text-white text-center rounded p-3 "
                                 style={{ boxShadow: "inset 0 0 5px rgba(0,0,0,.2)" }}>
-                                <i className='material-icons'>error</i> This event was just deleted by another user
+                                <i className='material-icons'>error</i> This event was just deleted
                             </div>
                         </Col>
                     </Row>
@@ -112,8 +135,26 @@ class EventDetail extends React.Component {
         const { event } = this.state;
         return (
             <Container fluid className="main-content-container px-4">
-                <Row noGutters className="page-header pt-4 pb-1">
-                    <PageTitle title={`Events ${event ? `- ${event.title}` : ''}`} subtitle="Dashboard" className="text-sm-left mb-3" />
+
+                <Modal open={this.state.modalOpened}>
+                    <ModalHeader>Confirm deletion</ModalHeader>
+                    <Row className="border-top py-2 px-2 m-0">
+                        <Col md="6">
+                            <Button onClick={() => this.setState({ modalOpened: false })} className="btn-block" theme="light"><i className="material-icons">close</i> Close</Button>
+                        </Col>
+                        <Col md="6">
+                            <Button onClick={() => this.deleteEvent() } className="btn-block" theme="danger"><i className="material-icons">delete</i> Confirm</Button>
+                        </Col>
+                    </Row>
+                </Modal>
+
+                <Row noGutters className="page-header p-0 mt-3">
+                    <Col className="py-2">
+                        <Button href={`/events`} pill className="m-0">&larr; Go Back</Button>
+                    </Col>
+                    <Col lg="11">
+                        <PageTitle title={`Event ${event ? `- ${event.title}` : ''}`} subtitle="Dashboard" className="text-sm-left mb-3" />
+                    </Col>
                 </Row>
                 
                 {event ? (
@@ -145,21 +186,23 @@ class EventDetail extends React.Component {
                                                     <strong className="mr-1">Encounters</strong>
                                                 </Col>
                                                 <Col className="text-right">
-                                                    {event.compositions.length}
+                                                    {event.compositions.filter(c => c.length > 0).length}
                                                 </Col>
                                             </span>
                                         </ListGroupItem>
                                     </ListGroup>
+                                    <CardFooter className="border-top">
+                                        <Row>
+                                            <Col lg="12">
+                                                <Button onClick={() => this.setState({ modalOpened: true })} className="btn-block" theme="danger"><i className="material-icons">delete</i> Delete</Button>
+                                            </Col>
+                                        </Row>
+
+                                    </CardFooter>
                                 </Card>
                             </Col>
                             <Col>
                                 <Encounters event={event} raid={event.raid} encounter={this.state.encounter} />
-                            </Col>
-                        </Row>
-                        
-                        <Row className="mb-4">
-                            <Col>
-                                <CreateComp event={event} raid={event.raid} />
                             </Col>
                         </Row>
                     </Container>

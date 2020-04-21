@@ -33,6 +33,8 @@ module.exports = {
                 referencedColumnName: 'id'
             },
             inverseSide: 'id',
+            cascade: true,
+            onDelete: 'CASCADE'
         },
         compositions: {
             target: "Composition",
@@ -41,9 +43,7 @@ module.exports = {
                 name: 'id',
                 referencedColumnName: 'event'
             },
-            inverseSide: 'event',
-            cascade: true,
-            onDelete: 'CASCADE'
+            inverseSide: 'event'
         },
         logs: {
             target: "Log",

@@ -4,6 +4,7 @@ const Errs = require('restify-errors');
 const Logger = require('../utils/Logger');
 const DefaultController = require('./DefaultController');
 const Utils = require('../utils/Utils');
+const Socket = require('../utils/Socket');
 
 class CompositionController extends DefaultController  {
     Create = (req, res, next) => {
@@ -59,6 +60,15 @@ class CompositionController extends DefaultController  {
                             err: false,
                             data: dataRet
                         });
+
+                        Socket.Emit(Socket.Channels.Composition, {
+                            action: (comp ? Socket.Action.Composition.Create : Socket.Action.Composition.Update),
+                            data: {
+                                event: props.event,
+                                encounter: props.encounter
+                            }
+                        });
+
                         next();
                     })
                     .catch(err => {

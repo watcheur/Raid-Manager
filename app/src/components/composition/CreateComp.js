@@ -155,8 +155,6 @@ class CreateComp extends React.Component {
                 if (!res.data.err) {
                     const { chars, comp } = this.compFromEncounterData(res.data.data);
 
-                    console.log(chars, comp);
-
                     this.setState({
                         characters: chars,
                         selectedCharaters: comp,

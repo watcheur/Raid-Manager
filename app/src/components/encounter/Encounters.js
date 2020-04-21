@@ -58,10 +58,13 @@ class Encounters extends React.Component {
 	render() {
 		return (
 			<Card small>
-				<CardHeader className="border-bottom pb-3">
-                    <Row>
-                        <Col lg="11"><h6 className="m-0">Encounters</h6></Col>
-                        {this.state.loading && (<Col className="text-right"><h1 className='material-icons spin'>refresh</h1></Col>)}
+				<CardHeader className="border-bottom p-0 m-0">
+                    <Row className="p-0 m-0">
+                        <Col lg="10"><h6 className="m-0 py-2">Encounters</h6></Col>
+                        <Col lg="2" className="py-2">
+                            <Button href={`/events/${this.props.event.id}/manage`}><i className='material-icons'>edit</i> Manage</Button>
+                            {this.state.loading && (<Col className="text-right"><h1 className='material-icons spin'>refresh</h1></Col>)}
+                        </Col>
                     </Row>
 				</CardHeader>
                 {this.state.error && (
@@ -75,7 +78,7 @@ class Encounters extends React.Component {
                     <ListGroup className="p-0">
                         {this.state.encounters.map((value, index) => {
                             return (
-                                <Encounter key={value.id} encounter={value} />
+                                <Encounter key={value.id} event={this.props.event} encounter={value} />
                             )
                         })}
                     </ListGroup>
