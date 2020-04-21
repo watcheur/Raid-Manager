@@ -26,6 +26,7 @@ import Api from '../data/api'
 class EventDetail extends React.Component {
     defaultState = {
         eventId: 0,
+        encounter : null,
         event: null,
         eventDeleted: false,
         eventNotFound: false
@@ -117,12 +118,6 @@ class EventDetail extends React.Component {
                 
                 {event ? (
                     <Container fluid className="main-content-container">
-
-                    <Row className="mb-4">
-                        <Col>
-                            <CreateComp event={event} raid={event.raid} />
-                        </Col>
-                    </Row>
                         <Row className="mt-5 mb-5">
                             <Col lg="3">
                                 <Card small className="card-post mb-4">
@@ -158,7 +153,13 @@ class EventDetail extends React.Component {
                                 </Card>
                             </Col>
                             <Col>
-                                <Encounters event={event} raid={event.raid} />
+                                <Encounters event={event} raid={event.raid} encounter={this.state.encounter} />
+                            </Col>
+                        </Row>
+                        
+                        <Row className="mb-4">
+                            <Col>
+                                <CreateComp event={event} raid={event.raid} />
                             </Col>
                         </Row>
                     </Container>

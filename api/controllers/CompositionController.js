@@ -39,12 +39,12 @@ class CompositionController extends DefaultController  {
 
                         // Update
                         if (comp) {
-                            let update = { event: props.event, encounter: props.encounter, note: (props.note.id || null), updated: new Date() };
+                            let update = { event: props.event, encounter: props.encounter, note: (props.note ? props.note.id : null), updated: new Date() };
                             await repo.createQueryBuilder().update(Entities.Composition).set(update).where('id = :id', { id : res.id }).execute();
                             Object.assign(comp, update);
                         }
                         else
-                            comp = repo.save({ event: props.event, encounter: props.encounter, note: (props.note.id || null), created: new Date() })
+                            comp = await repo.save({ event: props.event, encounter: props.encounter, note: (props.note ? props.note.id : null), created: new Date() })
 
                         if (props.characters) {
                             await TypeORM.getConnection().createQueryBuilder().delete().from(Entities.CharacterComp).where('composition = :composition', { composition: comp.id }).execute();

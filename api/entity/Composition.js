@@ -31,9 +31,7 @@ module.exports = {
                 name: 'id',
                 referencedColumnName: 'composition'
             },
-            inverseSide: 'composition',
-            cascade: true,
-            onDelete: 'CASCADE'
+            inverseSide: 'composition'
         },
         event: {
             target: "Event",

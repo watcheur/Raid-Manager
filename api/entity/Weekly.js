@@ -30,8 +30,9 @@ module.exports = {
                 name: 'character',
                 referencedColumnName: 'id'
             },
+            inverseSide: 'id',
             cascade: true,
-            onDelete: "CASCADE"
+            onDelete: 'CASCADE'
         }
     }
 }

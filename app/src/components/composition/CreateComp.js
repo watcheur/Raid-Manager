@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useDrop } from 'react-dnd'
 import {
   ListGroup,
   ListGroupItem,
@@ -22,22 +23,29 @@ import {
 } from "shards-react";
 import { toast } from 'react-toastify';
 import moment from "moment";
+import _ from 'lodash';
+import classNames from "classnames";
 
 import Api from '../../data/api';
 import Blizzard from '../../data/blizzard';
 
 import CharacterCard from '../characters/CharacterCard';
+import RoleZone from '../composition/RoleZone';
 
 class CreateComp extends React.Component {
+    defaultState = {
+        characters: []
+    }
+
     state = {
         // data
         encounters: [],
         characters: [],
         // selection
         encounter: null,
-        composition: null,
         selectedType: 0,
         selectedCharaters: [],
+        utilities: [],
         // other
         loading: true,
         error: ''
@@ -59,21 +67,22 @@ class CreateComp extends React.Component {
         super(props);
         
         this.loadEncounter = this.loadEncounter.bind(this);
+        this.copyFrom = this.copyFrom.bind(this);
         this.charToComp = this.charToComp.bind(this);
         this.compToChars = this.compToChars.bind(this);
+        this.loadUtilities = this.loadUtilities.bind(this);
+        this.loadUtilitiesThrottled = _.throttle(this.loadUtilities, 1000);
+        this.save = this.save.bind(this);
     }
-    
+
     componentDidMount() {
         if (this.props.raid) {
             this.setState({ loading: true });
             Api.GetRaidEncounters(this.props.raid.id)
                 .then(res => {
                     this.setState({ loading: false });
-                    if (!res.data.err) {
+                    if (!res.data.err)
                         this.setState({ encounters: res.data.data });
-
-                        this.setState({ encounter: res.data.data[0] });
-                    }
                 })
                 .catch(err => {
                     this.setState({ error: err.message, loading: false })
@@ -82,12 +91,57 @@ class CreateComp extends React.Component {
 
         Api.GetCharacters()
             .then(res => {
-                if (!res.data.err)
+                if (!res.data.err) {
                     this.setState({ characters: res.data.data })
+                    this.defaultState.characters = res.data.data;
+                }
             })
             .catch(err => {
                 this.setState({ error: err.message, loading: false })
             })
+            
+        this.loadUtilitiesThrottled();
+    }
+
+    copyFrom(id) {
+        this.setState({ loading: true });
+        Api.GetCompEncounter(this.props.event.id, id)
+            .then(res => {
+                if (!res.data.err) {
+                    const { chars, comp } = this.compFromEncounterData(res.data.data);
+
+                    this.setState({
+                        characters: chars,
+                        selectedCharaters: comp,
+                        loading: false
+                    })
+                }
+            })
+            .catch(err => {
+                this.setState({ error: err.message, loading: false })
+            })
+    }
+
+    compFromEncounterData(data) {
+        let comp = [];
+        let chars = [];
+
+        if (data[0] && data[0].characters.length > 0) {
+            this.defaultState.characters.forEach(char => {
+                let c = data[0].characters.find(c => c.id == char.id);
+                if (c !== undefined) {
+                    char.originalRole = char.role;
+                    char.role = c.role;
+                    comp.push(char);
+                }
+                else
+                    chars.push(char);
+            });
+        }
+        else
+            chars = this.defaultState.characters;
+
+        return { chars, comp };
     }
     
     loadEncounter(id) {
@@ -98,8 +152,19 @@ class CreateComp extends React.Component {
         this.setState({ encounter: encounter, loading: true });
         Api.GetCompEncounter(this.props.event.id, encounter.id)
             .then(res => {
-                if (!res.data.err)
-                    this.setState({ composition: res.data.data, loading: false })
+                if (!res.data.err) {
+                    const { chars, comp } = this.compFromEncounterData(res.data.data);
+
+                    console.log(chars, comp);
+
+                    this.setState({
+                        characters: chars,
+                        selectedCharaters: comp,
+                        loading: false
+                    })
+
+                    this.loadUtilities();
+                }
             })
             .catch(err => {
                 this.setState({ error: err.message, loading: false })
@@ -110,10 +175,10 @@ class CreateComp extends React.Component {
         let chars = this.state.characters;
         let comp = this.state.selectedCharaters;
 
-        let cl = Blizzard.ClassToObj(character.class).label;
+        if (comp.length >= (this.props.event.difficulty ? 20 :30))
+            return alert("You can't put more player for this difficulty")
 
-        console.log("spec", character.spec);
-        console.log("tanks", Blizzard.Characters.Specs.TANK);
+        let cl = Blizzard.ClassToObj(character.class).label;
 
         if (role === Blizzard.Characters.Role.TANK && Blizzard.Characters.TankClasses.indexOf(character.class) === -1)
             return alert(`You've seen a ${cl} tank ? Really ?`);
@@ -132,6 +197,8 @@ class CreateComp extends React.Component {
             characters: chars,
             selectedCharaters: comp
         });
+
+        this.loadUtilitiesThrottled();
     }
 
     compToChars(character) {
@@ -143,25 +210,84 @@ class CreateComp extends React.Component {
         if (character.originalRole != character.role)
             character.role = character.originalRole;
 
-        comp.push(chars);
+        chars.push(character);
 
         this.setState({
             characters: chars,
-            selectedCharaters: comp
+            selectedCharaters: comp,
+            selectedType: (character.type !== this.state.selectedType ? character.type : this.state.selectedType)
         });
+
+        this.loadUtilitiesThrottled();
     }
 
-	componentWillUnmount() {
-		
-	}
+    charDropped(id, role) {
+        let character = this.state.characters.find(c => c.id === id);
+        if (character)
+            return this.charToComp(character, role);
+
+        let chars = this.state.selectedCharaters;
+        let idx = chars.findIndex(c => c.id === id);
+        chars[idx].role = role;
+
+        this.setState({
+            selectedCharaters: chars
+        })
+
+        this.loadUtilitiesThrottled();
+    }
+
+    loadUtilities() {
+        let utilities = Blizzard.GetUtilities().map(ut => {
+            if (this.state.selectedCharaters.length)
+                ut.data = ut.data.map(d => {
+                    d.spells = d.spells.map(s => {
+                        s.actives = s.count(this.state.selectedCharaters);
+                        return s;
+                    })
+                    return d;
+                });
+            return ut;
+        });
+
+        this.setState({ utilities: utilities });
+    }
+
+    save() {
+        const chars = this.state.selectedCharaters.map(c => {
+            return {
+                character: c.id,
+                role: c.role
+            }
+        })
+
+        this.setState({ error: '', loading: true })
+        Api.CreateComp({
+            event: this.props.event.id,
+            encounter: this.state.encounter.id,
+            characters: chars
+        })
+        .then(res => {
+            if (!res.data.err)
+                toast.success(`Composition for ${this.state.encounter.name} saved`);
+
+            this.setState({ error: '', loading: false });
+        })
+        .catch(err => {
+            this.setState({ error: err.message, loading: false })
+        })
+    }
 	
 	render() {
+
+        const { event } = this.props;
+
         return (
 			<Card small className="h-100">
-				<CardHeader className="border-bottom pb-3">
+				<CardHeader className="border-bottom py-0">
                     <Row>
-                        <Col lg="10"><h6 className="m-0">Composition manager</h6></Col>
-                        <Col>
+                        <Col className='py-0'><h6 className="m-0 py-2">Composition manager</h6></Col>
+                        <Col lg="2" className='border-left py-2'>
                             <FormSelect size="sm" className="text-center" selected={this.state.encounter} onChange={(event) => this.loadEncounter(event.target.value) }>
                                 <option value=''>Encounter...</option>
                                 {this.state.encounters.map((value, index) => {
@@ -171,7 +297,7 @@ class CreateComp extends React.Component {
                                 })}
                             </FormSelect>
                         </Col>
-                            {this.state.loading && (<h1 className='material-icons spin'>refresh</h1>)}
+                        {this.state.loading && (<h1 className='material-icons spin'>refresh</h1>)}
                     </Row>
 				</CardHeader>
                 {this.state.error && (
@@ -182,9 +308,22 @@ class CreateComp extends React.Component {
                     </CardBody>   
                 )}
                 {this.state.encounter && (
-                    <CardBody className="pt-0 pb-0">
-                        <Row className="border-bottom py-0 bg-light min-vh-50">
-                            <Col lg="2" className="bg-white border-right">
+                    <CardBody className="pt-0 pb-0 h-100 bg-light border-bottom">
+                        <Row className="py-0 h-100">
+                            <Col lg="2" className="bg-light border-right overflow-auto vh-70">
+                                <Row>
+                                    <Col className='border-bottom py-2'>
+                                        <FormSelect size="sm" className="text-center" onChange={(event) => { this.copyFrom(event.target.value); event.target.value = ''; } }>
+                                            <option value=''>Copy from...</option>
+                                            {this.state.encounters.map((value, index) => {
+                                                return (
+                                                    <option key={value.id} value={value.id}>{value.name}</option>
+                                                )
+                                            })}
+                                        </FormSelect>
+                                    </Col>
+                                </Row>
+
                                 <Row>
                                     <ButtonGroup className="mb-0 d-flex w-100">
                                         {this.types.map((v, i) => {
@@ -204,14 +343,14 @@ class CreateComp extends React.Component {
 
                                 {this.roles.map((role, idx) => {
                                     return (
-                                        <Row key={role.type} className="border-bottom">
-                                            <Col lg="12 py-2">
-                                                <div className="text-center"><img src={`/images/Blizzard/role-${role.label}.png`} alt={role.label} width="25" /></div>
+                                        <Row key={role.type} className="mb-2">
+                                            <Col lg="12 py-1 bg-white mb-2 border-bottom border-top">
+                                                <div className="text-center"><img src={`/images/Blizzard/role-${role.label}.png`} alt={role.label} width="20" /></div>
                                             </Col>
                                             <Col lg="12 px-0">
-                                                {this.state.characters.filter(c => c.role === role.type && c.type == this.state.selectedType).map((character, index) => {
+                                                {this.state.characters.filter(c => c.role === role.type && c.type == this.state.selectedType).sort((a, b) => a.class < b.class).map((character, index) => {
                                                     return (
-                                                        <CharacterCard key={character.id} character={character} className='d-block' onClick={() => this.charToComp(character, role.type) } />
+                                                        <CharacterCard key={character.id} character={character} icon={false} className='border-right-0 border-left-0 my-1 d-block' onClick={() => this.charToComp(character, role.type) } />
                                                     )
                                                 })}
                                             </Col>
@@ -219,17 +358,62 @@ class CreateComp extends React.Component {
                                     )
                                 })}
                             </Col>
-                            <Col lg="10">
+                            <Col lg="8">
+                                <Row>
+                                    <Col lg="12" className={classNames('players-count', 'p-0', 'bg-white', 'text-center', (this.state.selectedCharaters.length >= (event.difficulty === 3 ? 20: 30) ? 'bg-danger white' : ''))}>
+                                        <h5 className='my-1'>{this.state.selectedCharaters.length} / {event.difficulty === 3 ? '20': '30'}</h5>
+                                    </Col>
+                                </Row>
                                 {this.roles.map((role, idx) => {
                                     return (
                                         <Row key={role.type}>
-                                            <Col lg="12 py-2 border-bottom bg-white">
+                                            <Col lg="12" className="py-2 border-bottom border-top bg-white text-center">
                                                 <img src={`/images/Blizzard/role-${role.label}.png`} alt={role.label} width="25" />
                                             </Col>
-                                            <Col lg="12 px-0 min-vh-10">
-                                                {this.state.selectedCharaters.filter(c => c.role === role.type).map((character, index) => {
+                                            <Col lg="12" className='px-0'>
+                                                <RoleZone className={ (role.type == Blizzard.Characters.Role.DPS ? 'min-vh-30' : 'vh-6') }
+                                                    onCharacterClick={(character) => this.compToChars(character)}
+                                                    onCharacterDrop={(id) => this.charDropped(id, role.type)}
+                                                    role={role.type}
+                                                    characters={this.state.selectedCharaters.filter(c => c.role === role.type)}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    )
+                                })}
+                            </Col>
+                            <Col lg="2" className="bg-light border-left overflow-auto vh-70 utilities">
+                                {this.state.utilities.map((ut, idx) => {
+                                    return (
+                                        <Row key={idx}>
+                                            {/* Group (buff, debuff, ext cd) */}
+                                            <Col lg="12" className="p-0 border-top bg-white text-center">
+                                                <h5 className='my-1'>{ut.label}</h5>
+                                            </Col>
+                                            <Col lg="12" className="px-0">
+                                                {ut.data.map((group, gId) => {
                                                     return (
-                                                        <CharacterCard key={character.id} character={character} className="d-inline-block" onClick={() => this.compToChars(character) } />
+                                                        <Row key={gId} className='px-2'>
+                                                            <Col lg="12" className='p-0 border-bottom border-top bg-white text-center'>
+                                                                <h6 className='my-1'>{group.label}</h6>
+                                                            </Col>
+                                                            <Col lg="12" className='px-4 py-1'>
+                                                                <table className='w-100 spells-list'>
+                                                                    <tbody>
+                                                                        {group.spells.map((sp, sId) => {
+                                                                            return(
+                                                                                <tr key={sId} className={sp.classNames}>
+                                                                                    <td>
+                                                                                        {sp.label}
+                                                                                    </td>
+                                                                                    <td className='text-right'>{sp.actives || 0}</td>
+                                                                                </tr>
+                                                                            )
+                                                                        })}
+                                                                    </tbody>
+                                                                </table>
+                                                            </Col>
+                                                        </Row>
                                                     )
                                                 })}
                                             </Col>
@@ -240,7 +424,10 @@ class CreateComp extends React.Component {
                         </Row>
                     </CardBody>
                 )}
-                <CardFooter />
+                
+                <CardFooter>
+                    {this.state.encounter && (<Button onClick={() => this.save() }><i className='material-icons'>save</i> Save</Button>)}
+                </CardFooter>
 			</Card>
 		);
 	}

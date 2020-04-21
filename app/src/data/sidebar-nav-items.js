@@ -14,7 +14,7 @@ export default function() {
       title: "Options",
       to: "/options",
       htmlBefore: '<i class="material-icons">settings</i>'
-    },
+    },/*
     {
       title: "Blog Dashboard",
       to: "/blog-overview",
@@ -50,6 +50,6 @@ export default function() {
       title: "Errors",
       htmlBefore: '<i class="material-icons">error</i>',
       to: "/errors",
-    }
+    }*/
   ];
 }

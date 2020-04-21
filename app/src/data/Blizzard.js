@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import Context from '../utils/context'
 
 const CharacterType = {
@@ -248,6 +249,292 @@ function RaceToObj(race) {
     }
 }
 
+const checker = (label, cl, rClass, rRole, rSpec, fn) => {
+    return {
+        label: label,
+        classNames: classNames('GameColorClass', cl),
+        count: (characters) => {
+            if (fn)
+                return (fn(characters).length);
+            
+            return characters.filter(c => {
+                let verif = [ (c.class == rClass) ];
+
+                if (rSpec !== undefined && !Array.isArray(rSpec) && rSpec >= 0)
+                    verif.push(c.spec == rSpec)
+                if (rSpec !== undefined && Array.isArray(rSpec)) {
+                    let arrTestSpec = false;
+                    rSpec.forEach(sp => {
+                        if (!arrTestSpec)
+                            arrTestSpec = (c.spec == sp)
+                    })
+                    verif.push(arrTestSpec);
+                }
+
+                if (rRole !== undefined && !Array.isArray(rRole) && rRole >= 0)
+                    verif.push(c.role == rRole)
+                if (rRole !== undefined && Array.isArray(rRole)) {
+                    let arrTestRole = false;
+                    rRole.forEach(sr => {
+                        if (!arrTestRole)
+                            arrTestRole = (c.role == sr)
+                    })
+                    verif.push(arrTestRole);
+                }
+
+                return verif.every(v => v)
+            }).length
+        }
+    }
+};
+
+const buffs = [
+    {
+        label: 'Stamina',
+        spells: [
+            checker('Power Word: Fortitude', 'priest', Classes.Priest.ClassID)
+        ]
+    },
+    {
+        label: 'Attack Power',
+        spells: [
+            checker('Battle Shout', 'warrior', Classes.Warrior.ClassID)
+        ]
+    },
+    {
+        label: 'Intellect',
+        spells: [
+            checker('Arcane Intellect', 'mage', Classes.Mage.ClassID)
+        ]
+    }
+]
+
+const debuffs = [
+    {
+        label: 'Physical Damage Taken',
+        spells: [
+            checker('Mystic Touch', 'monk', Classes.Monk.ClassID)
+        ]
+    },
+    {
+        label: 'Magic Damage Taken',
+        spells: [
+            checker('Chaos Brand', 'demonhunter', Classes.DemonHunter.ClassID)
+        ]
+    }
+];
+
+const externalCooldowns = [
+    {
+        label: 'Immunities',
+        spells: [
+            checker('Blessing of Protection', 'paladin', Classes.Paladin.ClassID),
+            checker('Blessing of Spellwarding', 'paladin', Classes.Paladin.ClassID, CharacterRole.TANK )
+        ]
+    },
+    {
+        label: 'Cheat Death',
+        spells: [
+            checker('Guardian Spirit', 'priest', Classes.Priest.ClassID, CharacterRole.HEAL, Classes.Priest.Holy),
+            checker('Ancestral Protection Totem', 'shaman', Classes.Shaman.ClassID, CharacterRole.HEAL)
+        ]
+    },
+    {
+        label: 'Damage Mitigation',
+        spells: [
+            checker('Darkness', 'demonhunter', Classes.DemonHunter.ClassID),
+            checker('Tranquility', 'druid', Classes.Druid.ClassID, CharacterRole.HEAL),
+            checker('Revival', 'monk', Classes.Monk.ClassID, CharacterRole.HEAL),
+            checker('Aura Mastery', 'paladin', Classes.Paladin.ClassID, CharacterRole.HEAL),
+            checker('Divine Hymn', 'priest', Classes.Priest.ClassID, CharacterRole.HEAL, Classes.Priest.Holy),
+            checker('Power Word: Barrier', 'priest', Classes.Priest.ClassID, CharacterRole.HEAL, Classes.Priest.Discipline),
+            checker('Vampiric Embrace', 'priest', Classes.Priest.ClassID, CharacterRole.DPS),
+            checker('Spirit Link Totem', 'shaman', Classes.Shaman.ClassID, CharacterRole.HEAL),
+            checker('Healing Tide Totem', 'shaman', Classes.Shaman.ClassID, CharacterRole.HEAL),
+            checker('Healing Stream Totem', 'shaman', Classes.Shaman.ClassID, CharacterRole.HEAL),
+            checker('Rallying Cry', 'warrior', Classes.Warrior.ClassID)
+        ]
+    },
+    {
+        label: 'Movement Abilities',
+        spells: [
+            checker('Stampeding Roar', 'druid', Classes.Druid.ClassID, undefined, [ Classes.Druid.Feral, Classes.Druid.Guardian ]),
+            checker('Blessing of Freedom', 'paladin', Classes.Paladin.ClassID),
+            checker('Demonic Gateway', 'warlock', Classes.Warlock.ClassID)
+        ]
+    }
+]
+
+const personnalCooldowns = [
+    {
+        label: 'Immunities',
+        spells: [
+            checker('Aspect of the turtle', 'hunter', Classes.Paladin.ClassID),
+            checker('Ice Block', 'mage', Classes.Mage.ClassID),
+            checker('Divine shield', 'paladin', Classes.Paladin.ClassID),
+            checker('Cloak of Shadows', 'rogue', Classes.Rogue.ClassID)
+        ]
+    }
+]
+
+const crowdControls = [
+    {
+        label: 'Incapacitates',
+        spells: [
+            checker('Control Undead', 'deathknight', Classes.DeathKnight.ClassID),
+            checker('Imprison', 'demonhunter', Classes.DemonHunter.ClassID),
+            checker('Hibernate', 'druid', Classes.Druid.ClassID),
+            checker('Incapacitating Roar', 'druid', Classes.Druid.ClassID),
+            checker('Freezing Trap', 'hunter', Classes.Hunter.ClassID),
+            checker('Polymorph', 'mage', Classes.Mage.ClassID),
+            checker('Paralysis', 'monk', Classes.Monk.ClassID),
+            checker('Chastise', 'priest', Classes.Priest.ClassID, CharacterRole.HEAL, Classes.Priest.Holy),
+            checker('Mond Control', 'priest', Classes.Priest.ClassID),
+            checker('Shackle Undead', 'priest', Classes.Priest.ClassID),
+            checker('Gouge', 'rogue', Classes.Rogue.ClassID),
+            checker('Sap', 'rogue', Classes.Rogue.ClassID),
+            checker('Hex', 'shaman', Classes.Shaman.ClassID),
+            checker('Banish', 'warlock', Classes.Warlock.ClassID),
+            checker('Enslave Demon', 'warlock', Classes.Warlock.ClassID),
+            checker('Fear', 'warlock', Classes.Warlock.ClassID)
+        ]
+    },
+    {
+        label: 'Stuns',
+        spells: [
+            checker('Asphixiate', 'deathknight', Classes.DeathKnight.ClassID),
+            checker('Chaos Nova', 'demonhunter', Classes.DemonHunter.ClassID),
+            checker('Leg Sweep', 'monk', Classes.Monk.ClassID),
+            checker('Hammer of Justice', 'paladin', Classes.Paladin.ClassID),
+        ]
+    },
+    {
+        label: 'Disorients',
+        spells: [
+            checker('Sigil of Misery', 'demonhunter', Classes.DemonHunter.ClassID, CharacterRole.TANK),
+            checker('Dragon\'s Breath', 'mage', Classes.Mage.ClassID, CharacterRole.DPS, Classes.Mage.Fire),
+            checker('Psychic Scream', 'priest', Classes.Priest.ClassID),
+            checker('Intimidating Shout', 'warrior', Classes.Warrior.ClassID),
+            checker('Blind', 'rogue', Classes.Rogue.ClassID),
+        ]
+    },
+    {
+        label: 'Disorients',
+        spells: [
+            checker('Entangling Roots', 'druid', Classes.Druid.ClassID),
+            checker('Disable', 'monk', Classes.Monk.ClassID),
+            checker('Frost nova', 'mage', Classes.Mage.ClassID, CharacterRole.DPS, Classes.Mage.Frost),
+        ]
+    },
+];
+
+const other = [
+    {
+        label: 'Bloodlust',
+        spells: [
+            checker('Primal Rage', 'hunter', Classes.Hunter.ClassID, CharacterRole.DPS, Classes.Hunter.BeastMastery),
+            checker('Time Warp', 'mage', Classes.Mage.ClassID),
+            checker('Heroism', 'shaman', Classes.Shaman.ClassID),
+        ]
+    },
+    {
+        label: 'Silences',
+        spells: [
+            checker('Sigil of Silence', 'demonhunter', Classes.DemonHunter.ClassID, CharacterRole.TANK),
+            checker('Solar Beam', 'druid', Classes.Druid.ClassID, CharacterRole.DPS, Classes.Druid.Balance),
+            checker('Silence', 'priest', Classes.Priest.ClassID, CharacterRole.DPS),
+        ]
+    },
+    {
+        label: 'Offensive Enrage Dispels',
+        spells: [
+            checker('Soothe', 'druid', Classes.Druid.ClassID),
+            checker('Hunter', 'hunter', Classes.Hunter.ClassID, CharacterRole.DPS, Classes.Hunter.BeastMastery),
+        ]
+    },
+    {
+        label: 'Offensive Magic Dispels',
+        spells: [
+            checker('Consume Magic', 'demonhunter', Classes.DemonHunter.ClassID),
+            checker('Spellsteal', 'mage', Classes.Mage.ClassID),
+            checker('Dispel Magic', 'priest', Classes.Priest.ClassID),
+            checker('Mass Dispel', 'priest', Classes.Priest.ClassID),
+            checker('Purge', 'shaman', Classes.Shaman.ClassID),
+        ]
+    }, 
+    {
+        label: 'Friendly Magic Dispels',
+        spells: [
+            checker('Nature\'s Cure', 'druid', Classes.Druid.ClassID, CharacterRole.HEAL),
+            checker('Detox', 'monk', Classes.Monk.ClassID),
+            checker('Clease', 'paladin', Classes.Paladin.ClassID),
+            checker('Mass Dispel', 'priest', Classes.Priest.ClassID),
+            checker('Purify', 'priest', Classes.Priest.ClassID),
+            checker('Purify Spirit', 'shaman', Classes.Shaman.ClassID),
+        ]
+    },  
+    {
+    label: 'Friendly Curse Dispels',
+        spells: [
+            checker('Nature\'s Cure', 'druid', Classes.Druid.ClassID, CharacterRole.HEAL),
+            checker('Remove Corruption', 'druid', Classes.Druid.ClassID),
+            checker('Remove Curse', 'mage', Classes.Mage.ClassID),
+            checker('Cleanse Spirit', 'shaman', Classes.Shaman.ClassID),
+            checker('Purify Spirit', 'shaman', Classes.Shaman.ClassID)
+        ]
+    }, 
+    {
+        label: 'Friendly Disease Dispels',
+        spells: [
+            checker('Detox', 'monk', Classes.Monk.ClassID, [CharacterRole.HEAL, CharacterRole.TANK]),
+            checker('Cleanse', 'paladin', Classes.Paladin.ClassID, CharacterRole.HEAL),
+            checker('Cleanse Toxins', 'paladin', Classes.Paladin.ClassID, [CharacterRole.HEAL, CharacterRole.TANK]),
+            checker('Purify', 'priest', Classes.Priest.ClassID),
+            checker('Purify Disease', 'priest', Classes.Priest.ClassID, CharacterRole.DPS),
+        ]
+    }, 
+    {
+        label: 'Friendly Poison Dispels',
+        spells: [
+            checker('Detox', 'monk', Classes.Monk.ClassID, [CharacterRole.HEAL, CharacterRole.TANK]),  
+            checker('Nature\'s Cure', 'druid', Classes.Druid.ClassID, CharacterRole.HEAL),
+            checker('Remove Corruption', 'druid', Classes.Druid.ClassID),
+            checker('Cleanse', 'paladin', Classes.Paladin.ClassID, CharacterRole.HEAL),
+            checker('Cleanse Toxins', 'paladin', Classes.Paladin.ClassID, [CharacterRole.HEAL, CharacterRole.TANK]),
+        ]
+    }, 
+    {
+        label: 'Battle Resurrections',
+        spells: [
+            checker('Raise Ally', 'deathknight', Classes.DeathKnight.ClassID),
+            checker('Rebirth', 'druid', Classes.Druid.ClassID),
+            checker('Soulstone', 'warlock', Classes.Warlock.ClassID),
+        ]
+    }, 
+    {
+        label: 'Short CD Interrupts',
+        spells: [
+            checker('Mind Freeze', 'deathknight', Classes.DeathKnight.ClassID),
+            checker('Disrupt', 'demonhunter', Classes.DemonHunter.ClassID),
+            checker('Skull Bash', 'druid', Classes.Druid.ClassID, undefined, [ Classes.Druid.Feral, Classes.Druid.Guardian ]),
+            checker('Muzzle', 'hunter', Classes.Hunter.ClassID, CharacterRole.DPS, CharacterRole.Survival),
+            checker('Spear Hand Strike', 'monk', Classes.Monk.ClassID),
+            checker('Rebuke', 'paladin prot/ret', Classes.Paladin, [CharacterRole.DPS, CharacterRole.TANK]),
+            checker('Kick', 'rogue', Classes.Rogue.ClassID),
+            checker('Wind Shear', 'shaman', Classes.Shaman.ClassID),
+            checker('Pummel', 'warrior', Classes.Warrior.ClassID),
+        ]
+    }, 
+    {
+        label: 'Long CD Interrupts',
+        spells: [
+            checker('Counter shot', 'hunter', Classes.Hunter.ClassID, CharacterRole.DPS, [Classes.Hunter.BeastMastery, Classes.Hunter.Marksmanship]),
+            checker('Counterspell', 'mage', Classes.Mage.ClassID),
+            checker('Silence', 'priest', Classes.Priest.ClassID, CharacterRole.DPS)
+        ]
+    }
+]
+
 export default {
     Characters: {
         Type: CharacterType,
@@ -329,78 +616,78 @@ export default {
     SpecToObj: (spec) => {
         switch (spec) {
             case Classes.DeathKnight.Frost:
-                return { label: "Frost", class: 'deathknight-frost' }
+                return { label: "Frost", class: 'deathknight-frost', range: false }
             case Classes.DeathKnight.Unholy:
-                return { label: "Unholy", class: 'deathknight-unholy' }
+                return { label: "Unholy", class: 'deathknight-unholy', range: false }
             case Classes.DemonHunter.Havoc:
-                return { label: "Havoc", class: 'demonhunter-havoc' }
+                return { label: "Havoc", class: 'demonhunter-havoc', range: false }
             case Classes.Druid.Balance:
-                return { label: "Balance", class: 'druid-balance' }
+                return { label: "Balance", class: 'druid-balance', range: true }
             case Classes.Druid.Feral:
-                return { label: "Feral", class: 'druid-feral' }
+                return { label: "Feral", class: 'druid-feral', range: false }
             case Classes.Hunter.BeastMastery:
-                return { label: "BeastMastery", class: 'hunter-beastMastery' }
+                return { label: "BeastMastery", class: 'hunter-beastMastery', range: true }
             case Classes.Hunter.Marksmanship:
-                return { label: "Marksmanship", class: 'hunter-marksmanship' }
+                return { label: "Marksmanship", class: 'hunter-marksmanship', range: true }
             case Classes.Hunter.Survival:
-                return { label: "Survival", class: 'hunter-survival' }
+                return { label: "Survival", class: 'hunter-survival', range: false }
             case Classes.Mage.Arcane:
-                return { label: "Arcane", class: 'mage-arcane' }
+                return { label: "Arcane", class: 'mage-arcane', range: true }
             case Classes.Mage.Frost:
-                return { label: "Frost", class: 'mage-frost' }
+                return { label: "Frost", class: 'mage-frost', range: true }
             case Classes.Mage.Fire:
-                return { label: "Fire", class: 'mage-fire' }
+                return { label: "Fire", class: 'mage-fire', range: true }
             case Classes.Monk.Windwalker:
-                return { label: "Windwalker", class: 'monk-windwalker' }
+                return { label: "Windwalker", class: 'monk-windwalker', range: false }
             case Classes.Paladin.Retribution:
-                return { label: "Retribution", class: 'paladin-retribution' }
+                return { label: "Retribution", class: 'paladin-retribution', range: false }
             case Classes.Priest.Shadow:
-                return { label: "Shadow", class: 'priest-shadow' }
+                return { label: "Shadow", class: 'priest-shadow', range: true }
             case Classes.Rogue.Assassination:
-                return { label: "Assassination", class: 'rogue-assassination' }
+                return { label: "Assassination", class: 'rogue-assassination', range: false }
             case Classes.Rogue.Outlaw:
-                return { label: "Outlaw", class: 'rogue-outlaw' }
+                return { label: "Outlaw", class: 'rogue-outlaw', range: false }
             case Classes.Rogue.Subtlety:
-                return { label: "Subtlety", class: 'rogue-subtlety' }
+                return { label: "Subtlety", class: 'rogue-subtlety', range: false }
             case Classes.Shaman.Elemental:
-                return { label: "Elemental", class: 'shaman-elemental' }
+                return { label: "Elemental", class: 'shaman-elemental', range: true }
             case Classes.Shaman.Enhancement:
-                return { label: "Enhancement", class: 'shaman-enhancement' }
+                return { label: "Enhancement", class: 'shaman-enhancement', range: false }
             case Classes.Warlock.Affliction:
-                return { label: "Affliction", class: 'warlock-affliction' }
+                return { label: "Affliction", class: 'warlock-affliction', range: true }
             case Classes.Warlock.Demonology:
-                return { label: "Demonology", class: 'warlock-demonology' }
+                return { label: "Demonology", class: 'warlock-demonology', range: true }
             case Classes.Warlock.Destruction:
-                return { label: "Destruction", class: 'warlock-destruction' }
+                return { label: "Destruction", class: 'warlock-destruction', range: true }
             case Classes.Warrior.Arms:
-                return { label: "Arms", class: 'warrior-arms' }
+                return { label: "Arms", class: 'warrior-arms', range: false }
             case Classes.Warrior.Fury:
-                return { label: "Fury", class: 'warrior-fury' }
+                return { label: "Fury", class: 'warrior-fury', range: false }
             case Classes.Druid.Restoration:
-                return { label: "Restoration", class: 'druid-restoration' }
+                return { label: "Restoration", class: 'druid-restoration', range: true }
             case Classes.Monk.Mistweaver:
-                return { label: "Mistweaver", class: 'monk-mistweaver' }
+                return { label: "Mistweaver", class: 'monk-mistweaver', range: true }
             case Classes.Paladin.Holy:
-                return { label: "Holy", class: 'paladin-holy' }
+                return { label: "Holy", class: 'paladin-holy', range: true }
             case Classes.Shaman.Restoration:
-                return { label: "Restoration", class: 'shaman-restoration' }
+                return { label: "Restoration", class: 'shaman-restoration', range: true }
             case Classes.Priest.Discipline:
-                return { label: "Discipline", class: 'priest-discipline' }
+                return { label: "Discipline", class: 'priest-discipline', range: true }
             case Classes.Priest.Holy:
-                return { label: "Holy", class: 'priest-holy' }
+                return { label: "Holy", class: 'priest-holy', range: true }
             case Classes.DeathKnight.Blood:
-                return { label: "Blood", class: 'deathknight-blood' }
+                return { label: "Blood", class: 'deathknight-blood', range: false }
             case Classes.DemonHunter.Vengeance:
-                return { label: "Vengeance", class: 'demonhunter-vengeance' }
+                return { label: "Vengeance", class: 'demonhunter-vengeance', range: false }
             case Classes.Druid.Guardian:
-                return { label: "Guardian", class: 'druid-guardian' }
+                return { label: "Guardian", class: 'druid-guardian', range: false }
             case Classes.Warrior.Protection:
-                return { label: "Protection", class: 'warrior-protection' }
+                return { label: "Protection", class: 'warrior-protection', range: false }
             case Classes.Paladin.Protection:
-                return { label: "Protection", class: 'paladin-protection' }
+                return { label: "Protection", class: 'paladin-protection', range: false }
             default:
         }
-        return { label: "Unknown", slug: 'unknown' }
+        return { label: "Unknown", slug: 'unknown', range: false }
     },
     /**
      * @param {Race} race
@@ -547,5 +834,15 @@ export default {
         }
 
         return '';
+    },
+    GetUtilities: () => {
+        return [
+            { label: 'Buffs', data: buffs},
+            { label: 'Debuffs', data: debuffs },
+            { label: 'External Cooldowns', data: externalCooldowns },
+            { label: 'Personnal Cooldowns', data: personnalCooldowns },
+            { label: 'Crowd Control', data: crowdControls },
+            { label: 'Other', data: other }
+        ];
     }
 }

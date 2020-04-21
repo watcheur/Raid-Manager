@@ -134,6 +134,15 @@ module.exports = {
                 referencedColumnName: 'character'
             },
             inverseSide: 'character'
+        },
+        compositions: {
+            target: "CharacterComp",
+            type: "one-to-many",
+            joinColumn: {
+                name: 'id',
+                referencedColumnName: 'character'
+            },
+            inverseSide: 'character'
         }
     }
 };

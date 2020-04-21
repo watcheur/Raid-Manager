@@ -810,6 +810,7 @@ th .GameIcon {
 	vertical-align: middle;
 	color: black;
 	cursor: pointer;
+	min-width: 8rem;
 }
 
 .character-card div {

@@ -1,5 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import Backend from 'react-dnd-html5-backend'
+import { DndProvider } from 'react-dnd'
 
 import routes from "./routes";
 import withTracker from "./withTracker";
@@ -15,6 +17,7 @@ import "./assets/override.css";
 import Context from './utils/context';
 
 export default () => (
+  <DndProvider backend={Backend}>
   <Router basename={process.env.REACT_APP_BASENAME || ""}>
     <div>
       {routes.map((route, index) => {
@@ -35,4 +38,5 @@ export default () => (
       })}
     </div>
   </Router>
+  </DndProvider>
 );

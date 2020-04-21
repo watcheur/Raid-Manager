@@ -224,7 +224,7 @@ export default class CharactersList extends React.Component {
                                     </td>
                                 </tr>
                             )}
-                            {this.state.characters.sort((a, b) => { return (a.role > b.role ? 1 : -1) }).map((character, index) => {
+                            {this.state.characters.sort((a, b) => { return (a.role - b.role || a.class - b.class) }).map((character, index) => {
                                 return (
                                     <tr key={index}>
                                         <td className={`GameColorClass ${Blizzard.ClassToObj(character.class).slug}`} style={{textTransform: 'capitalize'}}>

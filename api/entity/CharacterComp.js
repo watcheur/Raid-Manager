@@ -13,14 +13,14 @@ module.exports = {
     relations: {
         character: {
             target: "Character",
-            type: "one-to-one",
+            type: "many-to-one",
             joinColumn: {
                 name: 'character',
                 referencedColumnName: 'id'
             },
             inverseSide: 'id',
             cascade: true,
-            onDelete: "CASCADE"
+            onDelete: 'CASCADE'
         },
         composition: {
             target: "Composition",
@@ -29,7 +29,9 @@ module.exports = {
                 name: 'composition',
                 referencedColumnName: 'id'
             },
-            inverseSide: 'id'
+            inverseSide: 'id',
+            cascade: true,
+            onDelete: 'CASCADE'
         },
     }
 }

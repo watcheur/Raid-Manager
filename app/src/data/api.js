@@ -75,7 +75,7 @@ class Api {
 
     GetComp = (event) => this.Get(`/compositions/${event}`);
     GetCompEncounter = (event, encounter) => this.Get(`/compositions/${event}/${encounter}`);
-    CreateComp = (event, data) => this.Post(`/compositions/${event}`, data);
+    CreateComp = (data) => this.Post(`/compositions`, data);
 
     GetOptions = () => this.Get('/options');
     CreateOptions = (data) => this.Post('/options', data);
