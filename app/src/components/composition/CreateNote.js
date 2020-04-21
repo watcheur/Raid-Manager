@@ -30,10 +30,12 @@ import Api from '../../data/api';
 import Blizzard from '../../data/blizzard';
 
 import CharacterCard from '../characters/CharacterCard';
-import RoleZone from '../composition/RoleZone';
+import RoleZone from './RoleZone';
 
-class CreateComp extends React.Component {
-    characters = []
+class CreateNote extends React.Component {
+    defaultState = {
+        characters: []
+    }
 
     state = {
         // data
@@ -43,7 +45,6 @@ class CreateComp extends React.Component {
         encounter: null,
         selectedType: 0,
         selectedCharaters: [],
-        utilities: [],
         // other
         loading: true,
         error: ''
@@ -68,8 +69,6 @@ class CreateComp extends React.Component {
         this.copyFrom = this.copyFrom.bind(this);
         this.charToComp = this.charToComp.bind(this);
         this.compToChars = this.compToChars.bind(this);
-        this.loadUtilities = this.loadUtilities.bind(this);
-        this.loadUtilitiesThrottled = _.throttle(this.loadUtilities, 1000);
         this.save = this.save.bind(this);
     }
 
@@ -95,15 +94,13 @@ class CreateComp extends React.Component {
         Api.GetCharacters()
             .then(res => {
                 if (!res.data.err) {
-                    this.setState({ characters: _.cloneDeep(res.data.data) })
-                    this.characters = _.cloneDeep(res.data.data);
+                    this.setState({ characters: res.data.data })
+                    this.defaultState.characters = res.data.data;
                 }
             })
             .catch(err => {
                 this.setState({ error: err.message, loading: false })
             })
-            
-        this.loadUtilitiesThrottled();
     }
 
     copyFrom(id) {
@@ -130,7 +127,7 @@ class CreateComp extends React.Component {
         let chars = [];
 
         if (data[0] && data[0].characters.length > 0) {
-            this.characters.forEach(char => {
+            this.defaultState.characters.forEach(char => {
                 let c = data[0].characters.find(c => c.id == char.id);
                 if (c !== undefined) {
                     char.originalRole = char.role;
@@ -142,7 +139,7 @@ class CreateComp extends React.Component {
             });
         }
         else
-            chars = this.characters;
+            chars = this.defaultState.characters;
 
         return { chars, comp };
     }
@@ -163,8 +160,6 @@ class CreateComp extends React.Component {
                         selectedCharaters: comp,
                         loading: false
                     })
-
-                    this.loadUtilities();
                 }
             })
             .catch(err => {
@@ -176,9 +171,7 @@ class CreateComp extends React.Component {
         let chars = this.state.characters;
         let comp = this.state.selectedCharaters;
 
-        let newChars = [];
-
-        if (comp.length >= (this.props.event.difficulty == Blizzard.Raids.Difficulties.Mythic ? 20 :30))
+        if (comp.length >= (this.props.event.difficulty ? 20 :30))
             return alert("You can't put more player for this difficulty")
 
         let cl = Blizzard.ClassToObj(character.class).label;
@@ -189,7 +182,7 @@ class CreateComp extends React.Component {
         if (role === Blizzard.Characters.Role.HEAL && Blizzard.Characters.HealClasses.indexOf(character.class) === -1)
             return alert(`You've seen a ${cl} heal ? Really ?`);
 
-        chars.forEach(c => { if (c.id !== character.id) newChars.push(c) })
+        chars.splice(chars.findIndex(c => c.id === character.id), 1);
 
         character.originalRole = character.role;
         character.role = (role === undefined ? character.role : role );
@@ -197,19 +190,16 @@ class CreateComp extends React.Component {
         comp.push(character);
 
         this.setState({
-            characters: newChars,
+            characters: chars,
             selectedCharaters: comp
         });
-
-        this.loadUtilitiesThrottled();
     }
 
     compToChars(character) {
         let chars = this.state.characters;
         let comp = this.state.selectedCharaters;
-        let newComp = [];
 
-        comp.forEach(c => { if (c.id !== character.id) newComp.push(c) })
+        comp.splice(comp.findIndex(c => c.id === character.id), 1);
 
         if (character.originalRole != character.role)
             character.role = character.originalRole;
@@ -218,11 +208,9 @@ class CreateComp extends React.Component {
 
         this.setState({
             characters: chars,
-            selectedCharaters: newComp,
+            selectedCharaters: comp,
             selectedType: (character.type !== this.state.selectedType ? character.type : this.state.selectedType)
         });
-
-        this.loadUtilitiesThrottled();
     }
 
     charDropped(id, role) {
@@ -237,24 +225,6 @@ class CreateComp extends React.Component {
         this.setState({
             selectedCharaters: chars
         })
-
-        this.loadUtilitiesThrottled();
-    }
-
-    loadUtilities() {
-        let utilities = Blizzard.GetUtilities().map(ut => {
-            if (this.state.selectedCharaters.length)
-                ut.data = ut.data.map(d => {
-                    d.spells = d.spells.map(s => {
-                        s.actives = s.count(this.state.selectedCharaters);
-                        return s;
-                    })
-                    return d;
-                });
-            return ut;
-        });
-
-        this.setState({ utilities: utilities });
     }
 
     save() {
@@ -363,71 +333,7 @@ class CreateComp extends React.Component {
                                 })}
                             </Col>
                             <Col lg="8">
-                                <Row className={classNames(this.state.selectedCharaters.length >= (event.difficulty === Blizzard.Raids.Difficulties.Mythic ? 20: 30) ? 'bg-success' : 'bg-warning', 'px-3')}>
-                                    <Col></Col>
-                                    <Col lg="9" className="text-center">
-                                        <h5 className="m-0 py-2">{this.state.encounter.name}</h5>
-                                    </Col>
-                                    <Col className={classNames('players-count', 'p-0', 'text-right')}>
-                                        <h5 className='m-0 py-2'>{this.state.selectedCharaters.length} / {event.difficulty === Blizzard.Raids.Difficulties.Mythic ? '20': '30'}</h5>
-                                    </Col>
-                                </Row>
-                                {this.roles.map((role, idx) => {
-                                    return (
-                                        <Row key={role.type}>
-                                            <Col lg="12" className="py-2 border-bottom border-top bg-white text-center">
-                                                <img src={`/images/Blizzard/role-${role.label}.png`} alt={role.label} width="25" />
-                                            </Col>
-                                            <Col lg="12" className='px-0'>
-                                                <RoleZone className={ (role.type == Blizzard.Characters.Role.DPS ? 'min-vh-30' : 'vh-6') }
-                                                    onCharacterClick={(character) => this.compToChars(character)}
-                                                    onCharacterDrop={(id) => this.charDropped(id, role.type)}
-                                                    role={role.type}
-                                                    characters={this.state.selectedCharaters.filter(c => c.role === role.type)}
-                                                />
-                                            </Col>
-                                        </Row>
-                                    )
-                                })}
-                            </Col>
-                            <Col lg="2" className="bg-light border-left overflow-auto vh-70 utilities">
-                                {this.state.utilities.map((ut, idx) => {
-                                    return (
-                                        <Row key={idx}>
-                                            {/* Group (buff, debuff, ext cd) */}
-                                            <Col lg="12" className="p-0 border-top bg-white text-center">
-                                                <h5 className='my-1'>{ut.label}</h5>
-                                            </Col>
-                                            <Col lg="12" className="px-0">
-                                                {ut.data.map((group, gId) => {
-                                                    return (
-                                                        <Row key={gId} className='px-2'>
-                                                            <Col lg="12" className='p-0 border-bottom border-top bg-white text-center'>
-                                                                <h6 className='my-1'>{group.label}</h6>
-                                                            </Col>
-                                                            <Col lg="12" className='px-4 py-1'>
-                                                                <table className='w-100 spells-list'>
-                                                                    <tbody>
-                                                                        {group.spells.map((sp, sId) => {
-                                                                            return(
-                                                                                <tr key={sId} className={sp.classNames}>
-                                                                                    <td>
-                                                                                        {sp.label}
-                                                                                    </td>
-                                                                                    <td className='text-right'>{sp.actives || 0}</td>
-                                                                                </tr>
-                                                                            )
-                                                                        })}
-                                                                    </tbody>
-                                                                </table>
-                                                            </Col>
-                                                        </Row>
-                                                    )
-                                                })}
-                                            </Col>
-                                        </Row>
-                                    )
-                                })}
+                                Note
                             </Col>
                         </Row>
                     </CardBody>
@@ -441,4 +347,4 @@ class CreateComp extends React.Component {
 	}
 }
 
-export default CreateComp
+export default CreateNote

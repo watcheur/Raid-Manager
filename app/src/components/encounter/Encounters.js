@@ -35,7 +35,6 @@ class Encounters extends React.Component {
 	}
 
     componentDidMount() {
-        console.log("props", this.props.raid);
         if (this.props.raid) {
             this.setState({ loading: true });
             Api.GetRaidEncounters(this.props.raid.id)

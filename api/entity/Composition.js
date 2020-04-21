@@ -17,12 +17,14 @@ module.exports = {
     relations: {
         encounter: {
             target: "Encounter",
-            type: "one-to-one",
+            type: "many-to-one",
             joinColumn: {
                 name: 'encounter',
                 referencedColumnName: 'id'
             },
-            inverseSide: 'id'
+            inverseSide: 'id',
+            cascade: true,
+            onDelete: 'CASCADE'
         },
         characters: {
             target: "CharacterComp",

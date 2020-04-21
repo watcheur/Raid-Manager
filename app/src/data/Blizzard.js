@@ -535,6 +535,13 @@ const other = [
     }
 ]
 
+const raidDifficulties = {
+    LFR: 0,
+    Normal: 1,
+    Heroic: 2,
+    Mythic: 3
+}
+
 export default {
     Characters: {
         Type: CharacterType,
@@ -546,6 +553,9 @@ export default {
         Race: Races,
         Gender: Genders,
         Faction: Factions
+    },
+    Raids: {
+        Difficulties: raidDifficulties
     },
     /**
      * @param {CharacterType} type
@@ -826,10 +836,10 @@ export default {
     },
     DifficultyToClass: (diff) => {
         switch (diff) {
-            case 0: return 'lfr';
-            case 1: return 'normal';
-            case 2: return 'heroic';
-            case 3: return 'mythic';
+            case raidDifficulties.LFR: return 'lfr';
+            case raidDifficulties.Normal: return 'normal';
+            case raidDifficulties.Heroic: return 'heroic';
+            case raidDifficulties.Mythic: return 'mythic';
             default:
         }
 

@@ -211,6 +211,10 @@
     line-height: 0.75rem;
 }
 
-.players-count.bg-danger h5 {
+.bg-success h5, .bg-danger h5, .bg-primary h5 {
     color: white;
+}
+
+.bg-warning h5 {
+    color: black;
 }

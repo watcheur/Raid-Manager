@@ -6,6 +6,10 @@ module.exports = {
             type: "int",
             generated: true
         },
+        title: {
+            type: "varchar",
+            nullable: true
+        },
         text: {
             type: "text",
             nullable: true

@@ -31,9 +31,7 @@ module.exports = {
                 name: 'id',
                 referencedColumnName: 'raid'
             },
-            inverseSide: 'raid',
-            cascade: true,
-            onDelete: "CASCADE"
+            inverseSide: 'raid'
         }
     }
 }

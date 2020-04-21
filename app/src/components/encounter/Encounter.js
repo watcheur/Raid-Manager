@@ -102,10 +102,11 @@ class Encounter extends React.Component {
                         <Col>
                             <h6 className="m-0" onClick={this.toggle}>{encounter.name} <i className='material-icons'>{this.state.collapsed ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}</i></h6>
                         </Col>
-                        <Col lg="2">
+                        <Col lg="2" className='text-right'>
                             <img src="/images/blizzard/role-TANK.png" width="15" /> {tanks.length}
                             <img src="/images/blizzard/role-HEAL.png" width="15" className="ml-2" /> {heals.length}
                             <img src="/images/blizzard/role-DPS.png" width="15" className="ml-2" /> {melees.length + rangeds.length}
+                            <span className="mx-2">({this.state.characters.length})</span>
                             {this.state.loading && (<h6 className='material-icons spin m-0'>refresh</h6>)}
                         </Col>
                     </Row>

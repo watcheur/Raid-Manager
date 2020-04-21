@@ -1,24 +1,17 @@
 import React from "react";
-import PropTypes from "prop-types";
-import moment from 'moment'
 
 import { Dispatcher, Constants } from "../flux";
 import {
     Container,
     Row,
     Col,
-    Card,
-    CardHeader,
-    Button,
-    ListGroup,
-    ListGroupItem,
-    Collapse
+    Button
 } from "shards-react";
 
 import Error from "./Errors";
 import PageTitle from "../components/common/PageTitle";
-import Encounters from "../components/encounter/Encounters";
 import CreateComp from "../components/composition/CreateComp";
+import CreateNote from "../components/composition/CreateNote";
 
 import Blizzard from "../data/blizzard";
 import Api from '../data/api'
@@ -126,6 +119,11 @@ class EventManage extends React.Component {
                         <Row className="mt-5 mb-5">
                             <Col>
                                 <CreateComp event={event} raid={event.raid} />
+                            </Col>
+                        </Row>
+                        <Row className="mt-5 mb-5">
+                            <Col>
+                                <CreateNote event={event} raid={event.raid} />
                             </Col>
                         </Row>
                     </Container>
