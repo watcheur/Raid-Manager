@@ -33,14 +33,11 @@ import CharacterCard from '../characters/CharacterCard';
 import RoleZone from './RoleZone';
 
 class CreateNote extends React.Component {
-    defaultState = {
-        characters: []
-    }
-
     state = {
         // data
         encounters: [],
         characters: [],
+        notes: [],
         // selection
         encounter: null,
         selectedType: 0,
@@ -67,8 +64,6 @@ class CreateNote extends React.Component {
         
         this.loadEncounter = this.loadEncounter.bind(this);
         this.copyFrom = this.copyFrom.bind(this);
-        this.charToComp = this.charToComp.bind(this);
-        this.compToChars = this.compToChars.bind(this);
         this.save = this.save.bind(this);
     }
 
@@ -93,10 +88,17 @@ class CreateNote extends React.Component {
 
         Api.GetCharacters()
             .then(res => {
-                if (!res.data.err) {
+                if (!res.data.err)
                     this.setState({ characters: res.data.data })
-                    this.defaultState.characters = res.data.data;
-                }
+            })
+            .catch(err => {
+                this.setState({ error: err.message, loading: false })
+            })
+
+        Api.GetFavoritesNotes()
+            .then(res => {
+                if (!res.data.err)
+                    this.setState({ notes: res.data.data })
             })
             .catch(err => {
                 this.setState({ error: err.message, loading: false })
@@ -105,43 +107,6 @@ class CreateNote extends React.Component {
 
     copyFrom(id) {
         this.setState({ loading: true });
-        Api.GetCompEncounter(this.props.event.id, id)
-            .then(res => {
-                if (!res.data.err) {
-                    const { chars, comp } = this.compFromEncounterData(res.data.data);
-
-                    this.setState({
-                        characters: chars,
-                        selectedCharaters: comp,
-                        loading: false
-                    })
-                }
-            })
-            .catch(err => {
-                this.setState({ error: err.message, loading: false })
-            })
-    }
-
-    compFromEncounterData(data) {
-        let comp = [];
-        let chars = [];
-
-        if (data[0] && data[0].characters.length > 0) {
-            this.defaultState.characters.forEach(char => {
-                let c = data[0].characters.find(c => c.id == char.id);
-                if (c !== undefined) {
-                    char.originalRole = char.role;
-                    char.role = c.role;
-                    comp.push(char);
-                }
-                else
-                    chars.push(char);
-            });
-        }
-        else
-            chars = this.defaultState.characters;
-
-        return { chars, comp };
     }
     
     loadEncounter(id) {
@@ -149,107 +114,11 @@ class CreateNote extends React.Component {
         if (encounter === undefined)
             return this.setState({ encounter: null });
 
-        this.setState({ encounter: encounter, loading: true });
-        Api.GetCompEncounter(this.props.event.id, encounter.id)
-            .then(res => {
-                if (!res.data.err) {
-                    const { chars, comp } = this.compFromEncounterData(res.data.data);
-
-                    this.setState({
-                        characters: chars,
-                        selectedCharaters: comp,
-                        loading: false
-                    })
-                }
-            })
-            .catch(err => {
-                this.setState({ error: err.message, loading: false })
-            })
-    }
-
-    charToComp(character, role) {
-        let chars = this.state.characters;
-        let comp = this.state.selectedCharaters;
-
-        if (comp.length >= (this.props.event.difficulty ? 20 :30))
-            return alert("You can't put more player for this difficulty")
-
-        let cl = Blizzard.ClassToObj(character.class).label;
-
-        if (role === Blizzard.Characters.Role.TANK && Blizzard.Characters.TankClasses.indexOf(character.class) === -1)
-            return alert(`You've seen a ${cl} tank ? Really ?`);
-
-        if (role === Blizzard.Characters.Role.HEAL && Blizzard.Characters.HealClasses.indexOf(character.class) === -1)
-            return alert(`You've seen a ${cl} heal ? Really ?`);
-
-        chars.splice(chars.findIndex(c => c.id === character.id), 1);
-
-        character.originalRole = character.role;
-        character.role = (role === undefined ? character.role : role );
-
-        comp.push(character);
-
-        this.setState({
-            characters: chars,
-            selectedCharaters: comp
-        });
-    }
-
-    compToChars(character) {
-        let chars = this.state.characters;
-        let comp = this.state.selectedCharaters;
-
-        comp.splice(comp.findIndex(c => c.id === character.id), 1);
-
-        if (character.originalRole != character.role)
-            character.role = character.originalRole;
-
-        chars.push(character);
-
-        this.setState({
-            characters: chars,
-            selectedCharaters: comp,
-            selectedType: (character.type !== this.state.selectedType ? character.type : this.state.selectedType)
-        });
-    }
-
-    charDropped(id, role) {
-        let character = this.state.characters.find(c => c.id === id);
-        if (character)
-            return this.charToComp(character, role);
-
-        let chars = this.state.selectedCharaters;
-        let idx = chars.findIndex(c => c.id === id);
-        chars[idx].role = role;
-
-        this.setState({
-            selectedCharaters: chars
-        })
+        this.setState({ encounter: encounter });
     }
 
     save() {
-        const chars = this.state.selectedCharaters.map(c => {
-            return {
-                character: c.id,
-                role: c.role
-            }
-        })
 
-        this.setState({ error: '', loading: true })
-        Api.CreateComp({
-            event: this.props.event.id,
-            encounter: this.state.encounter.id,
-            characters: chars
-        })
-        .then(res => {
-            if (!res.data.err)
-                toast.success(`Composition for ${this.state.encounter.name} saved`);
-
-            this.setState({ error: '', loading: false });
-        })
-        .catch(err => {
-            this.setState({ error: err.message, loading: false })
-        })
     }
 	
 	render() {
@@ -260,7 +129,7 @@ class CreateNote extends React.Component {
 			<Card small className="h-100">
 				<CardHeader className="border-bottom py-0">
                     <Row>
-                        <Col className='py-0'><h6 className="m-0 py-2">Composition manager</h6></Col>
+                        <Col className='py-0'><h6 className="m-0 py-2">Note manager</h6></Col>
                         <Col lg="2" className='border-left py-2'>
                             <FormSelect size="sm" className="text-center" value={this.state.encounter ? this.state.encounter.id : ''} onChange={(event) => this.loadEncounter(event.target.value) }>
                                 <option value=''>Encounter...</option>
@@ -289,9 +158,9 @@ class CreateNote extends React.Component {
                                     <Col className='border-bottom py-2'>
                                         <FormSelect size="sm" className="text-center" onChange={(event) => { this.copyFrom(event.target.value); event.target.value = ''; } }>
                                             <option value=''>Copy from...</option>
-                                            {this.state.encounters.map((value, index) => {
+                                            {this.state.notes.map((value, index) => {
                                                 return (
-                                                    <option key={value.id} value={value.id}>{value.name}</option>
+                                                    <option key={value.id} value={value.id}>{value.title}</option>
                                                 )
                                             })}
                                         </FormSelect>
@@ -324,7 +193,7 @@ class CreateNote extends React.Component {
                                             <Col lg="12 px-0">
                                                 {this.state.characters.filter(c => c.role === role.type && c.type == this.state.selectedType).sort((a, b) => a.class < b.class).map((character, index) => {
                                                     return (
-                                                        <CharacterCard key={character.id} character={character} icon={false} className='border-right-0 border-left-0 my-1 d-block' onClick={() => this.charToComp(character, role.type) } />
+                                                        <CharacterCard key={character.id} character={character} icon={false} className='border-right-0 border-left-0 my-1 d-block' onClick={() => alert(character.name) } />
                                                     )
                                                 })}
                                             </Col>
@@ -332,8 +201,12 @@ class CreateNote extends React.Component {
                                     )
                                 })}
                             </Col>
-                            <Col lg="8">
-                                Note
+                            <Col lg="10">
+                                <Row className='border-bottom'>
+                                    <Col className="text-center">
+                                        <h5 className="m-0 py-2">{this.state.encounter.name}</h5>
+                                    </Col>
+                                </Row>
                             </Col>
                         </Row>
                     </CardBody>

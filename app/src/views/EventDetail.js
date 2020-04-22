@@ -23,7 +23,6 @@ import {
 import Error from "./Errors";
 import PageTitle from "../components/common/PageTitle";
 import Encounters from "../components/encounter/Encounters";
-import CreateComp from "../components/composition/CreateComp";
 
 import Blizzard from "../data/blizzard";
 import Api from '../data/api'

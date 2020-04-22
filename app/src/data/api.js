@@ -80,6 +80,8 @@ class Api {
     GetOptions = () => this.Get('/options');
     CreateOptions = (data) => this.Post('/options', data);
 
+    GetFavoritesNotes = () => this.Get('/notes/favorites');
+
     GetRealms = (args) => this.Get('/blizzard/realms', args);
 
     GetAverageIlvl = () => this.Get('/stats/ilvl');

@@ -1,7 +1,7 @@
 import React from "react";
-import { useDrop } from 'react-dnd'
+import { useDrop } from 'react-dnd';
 import classNames from "classnames";
-import { Col } from 'shards-react'
+import { Col } from 'shards-react';
 
 import CharacterCard from '../characters/CharacterCard';
 import Blizzard from '../../data/blizzard';

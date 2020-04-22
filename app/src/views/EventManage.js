@@ -10,7 +10,7 @@ import {
 
 import Error from "./Errors";
 import PageTitle from "../components/common/PageTitle";
-import CreateComp from "../components/composition/CreateComp";
+import CreateComp from "../components/composition/CreateCompCompact";
 import CreateNote from "../components/composition/CreateNote";
 
 import Blizzard from "../data/blizzard";
