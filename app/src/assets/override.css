@@ -190,10 +190,10 @@
     background: rgba(241, 130, 141, 0.3)
 }
 
-.btn-transparent.GameColorClass.priest, .utilities .GameColorClass.priest {
+.wowchar.priest, .btn-transparent.GameColorClass.priest, .utilities .GameColorClass.priest {
 	color: #000;
 }
-.btn-transparent.GameColorClass.rogue, .utilities .GameColorClass.rogue {
+.wowchar.rogue, .btn-transparent.GameColorClass.rogue, .utilities .GameColorClass.rogue {
 	color: var(--yellow);
 }
 
@@ -227,10 +227,15 @@
     background: rgba(0, 0, 0, 0.1)
 }
 
-.note-editor .ql-toolbar {
-    display: none;
-}
-
 .note-editor .ql-container {
     border: 0;
+}
+
+.ql-wowchar {
+    background: url(/images/blizzard/world-of-warcraft.svg) no-repeat !important;
+    background-size: contain!important;
+    background-position: center center!important;
+}
+.ql-wowchar.ql-active {
+    border: 1px solid var(--red)!important;
 }

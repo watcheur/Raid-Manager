@@ -35,6 +35,7 @@ import NoteEditor from '../notes/Editor';
 
 class CreateCompCompact extends React.Component {
     characters = []
+    note = null
 
     state = {
         // data
@@ -46,6 +47,7 @@ class CreateCompCompact extends React.Component {
         selectedType: 0,
         selectedCharaters: [],
         utilities: [],
+        note: null,
         // other
         loading: true,
         error: ''
@@ -173,6 +175,7 @@ class CreateCompCompact extends React.Component {
                     this.setState({
                         characters: chars,
                         selectedCharaters: comp,
+                        note: (res.data.data[0] ? res.data.data[0].note : null),
                         loading: false
                     })
 
@@ -285,7 +288,8 @@ class CreateCompCompact extends React.Component {
         Api.CreateComp({
             event: this.props.event.id,
             encounter: this.state.encounter.id,
-            characters: chars
+            characters: chars,
+            note: this.note
         })
         .then(res => {
             if (!res.data.err)
@@ -426,7 +430,7 @@ class CreateCompCompact extends React.Component {
                                 </Row>
                                 <Row>
                                     <Col className='py-2'>
-                                        <NoteEditor characters={this.state.selectedCharaters} />
+                                        <NoteEditor characters={this.state.selectedCharaters} note={this.state.note} onChangeValue={(val) => this.note = val} />
                                     </Col>
                                 </Row>
                             </Col>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import {
   ListGroup,
@@ -26,17 +26,25 @@ import Api from '../../data/api';
 import { Dispatcher, Constants } from "../../flux";
 import CharacterCard from '../characters/CharacterCard';
 
+import Utils from '../../utils/utils';
+
 class Encounter extends React.Component {
     state = {
-        collapsed: false,
+        collapsed: true,
         characters: [],
         note: null,
+        noteFormatted: '',
+        noteRaw: '',
+        copy: 'Copy',
         loading: false
     }
 
     constructor(props) {
         super(props)
         this.toggle = this.toggle.bind(this);
+        this.copyToClipboard = this.copyToClipboard.bind(this);
+
+        this.copyRef = React.createRef();
     }
 
     componentDidMount() {
@@ -67,16 +75,48 @@ class Encounter extends React.Component {
                 if (!res.data.err) {
                     this.setState({ loading: false })
                     if (res.data.data.length) {
+                        let note = res.data.data[0].note;
+
+                        let text = '';
+
+                        if (note) {
+                            console.log(note.text); 
+                            let parsed = JSON.parse(note.text);
+                            if (parsed.ops) {
+                                parsed.ops.forEach((opt, idx) => {
+                                    let txt = '';
+                                    if (typeof opt.insert === 'object' && opt.insert.wowchar)
+                                        txt = opt.insert.wowchar.note;
+                                    else
+                                        txt = opt.insert;
+
+                                    text += txt;
+                                });
+                            }
+                        }
+
                         this.setState({
                             characters: res.data.data[0].characters,
-                            note: res.data.data[0].note
+                            note: note,
+                            noteFormatted: text.split('\n').map((item, i) => {
+                                return `<p>${item}</p>`;
+                            }).join(' '),
+                            noteRaw: text
                         })
                     }
                 }
             })
             .catch(err => {
+                console.log("err", err);
                 this.setState({ error: err.message, loading: false })
             })
+    }
+
+    copyToClipboard() {
+        this.copyRef.current.select();
+        document.execCommand('copy');
+        this.setState({ copy: 'Copied' });
+        setTimeout(() => this.setState({ copy: 'Copy' }), 1000);
     }
 
     toggle() {
@@ -146,6 +186,15 @@ class Encounter extends React.Component {
                                         <CharacterCard key={c.id} character={c} icon={false} className="text-center d-inline-block m-1" />
                                     )
                                 })}
+                            </Col>
+                            <Col lg="12">
+                                <h5>
+                                    Note 
+                                    {document.queryCommandSupported('copy') && <div className='d-inline px-4'><Button size="sm" spill theme="dark" onClick={this.copyToClipboard}><i className='material-icons'>save</i> {this.state.copy}</Button></div>}
+                                </h5>
+                                <Col className="p-3" dangerouslySetInnerHTML={{__html: this.state.noteFormatted.replace(Utils.colorRegex, Utils.colorReplace).replace(/(\#ffffff)/i, '#000000')}}>
+                                </Col>
+                                <textarea ref={this.copyRef} style={{width: '0px', height:'0px', opacity: '.01', height: '0', position: 'absolute', zIndex: -1}}>{this.state.noteRaw}</textarea>
                             </Col>
                         </Row>
                     </Collapse>

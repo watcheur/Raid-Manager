@@ -30,8 +30,8 @@ class CompositionController extends DefaultController  {
                         if (ec == null)
                             return next(new Errs.NotFoundError('Encounter not found'));
 
-                        if (props.note) {
-                            let note = await TypeORM.getRepository(Entities.Note).save(props.note)
+                        if (req.body.note) {
+                            let note = await TypeORM.getRepository(Entities.Note).save(req.body.note);
                             if (note != null)
                                 props.note = note;
                         }
@@ -40,12 +40,12 @@ class CompositionController extends DefaultController  {
 
                         // Update
                         if (comp) {
-                            let update = { event: props.event, encounter: props.encounter, note: (props.note ? props.note.id : null), updated: new Date() };
-                            await repo.createQueryBuilder().update(Entities.Composition).set(update).where('id = :id', { id : res.id }).execute();
+                            let update = { event: props.event, encounter: props.encounter, note: (props.note ? props.note : null), updated: new Date() };
+                            let r = await repo.createQueryBuilder().update(Entities.Composition).set(update).where('id = :id', { id : comp.id }).execute();
                             Object.assign(comp, update);
                         }
                         else
-                            comp = await repo.save({ event: props.event, encounter: props.encounter, note: (props.note ? props.note.id : null), created: new Date() })
+                            comp = await repo.save({ event: props.event, encounter: props.encounter, note: (props.note ? props.note : null), created: new Date() })
 
                         if (props.characters) {
                             await TypeORM.getConnection().createQueryBuilder().delete().from(Entities.CharacterComp).where('composition = :composition', { composition: comp.id }).execute();
