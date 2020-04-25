@@ -190,10 +190,10 @@
     background: rgba(241, 130, 141, 0.3)
 }
 
-.utilities .GameColorClass.priest {
+.btn-transparent.GameColorClass.priest, .utilities .GameColorClass.priest {
 	color: #000;
 }
-.utilities .GameColorClass.rogue {
+.btn-transparent.GameColorClass.rogue, .utilities .GameColorClass.rogue {
 	color: var(--yellow);
 }
 
@@ -217,4 +217,20 @@
 
 .bg-warning h5 {
     color: black;
+}
+
+.btn-transparent {
+    background: transparent;
+}
+
+.btn-transparent:hover {
+    background: rgba(0, 0, 0, 0.1)
+}
+
+.note-editor .ql-toolbar {
+    display: none;
+}
+
+.note-editor .ql-container {
+    border: 0;
 }

@@ -777,7 +777,7 @@ export default {
             case Classes.DemonHunter.ClassID:
                 return "#A330C9";
             default:
-                return "#FFFFFF";
+                return "#000000";
         }
     },
     /**
