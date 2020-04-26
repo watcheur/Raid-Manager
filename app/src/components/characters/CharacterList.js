@@ -162,19 +162,19 @@ export default class CharactersList extends React.Component {
                                 <th scope="col" className="border-0">
                                     Name
                                 </th>
-                                <th scope="col" className="border-0">
+                                <th scope="col" className="border-0 char-level">
                                     Level
                                 </th>
-                                <th scope="col" className="border-0">
+                                <th scope="col" className="border-0 char-race">
                                     Race
                                 </th>
-                                <th scope="col" className="border-0">
+                                <th scope="col" className="border-0 char-class">
                                     Class
                                 </th>
-                                <th scope="col" className="border-0">
+                                <th scope="col" className="border-0 char-spec">
                                     Spec
                                 </th>
-                                <th scope="col" className="border-0">
+                                <th scope="col" className="border-0 char-role">
                                     Role
                                 </th>
                                 <th scope="col" className="border-0">
@@ -230,23 +230,23 @@ export default class CharactersList extends React.Component {
                                         <td className={`GameColorClass ${Blizzard.ClassToObj(character.class).slug}`} style={{textTransform: 'capitalize'}}>
                                             {character.name}
                                         </td>
-                                        <td>{character.level}</td>
-                                        <td>
+                                        <td className='char-level'>{character.level}</td>
+                                        <td className='char-race'>
                                             <div className={`GameIcon GameIconRace ${Blizzard.CharToRaceIc(character)} GameIcon--small`}>
                                                 <div className="GameIcon-icon"></div>
                                             </div>
                                         </td>
-                                        <td> 
+                                        <td className='char-class'>
                                             <div className={`GameIcon GameIconClass GameIcon--${Blizzard.ClassToObj(character.class).slug.toUpperCase()} GameIcon--small`}>
                                                 <div className="GameIcon-icon"></div>
                                             </div>
                                         </td>
-                                        <td>
+                                        <td className='char-spec'>
                                             <div className={`GameIcon GameIconClass GameIcon--${Blizzard.SpecToObj(character.spec).class.toUpperCase()} GameIcon--small`}>
                                                 <div className="GameIcon-icon"></div>
                                             </div>
                                         </td>
-                                        <td>
+                                        <td className='char-role'>
                                             <div className={`GameIcon GameIconRole GameIcon--${Blizzard.RoleToObj(character.role).slug.toUpperCase()} GameIcon--small`}>
                                                 <div className="GameIcon-icon"></div>
                                             </div>

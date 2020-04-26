@@ -261,3 +261,8 @@
     color: white;
 }
 
+@media all and (max-width: 1400px) {
+    .char-level, .char-race, .char-spec, .char-class {
+        display: none;
+    }
+}
