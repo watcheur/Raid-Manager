@@ -73,6 +73,7 @@ class Api {
     CreateEvent = (data) => this.Post('/events', data);
     UpdateEvent = (id, data) => this.Put(`/events/${id}`, data);
     DeleteEvent = (id) => this.Delete(`/events/${id}`);
+    GetNextEvent = () => this.Get('/events/next');
 
     GetComp = (event) => this.Get(`/compositions/${event}`);
     GetCompEncounter = (event, encounter) => this.Get(`/compositions/${event}/${encounter}`);

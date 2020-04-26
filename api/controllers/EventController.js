@@ -14,7 +14,7 @@ class EventController extends DefaultController  {
             .getRepository(Entities.Event)
             .find({
                 relations: [ 'raid' ],
-                orderBy: {
+                order: {
                     schedule: 'DESC'
                 },
                 limit: 30
@@ -256,6 +256,34 @@ class EventController extends DefaultController  {
                 Logger.error('Event deletion failed', err)
                 next(new Errs.InternalError('Event deletion failed'))
             });
+    }
+
+    NextEvent = (req, res, next) => {
+        Logger.info('Start get next event');
+
+        TypeORM
+            .getRepository(Entities.Event)
+            .findOne({
+                relations: [ 'raid' ],
+                where: {
+                    schedule: TypeORM.MoreThanOrEqual(new Date())
+                },
+                order: {
+                    schedule: 'ASC'
+                }
+            })
+            .then(event => {
+                res.send({
+                    err: false,
+                    data: event
+                });
+                Logger.info('End get closest event method');
+                next()
+            })
+            .catch(err => {
+                Logger.error('Events retrieve error', err);
+                next(new Errs.InternalError('Database error'));
+            })
     }
 }
 

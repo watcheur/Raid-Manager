@@ -251,3 +251,11 @@
 .fav-note .delete:hover {
     color: var(--red);
 }
+
+.next-raid .bg {
+    background-size: cover;
+}
+
+.next-raid .bg h6, .next-raid .bg .stats-small__label, .next-raid .bg a {
+    color: white;
+}

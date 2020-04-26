@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col } from "shards-react";
 
+import NextRaidTile from "../event/NextEventTile";
 import SmallStatsLike from "../common/SmallStatsLite";
 import Api from '../../data/api';
 import { Dispatcher, Constants } from "../../flux";
@@ -102,6 +103,9 @@ export default class Stats extends React.Component {
                         />
                     </Col>
                 ) : ''}
+                <Col className="col-lg-2 mb-4">
+                    <NextRaidTile />
+                </Col>
             </Row>
         )
     }

@@ -70,6 +70,7 @@ TypeORM
         server.get('/events/:id', Controllers.Event.Get);
         server.put('/events/:id', Controllers.Event.Update);
         server.del('/events/:id', Controllers.Event.Delete);
+        server.get('/events/next', Controllers.Event.NextEvent);
 
         // Compositions
         server.post('/compositions', Controllers.Composition.Create);
