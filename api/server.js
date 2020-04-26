@@ -28,6 +28,8 @@ server.use(Restify.plugins.bodyParser({ mapParams: false }));
 
 Config.database.entities = Entities.All;
 
+console.log("db", Config.database);
+
 Logger.info('Create database connection');
 TypeORM
     .createConnection(Config.database)
@@ -120,4 +122,7 @@ TypeORM
 
         // We start Jobs
         Jobs.Start();
-    });
+    })
+    .catch(err => {
+        console.error('An error occured with db connection', err);
+    })
