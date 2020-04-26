@@ -13,6 +13,7 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: true
         },
+        icon: path.join(__dirname, '/../public/favicon.ico'),
         show: false
     })
     mainWindow.setMenuBarVisibility(false);

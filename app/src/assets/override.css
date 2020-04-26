@@ -261,7 +261,7 @@
     color: white;
 }
 
-@media all and (max-width: 1400px) {
+@media all and (max-width: 1750px) {
     .char-level, .char-race, .char-spec, .char-class {
         display: none;
     }
