@@ -272,8 +272,10 @@ class CreateCompCompact extends React.Component {
         this.setState({ utilities: utilities });
     }
 
-    loadNoteFrom() {
-
+    loadNoteFrom(id) {
+        let note = this.state.notes.find(n => n.id == id);
+        if (note)
+            this.setState({ note: note })
     }
 
     save() {

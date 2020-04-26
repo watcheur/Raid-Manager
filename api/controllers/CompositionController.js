@@ -41,7 +41,7 @@ class CompositionController extends DefaultController  {
                         // Update
                         if (comp) {
                             let update = { event: props.event, encounter: props.encounter, note: (props.note ? props.note : null), updated: new Date() };
-                            let r = await repo.createQueryBuilder().update(Entities.Composition).set(update).where('id = :id', { id : comp.id }).execute();
+                            await repo.createQueryBuilder().update(Entities.Composition).set(update).where('id = :id', { id : comp.id }).execute();
                             Object.assign(comp, update);
                         }
                         else

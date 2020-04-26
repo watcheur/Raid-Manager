@@ -29,4 +29,11 @@ socket.on(Constants.CHANNEL_COMP, data => {
     })
 });
 
+socket.on(Constants.CHANNEL_NOTE, data => {
+    dispatcher.dispatch({
+        actionType: data.action,
+        ...data.data
+    })
+});
+
 export default dispatcher;

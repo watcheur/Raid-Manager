@@ -85,43 +85,31 @@ class NoteEditor extends React.Component {
         if (prevProps.characters !== this.props.characters)
             this.setState({ characters: this.props.characters });
 
-        if (prevProps.note !== this.props.note && this.props.note) {
-            this.setState({
-                title: this.props.note.title,
-                value: this.props.note.text
-            })
+        if (prevProps.note !== this.props.note) {
+            if (this.props.note) {
+                this.setState({
+                    title: this.props.note.title,
+                    value: this.props.note.text
+                })
 
-            this.quillRef.setContents(JSON.parse(this.props.note.text));
+                this.quillRef.setContents(JSON.parse(this.props.note.text));
+            }
+            else {
+                this.setState({ title: '', value: ''})
+                this.quillRef.setContents('');
+            }
         }
     }
 
     handleChange = (content, delta, source, editor) => {
         this.setState({ content: content })
         this.emitChanges();
-
-        /*
-        let text = '';
-        editor.getContents().forEach((opt, idx) => {
-            let txt = '';
-            if (opt.attributes && opt.attributes.wowchar) {
-                txt = opt.attributes.wowchar.note;
-            }
-            else
-                txt = opt.insert;
-
-            text += txt;
-        });
-
-        .split('\n').map((item, i) => {
-            return <p key={i}>{item}</p>;
-        })
-        */
     }
 
     emitChanges() {
         if (this.props.onChangeValue) {
             this.props.onChangeValue({
-                title: this.state.title,
+                title: '', //this.state.title,
                 text: JSON.stringify(this.quillRef.getContents())
             })
         }
@@ -147,7 +135,8 @@ class NoteEditor extends React.Component {
 	render() {
         return (
             <Row className="border m-1 rounded bg-white">
-                <Col lg="12" className="border-bottom py-2 text-center">
+                <Col lg="12" className="py-2 text-center">
+                    {this.state.characters.length === 0 && ('No characters selected')}
                     {this.state.characters.sort((a, b) => (a.class > b.class)).map((char, idx) => {
                         return (
                             <Button key={char.id} value={char.id} className={`btn-transparent border-0 GameColorClass ${Blizzard.ClassToObj(char.class).slug}`}
@@ -156,9 +145,11 @@ class NoteEditor extends React.Component {
                             </Button>)
                     })}
                 </Col>
+                {/*
                 <Col lg="12" className="p-0">
                     <FormInput value={this.state.title} onChange={(evt) => this.setState({ title: evt.target.value }, () => this.emitChanges())} size="lg" className="m-0 rounded-0 border-0" placeholder="Title..." />
                 </Col>
+                */ }
                 <Col lg="12" className="h-100 min-vh-50 p-0 note-editor">
                     
                     <ReactQuill className="add-new-post__editor mb-1 border-top"

@@ -239,3 +239,15 @@
 .ql-wowchar.ql-active {
     border: 1px solid var(--red)!important;
 }
+
+.fav-note {
+    cursor: pointer;
+}
+
+.fav-note.selected, .fav-note:hover {
+    background-color: rgba(88, 170, 238, 0.1);
+}
+
+.fav-note .delete:hover {
+    color: var(--red);
+}

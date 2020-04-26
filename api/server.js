@@ -78,6 +78,8 @@ TypeORM
 
         // Notes
         server.post('/notes', Controllers.Note.Create);
+        server.put('/notes/:id', Controllers.Note.Update);
+        server.del('/notes/:id', Controllers.Note.Delete);
         server.get('/notes/favorites', Controllers.Note.Favorites);
 
         // Stats

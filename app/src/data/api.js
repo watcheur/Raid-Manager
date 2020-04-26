@@ -29,6 +29,7 @@ class Api {
     }
 
     Post = (endpoint, data, args) => {
+        console.log("data", data);
         return this.axios.post(`${this.endpoint}${endpoint}`, {...data }, {
             headers: {
                 'Accept': 'application/json',
@@ -81,6 +82,9 @@ class Api {
     CreateOptions = (data) => this.Post('/options', data);
 
     GetFavoritesNotes = () => this.Get('/notes/favorites');
+    CreateNote = (title, text, favorite) => this.Post('/notes', { title: title, text: text, favorite: favorite });
+    UpdateNote = (id, title, text, favorite) => this.Put(`/notes/${id}`, { title: title, text: text, favorite: favorite });
+    DeleteNote = (id) => this.Delete(`/notes/${id}`);
 
     GetRealms = (args) => this.Get('/blizzard/realms', args);
 

@@ -30,6 +30,7 @@ class Socket {
         Character : 'CHARACTER',
         Event: 'EVENT',
         Composition: 'COMPOSITION',
+        Note: 'NOTE',
         Option: 'OPTION'
     }
 
@@ -51,6 +52,11 @@ class Socket {
         },
         Option: {
             Changed: 'OPTION_CHANGED'
+        },
+        Note: {
+            Create: 'NOTE_CREATED',
+            Update: 'NOTE_UPDATED',
+            Delete: 'NOTE_DELETED'
         },
         Event: {
             Create: 'EVENT_CREATED',
