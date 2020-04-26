@@ -159,6 +159,7 @@ class CharacterController extends DefaultController {
                     }
                 }
                 catch (err) {
+                    Logger.error(err);
                     if (err.response && err.response.status == 404)
                         return next(new Errs.NotFoundError('This character doesn\'t exist'));
                     return next(new Errs.InternalError('Blizzard API error'));
