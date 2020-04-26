@@ -6,7 +6,7 @@ import Constants from "./constants";
 
 const dispatcher = new Dispatcher();
 
-const socket = SocketIOClient(Api.endpoint);
+const socket = SocketIOClient(Api.endpoint, {path:'/raidmanager/socket.io'});
 
 socket.on(Constants.CHANNEL_CHARACTER, data => {
     dispatcher.dispatch({

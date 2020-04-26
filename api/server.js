@@ -28,8 +28,6 @@ server.use(Restify.plugins.bodyParser({ mapParams: false }));
 
 Config.database.entities = Entities.All;
 
-console.log("db", Config.database);
-
 Logger.info('Create database connection');
 TypeORM
     .createConnection(Config.database)
