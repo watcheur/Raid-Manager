@@ -313,7 +313,7 @@ class CreateCompCompact extends React.Component {
 				<CardHeader className="border-bottom py-0">
                     <Row>
                         <Col className='py-0'><h6 className="m-0 py-2">Composition manager</h6></Col>
-                        <Col lg="2" className='border-left py-2'>
+                        <Col md="2" className='border-left py-2'>
                             <FormSelect size="sm" className="text-center" value={this.state.encounter ? this.state.encounter.id : ''} onChange={(event) => this.loadEncounter(event.target.value) }>
                                 <option value=''>Encounter...</option>
                                 {this.state.encounters.map((value, index) => {
@@ -336,7 +336,7 @@ class CreateCompCompact extends React.Component {
                 {this.state.encounter && (
                     <CardBody className="pt-0 pb-0 h-100 bg-light border-bottom">
                         <Row className="py-0 h-100">
-                            <Col lg="2" className="bg-light border-right overflow-auto vh-70">
+                            <Col md="2" className="bg-light border-right overflow-auto vh-70">
                                 <Row>
                                     <Col className='border-bottom py-2'>
                                         <FormSelect size="sm" className="text-center" onChange={(event) => { this.copyFrom(event.target.value); event.target.value = ''; } }>
@@ -370,10 +370,10 @@ class CreateCompCompact extends React.Component {
                                 {this.roles.map((role, idx) => {
                                     return (
                                         <Row key={role.type} className="mb-2">
-                                            <Col lg="12 py-1 bg-white mb-2 border-bottom border-top">
+                                            <Col md="12 py-1 bg-white mb-2 border-bottom border-top">
                                                 <div className="text-center"><img src={`/images/Blizzard/role-${role.label}.png`} alt={role.label} width="20" /></div>
                                             </Col>
-                                            <Col lg="12 px-0">
+                                            <Col md="12 px-0">
                                                 {this.state.characters.filter(c => c.role === role.type && c.type == this.state.selectedType).sort((a, b) => a.class < b.class).map((character, index) => {
                                                     return (
                                                         <CharacterCard key={character.id} character={character} icon={false} className='border-right-0 border-left-0 my-1 d-block' onClick={() => this.charToComp(character, role.type) } />
@@ -384,10 +384,10 @@ class CreateCompCompact extends React.Component {
                                     )
                                 })}
                             </Col>
-                            <Col lg="5">
+                            <Col md="5">
                                 <Row className={classNames(this.state.selectedCharaters.length >= (event.difficulty === Blizzard.Raids.Difficulties.Mythic ? 20: 30) ? 'bg-success' : 'bg-warning', 'px-3')}>
                                     <Col></Col>
-                                    <Col lg="7" className="text-center">
+                                    <Col md="7" className="text-center">
                                         <h5 className="m-0 py-2">{this.state.encounter.name}</h5>
                                     </Col>
                                     <Col className={classNames('players-count', 'p-0', 'text-right')}>
@@ -397,10 +397,10 @@ class CreateCompCompact extends React.Component {
                                 {this.roles.map((role, idx) => {
                                     return (
                                         <Row key={role.type}>
-                                            <Col lg="12" className="py-2 border-bottom border-top bg-white text-center">
+                                            <Col md="12" className="py-2 border-bottom border-top bg-white text-center">
                                                 <img src={`/images/Blizzard/role-${role.label}.png`} alt={role.label} width="25" />
                                             </Col>
-                                            <Col lg="12" className='px-0'>
+                                            <Col md="12" className='px-0'>
                                                 <RoleZone className={ (role.type == Blizzard.Characters.Role.DPS ? 'min-vh-30' : 'vh-10') }
                                                     onCharacterClick={(character) => this.compToChars(character)}
                                                     onCharacterDrop={(id) => this.charDropped(id, role.type)}
@@ -412,7 +412,7 @@ class CreateCompCompact extends React.Component {
                                     )
                                 })}
                             </Col>
-                            <Col lg="3" className="border-left">
+                            <Col md="3" className="border-left">
                                 <Row className='bg-white border-bottom'>
                                     <Col className="text-center">
                                         <h5 className="m-0 py-2">Note</h5>
@@ -436,22 +436,22 @@ class CreateCompCompact extends React.Component {
                                     </Col>
                                 </Row>
                             </Col>
-                            <Col lg="2" className="bg-light border-left overflow-auto vh-70 utilities">
+                            <Col md="2" className="bg-light border-left overflow-auto vh-100 utilities">
                                 {this.state.utilities.map((ut, idx) => {
                                     return (
                                         <Row key={idx}>
                                             {/* Group (buff, debuff, ext cd) */}
-                                            <Col lg="12" className="p-0 border-top bg-white text-center">
+                                            <Col md="12" className="p-0 border-top bg-white text-center">
                                                 <h5 className='my-1'>{ut.label}</h5>
                                             </Col>
-                                            <Col lg="12" className="px-0">
+                                            <Col md="12" className="px-0">
                                                 {ut.data.map((group, gId) => {
                                                     return (
-                                                        <Row key={gId} className='px-2'>
-                                                            <Col lg="12" className='p-0 border-bottom border-top bg-white text-center'>
+                                                        <Row key={gId} className='px-0'>
+                                                            <Col md="12" className='p-0 border-bottom border-top bg-white text-center'>
                                                                 <h6 className='my-1'>{group.label}</h6>
                                                             </Col>
-                                                            <Col lg="12" className='px-4 py-1'>
+                                                            <Col md="12" className='px-4 py-1'>
                                                                 <table className='w-100 spells-list'>
                                                                     <tbody>
                                                                         {group.spells.map((sp, sId) => {

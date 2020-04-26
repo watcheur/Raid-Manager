@@ -4,6 +4,10 @@ class Api {
     constructor() {
         this.axios = axios.create();
         this.endpoint = "http://localhost:3005";
+
+        const local_endpoint = localStorage.getItem('api');
+        if (local_endpoint && local_endpoint.length > 0)
+            this.endpoint = local_endpoint;
     }
 
     Get = (endpoint, args) => {

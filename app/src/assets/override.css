@@ -199,6 +199,7 @@
 
 .utilities {
     font-size: 80%;
+    overflow-x: hidden;
 }
 .utilities h5 {
     font-size: 0.90rem;
@@ -258,4 +259,10 @@
 
 .next-raid .bg h6, .next-raid .bg .stats-small__label, .next-raid .bg a {
     color: white;
+}
+
+@media all and (max-width: 1750px) {
+    .char-level, .char-race, .char-spec, .char-class {
+        display: none;
+    }
 }

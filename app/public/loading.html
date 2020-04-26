@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>FLOATING LOADING SCREEN</title>
+        <style>
+            :root {
+                --blue: #007bff;
+                --indigo: #674eec;
+                --purple: #8445f7;
+                --pink: #ff4169;
+                --red: #c4183c;
+                --orange: #fb7906;
+                --yellow: #ffb400;
+                --green: #17c671;
+                --teal: #1adba2;
+                --cyan: #00b8d8;
+                --white: #fff;
+                --gray: #868e96;
+                --gray-dark: #343a40;
+                --primary: #007bff;
+                --secondary: #5A6169;
+                --success: #17c671;
+                --info: #00b8d8;
+                --warning: #ffb400;
+                --danger: #c4183c;
+                --light: #FBFBFB;
+                --dark: #212529;
+                --breakpoint-xs: 0;
+                --breakpoint-sm: 576px;
+                --breakpoint-md: 768px;
+                --breakpoint-lg: 992px;
+                --breakpoint-xl: 1200px;
+                --font-family-sans-serif: "-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial", sans-serif;
+                --font-family-monospace: "Roboto Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            }
+
+            body {
+                background: #F5F6F8;
+                font-size: 15px;
+                font-weight: 300;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                color: #3d5170;
+            }
+
+            .LoaderWrapper {
+                position: absolute;
+                top: 0;
+                left: 0;
+
+                width: 100%;
+                height: 100%;
+
+                display: flex;
+                align-content: center;
+                justify-content: center;
+                align-items: center;
+                justify-items: center;
+
+                box-sizing: border-box;
+            }
+
+            .LoaderContent {
+                text-align: center;
+            }
+
+            .lds-dual-ring {
+                display: inline-block;
+                width: 80px;
+                height: 80px;
+            }
+
+            .lds-dual-ring:after {
+                content: " ";
+                display: block;
+                width: 64px;
+                height: 64px;
+                margin: 0px;
+                border-radius: 50%;
+                border: 6px solid var(--secondary);
+                border-color: var(--secondary) transparent var(--secondary) transparent;
+                animation: lds-dual-ring 1.2s linear infinite;
+            }
+
+            @keyframes lds-dual-ring {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="LoaderWrapper">
+            <div class="LoaderContent">
+                <h3>Raid Manager</h3>
+                <div class="lds-dual-ring"></div>
+                <p>Loading</p>
+            </div>
+        </div>
+
+        <script>
+            // You can also require other files to run in this process
+            require('./renderer.js');
+        </script>
+    </body>
+</html>
