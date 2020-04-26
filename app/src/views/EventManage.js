@@ -121,11 +121,6 @@ class EventManage extends React.Component {
                                 <CreateComp event={event} raid={event.raid} />
                             </Col>
                         </Row>
-                        <Row className="mt-5 mb-5">
-                            <Col>
-                                <CreateNote event={event} raid={event.raid} />
-                            </Col>
-                        </Row>
                     </Container>
                 ) :
                 (

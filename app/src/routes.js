@@ -5,21 +5,12 @@ import { Redirect } from "react-router-dom";
 import { DefaultLayout } from "./layouts";
 
 // Route Views
-
-import BlogOverview from "./views/BlogOverview";
-import UserProfileLite from "./views/UserProfileLite";
-import AddNewPost from "./views/AddNewPost";
-import Errors from "./views/Errors";
-import ComponentsOverview from "./views/ComponentsOverview";
-import Tables from "./views/Tables";
-import BlogPosts from "./views/BlogPosts";
-
-
 import CharactersOverview from "./views/CharactersOverview"
 import EventsOverview from "./views/EventsOverview";
 import OptionsOverview from "./views/OptionsOverview";
 import EventDetail from "./views/EventDetail";
 import EventManage from "./views/EventManage";
+import NotesOverview from "./views/NotesOverview";
 
 export default [
   {
@@ -51,6 +42,12 @@ export default [
     exact: true,
     layout: DefaultLayout,
     component: EventManage
+  },
+  {
+    path: "/notes",
+    exact: true,
+    layout: DefaultLayout,
+    component: NotesOverview
   },
   {
     path: "/options",

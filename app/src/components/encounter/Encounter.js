@@ -30,7 +30,7 @@ import Utils from '../../utils/utils';
 
 class Encounter extends React.Component {
     state = {
-        collapsed: true,
+        collapsed: false,
         characters: [],
         note: null,
         noteFormatted: '',
@@ -187,6 +187,7 @@ class Encounter extends React.Component {
                                     )
                                 })}
                             </Col>
+                            {this.state.note && (
                             <Col lg="12">
                                 <h5>
                                     Note 
@@ -195,7 +196,7 @@ class Encounter extends React.Component {
                                 <Col className="p-3" dangerouslySetInnerHTML={{__html: this.state.noteFormatted.replace(Utils.colorRegex, Utils.colorReplace).replace(/(\#ffffff)/i, '#000000')}}>
                                 </Col>
                                 <textarea ref={this.copyRef} style={{width: '0px', height:'0px', opacity: '.01', height: '0', position: 'absolute', zIndex: -1}}>{this.state.noteRaw}</textarea>
-                            </Col>
+                            </Col>)}
                         </Row>
                     </Collapse>
                 </ListGroupItem>
