@@ -9,7 +9,8 @@ import withTracker from "./withTracker";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
-import "./shards-dashboard/styles/shards-dashboards.1.1.0.min.css";
+//import "./shards-dashboard/styles/shards-dashboards.1.1.0.min.css";
+import "./shards-dashboard/styles/shards-dashboards.1.1.0.css";
 import "./assets/blizzard.css";
 import "./assets/toast.css";
 import "./assets/override.css";

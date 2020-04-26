@@ -142,7 +142,7 @@ class Encounter extends React.Component {
                         <Col>
                             <h6 className="m-0" onClick={this.toggle}>{encounter.name} <i className='material-icons'>{this.state.collapsed ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}</i></h6>
                         </Col>
-                        <Col lg="2" className='text-right'>
+                        <Col md="3" className='text-right'>
                             <img src="/images/blizzard/role-TANK.png" width="15" /> {tanks.length}
                             <img src="/images/blizzard/role-HEAL.png" width="15" className="ml-2" /> {heals.length}
                             <img src="/images/blizzard/role-DPS.png" width="15" className="ml-2" /> {melees.length + rangeds.length}
@@ -152,7 +152,7 @@ class Encounter extends React.Component {
                     </Row>
                     <Collapse open={this.state.collapsed}>
                         <Row className="p-3">
-                            <Col lg="2">
+                            <Col md="2">
                                 <h5>Tanks</h5>
 
                                 {tanks.map((c, idx) => {
@@ -161,7 +161,7 @@ class Encounter extends React.Component {
                                     )
                                 })}
                             </Col>
-                            <Col lg="2">
+                            <Col md="2">
                                 <h5>Heals</h5>
 
                                 {heals.map((c, idx) => {
@@ -170,7 +170,7 @@ class Encounter extends React.Component {
                                     )
                                 })}
                             </Col>
-                            <Col lg="8">
+                            <Col md="8">
                                 <h5>Dps</h5>
 
                                 <h6 className="mb-0">Melee</h6>
@@ -188,7 +188,7 @@ class Encounter extends React.Component {
                                 })}
                             </Col>
                             {this.state.note && (
-                            <Col lg="12">
+                            <Col md="12">
                                 <h5>
                                     Note 
                                     {document.queryCommandSupported('copy') && <div className='d-inline px-4'><Button size="sm" spill theme="dark" onClick={this.copyToClipboard}><i className='material-icons'>save</i> {this.state.copy}</Button></div>}

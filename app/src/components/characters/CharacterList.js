@@ -252,7 +252,7 @@ export default class CharactersList extends React.Component {
                                             </div>
                                         </td>
                                         <td className={Blizzard.AzeriteToClass(character.azerite)}>{character.azerite || (<i className="material-icons">help_outline</i>)}</td>
-                                        <td className={character.weekly ? 'text-success': 'text-danger'}>{character.weekly || ''} <i className="material-icons">{character.weekly ? 'done' : 'clear'}</i> </td>
+                                        <td className={character.weekly ? 'text-success': 'text-danger'}>{character.weekly || ''} <i className="material-icons">{character.weekly ? '' : 'clear'}</i> </td>
                                         <td className={Blizzard.IlvlToClass(character.equipped)}>{character.equipped}</td>
                                         {slots.map((value, index) => {
                                             return (
