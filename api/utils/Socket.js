@@ -12,7 +12,7 @@ class Socket {
             path: '/socket'
         });
         */
-
+        
         this.io.sockets.on('connection', (sock) => {
             socket = sock;
             Logger.info(`Socket.io - new connection`);

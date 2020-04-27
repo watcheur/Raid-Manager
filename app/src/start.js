@@ -28,7 +28,7 @@ function createWindow() {
     )
 
     mainWindow.on('closed', () => {
-        mainWindow = null
+        mainWindow = null;
     })
 
     mainWindow.webContents.on('did-finish-load', () => {

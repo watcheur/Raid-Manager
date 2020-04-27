@@ -3,7 +3,7 @@ import axios from 'axios';
 class Api {
     constructor() {
         this.axios = axios.create();
-        this.endpoint = "https://dracarys.fr/raidmanager/";
+        this.endpoint = "https://dracarys.fr/raidmanager-api/";
 
         const local_endpoint = localStorage.getItem('api');
         if (local_endpoint && local_endpoint.length > 0)
