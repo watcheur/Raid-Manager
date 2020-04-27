@@ -33,7 +33,7 @@ export default [
   },
   {
     path: "/events/:eventId",
-    exact: false,
+    exact: true,
     layout: DefaultLayout,
     component: EventDetail
   },
