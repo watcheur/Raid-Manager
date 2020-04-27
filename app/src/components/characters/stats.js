@@ -5,7 +5,7 @@ import NextRaidTile from "../event/NextEventTile";
 import SmallStatsLike from "../common/SmallStatsLite";
 import Api from '../../data/api';
 import { Dispatcher, Constants } from "../../flux";
-import Blizzard from '../../data/gamedata';
+import GameData from '../../data/gamedata';
 
 /**
  * @param {Object} parameters
@@ -86,12 +86,12 @@ export default class Stats extends React.Component {
             <Row className="justify-content-md-center">
                 { this.state.ilvl ? (
                     <Col className="col-lg-2 mb-4">
-                        <SmallStatsLike label="Average mains ilvl" variation="1" value={this.state.ilvl.mains} value-classes={Blizzard.IlvlToClass(this.state.ilvl.mains)} increase={true} />
+                        <SmallStatsLike label="Average mains ilvl" variation="1" value={this.state.ilvl.mains} value-classes={GameData.IlvlToClass(this.state.ilvl.mains)} increase={true} />
                     </Col>
                 ) : ''}
                 { this.state.azerite ? (
                     <Col className="col-lg-2 mb-4">
-                        <SmallStatsLike label="Average neck level" variation="1" value={this.state.azerite.mains} value-classes={Blizzard.AzeriteToClass(this.state.azerite.mains)} increase={true} />
+                        <SmallStatsLike label="Average neck level" variation="1" value={this.state.azerite.mains} value-classes={GameData.AzeriteToClass(this.state.azerite.mains)} increase={true} />
                     </Col>
                 ) : ''}
                 { this.state.weekly.mains ? (

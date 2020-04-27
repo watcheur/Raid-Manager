@@ -21,7 +21,7 @@ import {
 import { toast } from 'react-toastify';
 import moment from "moment";
 
-import Blizzard from '../../data/gamedata';
+import GameData from '../../data/gamedata';
 import Api from '../../data/api';
 import { Dispatcher, Constants } from "../../flux";
 import CharacterCard from '../characters/CharacterCard';
@@ -130,10 +130,10 @@ class Encounter extends React.Component {
         if (this.state.characters.length == 0)
             return('');
 
-        const   rangeds = this.state.characters.filter(c => c.role == Blizzard.Characters.Role.DPS && Blizzard.SpecToObj(c.spec).range),
-                melees = this.state.characters.filter(c => c.role == Blizzard.Characters.Role.DPS && !Blizzard.SpecToObj(c.spec).range),
-                heals = this.state.characters.filter(c => c.role == Blizzard.Characters.Role.HEAL),
-                tanks = this.state.characters.filter(c => c.role == Blizzard.Characters.Role.TANK)
+        const   rangeds = this.state.characters.filter(c => c.role == GameData.Characters.Role.DPS && GameData.SpecToObj(c.spec).range),
+                melees = this.state.characters.filter(c => c.role == GameData.Characters.Role.DPS && !GameData.SpecToObj(c.spec).range),
+                heals = this.state.characters.filter(c => c.role == GameData.Characters.Role.HEAL),
+                tanks = this.state.characters.filter(c => c.role == GameData.Characters.Role.TANK)
 
         return (
             <div>
@@ -143,9 +143,9 @@ class Encounter extends React.Component {
                             <h6 className="m-0" onClick={this.toggle}>{encounter.name} <i className='material-icons'>{this.state.collapsed ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}</i></h6>
                         </Col>
                         <Col md="3" className='text-right'>
-                            <img src="/images/blizzard/role-TANK.png" width="15" /> {tanks.length}
-                            <img src="/images/blizzard/role-HEAL.png" width="15" className="ml-2" /> {heals.length}
-                            <img src="/images/blizzard/role-DPS.png" width="15" className="ml-2" /> {melees.length + rangeds.length}
+                            <img src="/images/GameData/role-TANK.png" width="15" /> {tanks.length}
+                            <img src="/images/GameData/role-HEAL.png" width="15" className="ml-2" /> {heals.length}
+                            <img src="/images/GameData/role-DPS.png" width="15" className="ml-2" /> {melees.length + rangeds.length}
                             <span className="mx-2">({this.state.characters.length})</span>
                             {this.state.loading && (<h6 className='material-icons spin m-0'>refresh</h6>)}
                         </Col>

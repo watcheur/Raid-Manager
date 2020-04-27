@@ -2,7 +2,7 @@ import React from "react";
 import { useDrag } from 'react-dnd';
 import classNames from "classnames";
 
-import Blizzard from '../../data/gamedata';
+import GameData from '../../data/gamedata';
 
 const CharacterChard = ({ character, icon = true, className, ...attrs }) => {
     const classes = classNames(
@@ -11,7 +11,7 @@ const CharacterChard = ({ character, icon = true, className, ...attrs }) => {
         "px-3",
         "character-card",
         "border-darker",
-        Blizzard.ClassToObj(character.class).slug
+        GameData.ClassToObj(character.class).slug
     );
 
     const [{ isDragging }, drag, preview] = useDrag({
@@ -24,7 +24,7 @@ const CharacterChard = ({ character, icon = true, className, ...attrs }) => {
     return (   
         <div ref={drag} className={classes} { ...attrs }>
             {icon && (
-            <div className={`GameIcon GameIconClass GameIcon--${Blizzard.SpecToObj(character.spec).class.toUpperCase()} GameIcon--tiny`}>
+            <div className={`GameIcon GameIconClass GameIcon--${GameData.SpecToObj(character.spec).class.toUpperCase()} GameIcon--tiny`}>
                 <div className="GameIcon-icon"></div> 
             </div>)}
             <div className='px-1'>

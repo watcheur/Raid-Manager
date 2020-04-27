@@ -2,7 +2,7 @@ import React from "react";
 import { Container, Row, Col } from "shards-react";
 
 import PageTitle from "../components/common/PageTitle";
-import Blizzard from "../data/gamedata";
+import GameData from "../data/gamedata";
 import CharactersList from "../components/characters/CharacterList";
 import CharacterAdd from "../components/characters/CharacterAdd";
 import Stats from "../components/characters/Stats";
@@ -24,19 +24,19 @@ const CharactersOverview = () => (
 
     <Row>
       <Col>
-        <CharactersList title="Mains" type={Blizzard.Characters.Type.MAIN} />
+        <CharactersList title="Mains" type={GameData.Characters.Type.MAIN} />
       </Col>
     </Row>
     
     <Row>
       <Col>
-        <CharactersList title="Alts" type={Blizzard.Characters.Type.ALT} />
+        <CharactersList title="Alts" type={GameData.Characters.Type.ALT} />
       </Col>
     </Row>
     
     <Row>
       <Col>
-        <CharactersList title="Alts fun" type={Blizzard.Characters.Type.ALT_FUN}/>
+        <CharactersList title="Alts fun" type={GameData.Characters.Type.ALT_FUN}/>
       </Col>
     </Row>
   </Container>

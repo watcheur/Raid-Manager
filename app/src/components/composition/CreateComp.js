@@ -27,7 +27,7 @@ import _ from 'lodash';
 import classNames from "classnames";
 
 import Api from '../../data/api';
-import Blizzard from '../../data/gamedata';
+import GameData from '../../data/gamedata';
 
 import CharacterCard from '../characters/CharacterCard';
 import RoleZone from '../composition/RoleZone';
@@ -50,15 +50,15 @@ class CreateComp extends React.Component {
     }
 
     roles = [
-        { type: Blizzard.Characters.Role.TANK, label: 'TANK' },
-        { type: Blizzard.Characters.Role.HEAL, label: 'HEAL' },
-        { type: Blizzard.Characters.Role.DPS, label: 'DPS' }
+        { type: GameData.Characters.Role.TANK, label: 'TANK' },
+        { type: GameData.Characters.Role.HEAL, label: 'HEAL' },
+        { type: GameData.Characters.Role.DPS, label: 'DPS' }
     ];
 
     types = [
-        { type: Blizzard.Characters.Type.MAIN, label: 'Mains' },
-        { type: Blizzard.Characters.Type.ALT, label: 'Alts' },
-        { type: Blizzard.Characters.Type.ALT_FUN, label: 'Alts fun' }
+        { type: GameData.Characters.Type.MAIN, label: 'Mains' },
+        { type: GameData.Characters.Type.ALT, label: 'Alts' },
+        { type: GameData.Characters.Type.ALT_FUN, label: 'Alts fun' }
     ];
 
     constructor(props) {
@@ -178,15 +178,15 @@ class CreateComp extends React.Component {
 
         let newChars = [];
 
-        if (comp.length >= (this.props.event.difficulty == Blizzard.Raids.Difficulties.Mythic ? 20 :30))
+        if (comp.length >= (this.props.event.difficulty == GameData.Raids.Difficulties.Mythic ? 20 :30))
             return alert("You can't put more player for this difficulty")
 
-        let cl = Blizzard.ClassToObj(character.class).label;
+        let cl = GameData.ClassToObj(character.class).label;
 
-        if (role === Blizzard.Characters.Role.TANK && Blizzard.Characters.TankClasses.indexOf(character.class) === -1)
+        if (role === GameData.Characters.Role.TANK && GameData.Characters.TankClasses.indexOf(character.class) === -1)
             return alert(`You've seen a ${cl} tank ? Really ?`);
 
-        if (role === Blizzard.Characters.Role.HEAL && Blizzard.Characters.HealClasses.indexOf(character.class) === -1)
+        if (role === GameData.Characters.Role.HEAL && GameData.Characters.HealClasses.indexOf(character.class) === -1)
             return alert(`You've seen a ${cl} heal ? Really ?`);
 
         chars.forEach(c => { if (c.id !== character.id) newChars.push(c) })
@@ -242,7 +242,7 @@ class CreateComp extends React.Component {
     }
 
     loadUtilities() {
-        let utilities = Blizzard.GetUtilities().map(ut => {
+        let utilities = GameData.GetUtilities().map(ut => {
             if (this.state.selectedCharaters.length)
                 ut.data = ut.data.map(d => {
                     d.spells = d.spells.map(s => {
@@ -349,7 +349,7 @@ class CreateComp extends React.Component {
                                     return (
                                         <Row key={role.type} className="mb-2">
                                             <Col lg="12 py-1 bg-white mb-2 border-bottom border-top">
-                                                <div className="text-center"><img src={`/images/Blizzard/role-${role.label}.png`} alt={role.label} width="20" /></div>
+                                                <div className="text-center"><img src={`/images/GameData/role-${role.label}.png`} alt={role.label} width="20" /></div>
                                             </Col>
                                             <Col lg="12 px-0">
                                                 {this.state.characters.filter(c => c.role === role.type && c.type == this.state.selectedType).sort((a, b) => a.class < b.class).map((character, index) => {
@@ -363,23 +363,23 @@ class CreateComp extends React.Component {
                                 })}
                             </Col>
                             <Col lg="8">
-                                <Row className={classNames(this.state.selectedCharaters.length >= (event.difficulty === Blizzard.Raids.Difficulties.Mythic ? 20: 30) ? 'bg-success' : 'bg-warning', 'px-3')}>
+                                <Row className={classNames(this.state.selectedCharaters.length >= (event.difficulty === GameData.Raids.Difficulties.Mythic ? 20: 30) ? 'bg-success' : 'bg-warning', 'px-3')}>
                                     <Col></Col>
                                     <Col lg="9" className="text-center">
                                         <h5 className="m-0 py-2">{this.state.encounter.name}</h5>
                                     </Col>
                                     <Col className={classNames('players-count', 'p-0', 'text-right')}>
-                                        <h5 className='m-0 py-2'>{this.state.selectedCharaters.length} / {event.difficulty === Blizzard.Raids.Difficulties.Mythic ? '20': '30'}</h5>
+                                        <h5 className='m-0 py-2'>{this.state.selectedCharaters.length} / {event.difficulty === GameData.Raids.Difficulties.Mythic ? '20': '30'}</h5>
                                     </Col>
                                 </Row>
                                 {this.roles.map((role, idx) => {
                                     return (
                                         <Row key={role.type}>
                                             <Col lg="12" className="py-2 border-bottom border-top bg-white text-center">
-                                                <img src={`/images/Blizzard/role-${role.label}.png`} alt={role.label} width="25" />
+                                                <img src={`/images/GameData/role-${role.label}.png`} alt={role.label} width="25" />
                                             </Col>
                                             <Col lg="12" className='px-0'>
-                                                <RoleZone className={ (role.type == Blizzard.Characters.Role.DPS ? 'min-vh-30' : 'vh-6') }
+                                                <RoleZone className={ (role.type == GameData.Characters.Role.DPS ? 'min-vh-30' : 'vh-6') }
                                                     onCharacterClick={(character) => this.compToChars(character)}
                                                     onCharacterDrop={(id) => this.charDropped(id, role.type)}
                                                     role={role.type}

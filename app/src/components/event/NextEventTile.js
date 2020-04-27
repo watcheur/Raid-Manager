@@ -5,7 +5,7 @@ import { Card, CardBody } from "shards-react";
 import moment from "moment";
 
 import { Dispatcher, Constants } from "../../flux";
-import Blizzard from "../../data/gamedata";
+import GameData from "../../data/gamedata";
 import Api from "../../data/api";
 
 class NextEventTile extends React.Component {
@@ -48,7 +48,7 @@ class NextEventTile extends React.Component {
 
 	render() {
 		const cardClasses = classNames("stats-small", "stats-small--1", "next-raid");
-		const cardBodyClasses = classNames("p-0 d-flex", (this.state.event && 'bg difficulty'), (this.state.event && this.state.event.raid.name.slugify()), (this.state.event && Blizzard.DifficultyToClass(this.state.event.difficulty)));
+		const cardBodyClasses = classNames("p-0 d-flex", (this.state.event && 'bg difficulty'), (this.state.event && this.state.event.raid.name.slugify()), (this.state.event && GameData.DifficultyToClass(this.state.event.difficulty)));
 		const innerWrapperClasses = classNames("d-flex", "flex-column m-auto");
 		const dataFieldClasses = classNames("stats-small__data", "text-center");
 		const labelClasses = classNames("stats-small__label", "text-uppercase");

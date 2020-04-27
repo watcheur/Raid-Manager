@@ -6,7 +6,7 @@ import {
     FormInput
 } from "shards-react";
 import ReactQuill, {Quill} from "react-quill";
-import Blizzard from "../../data/gamedata";
+import GameData from "../../data/gamedata";
 
 import "react-quill/dist/quill.snow.css";
 import "../../assets/quill.css";
@@ -121,8 +121,8 @@ class NoteEditor extends React.Component {
 
         let data = {
             name: char.name.capitalize(),
-            color: Blizzard.ClassToColor(char.class).replace('#', ''),
-            class: Blizzard.ClassToObj(char.class).slug
+            color: GameData.ClassToColor(char.class).replace('#', ''),
+            class: GameData.ClassToObj(char.class).slug
         };
 
         const cursorPosition = range.index;
@@ -139,8 +139,8 @@ class NoteEditor extends React.Component {
                     {this.state.characters.length === 0 && ('No characters selected')}
                     {this.state.characters.sort((a, b) => (a.class > b.class)).map((char, idx) => {
                         return (
-                            <Button key={char.id} value={char.id} className={`btn-transparent border-0 GameColorClass ${Blizzard.ClassToObj(char.class).slug}`}
-                                onClick={(ev) => { ev.preventDefault(); this.insert(char) /* `|cff${Blizzard.ClassToColor(char.class).replace('#', '')}${char.name}|r` */ }}>
+                            <Button key={char.id} value={char.id} className={`btn-transparent border-0 GameColorClass ${GameData.ClassToObj(char.class).slug}`}
+                                onClick={(ev) => { ev.preventDefault(); this.insert(char) /* `|cff${GameData.ClassToColor(char.class).replace('#', '')}${char.name}|r` */ }}>
                                 {char.name.capitalize()}
                             </Button>)
                     })}

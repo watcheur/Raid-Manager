@@ -5,7 +5,7 @@ import { Card, CardBody, CardHeader, CardFooter, Button, ListGroup, ListGroupIte
 
 import { Dispatcher, Constants } from "../../flux";
 import Api from "../../data/api";
-import Blizzard from "../../data/gamedata";
+import GameData from "../../data/gamedata";
 
 class EventDetail extends React.Component {
 	defaultState = {
@@ -71,7 +71,7 @@ class EventDetail extends React.Component {
             <Card small className="card-post mt-5">
                 <div className={`card-post__image bg ${event.raid.name.slugify()}`}>
                 </div>
-                <CardBody className={`difficulty ${Blizzard.DifficultyToClass(event.difficulty)} p-3`}>
+                <CardBody className={`difficulty ${GameData.DifficultyToClass(event.difficulty)} p-3`}>
                     <h5 className="card-title">
                         <a className="text-fiord-blue" href="#">
                             {event.title}

@@ -4,7 +4,7 @@ import moment from 'moment'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import { Dispatcher, Constants } from "../../flux";
 import { Container, Row, Col } from "shards-react";
-import Blizzard from "../../data/gamedata";
+import GameData from "../../data/gamedata";
 
 import Api from '../../data/api'
 
@@ -19,7 +19,7 @@ const localizer = momentLocalizer(moment);
 const Event = (ev) => {
     return(
         <a href={`/events/${ev.event.resource.id}`}>
-            <div className={`rbc-event-main bg ${ev.event.resource.raid.name.slugify()} difficulty ${Blizzard.DifficultyToClass(ev.event.resource.difficulty)}`}>
+            <div className={`rbc-event-main bg ${ev.event.resource.raid.name.slugify()} difficulty ${GameData.DifficultyToClass(ev.event.resource.difficulty)}`}>
                 <span className="time">{moment(ev.event.start).format('HH:mm')}</span>
                 <span className="title" title={ev.event.title}>{ev.event.title}</span>
             </div>

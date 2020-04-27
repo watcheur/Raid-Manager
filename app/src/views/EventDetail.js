@@ -24,7 +24,7 @@ import Error from "./Errors";
 import PageTitle from "../components/common/PageTitle";
 import Encounters from "../components/encounter/Encounters";
 
-import Blizzard from "../data/gamedata";
+import GameData from "../data/gamedata";
 import Api from '../data/api'
 
 class EventDetail extends React.Component {
@@ -161,10 +161,10 @@ class EventDetail extends React.Component {
                         <Row className="mt-5 mb-5">
                             <Col lg="3">
                                 <Card small className="card-post mb-4">
-                                    <div className={`card-post__image bg ${event.raid.name.slugify()} difficulty ${Blizzard.DifficultyToClass(event.difficulty)}`}></div>
+                                    <div className={`card-post__image bg ${event.raid.name.slugify()} difficulty ${GameData.DifficultyToClass(event.difficulty)}`}></div>
                                     <CardHeader className="border-bottom text-center">
                                         <h4 className="mb-0">{event.title}</h4>
-                                        <span className="text-muted d-block mb-2">{Blizzard.DifficultyToClass(event.difficulty).capitalize()} {event.raid.name}</span>
+                                        <span className="text-muted d-block mb-2">{GameData.DifficultyToClass(event.difficulty).capitalize()} {event.raid.name}</span>
                                     </CardHeader>
                                     <ListGroup flush className="p-4">
                                         <ListGroupItem className="p-1 m-0 border-0">

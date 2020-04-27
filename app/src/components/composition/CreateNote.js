@@ -27,7 +27,7 @@ import _ from 'lodash';
 import classNames from "classnames";
 
 import Api from '../../data/api';
-import Blizzard from '../../data/gamedata';
+import GameData from '../../data/gamedata';
 
 import CharacterCard from '../characters/CharacterCard';
 import RoleZone from './RoleZone';
@@ -48,15 +48,15 @@ class CreateNote extends React.Component {
     }
 
     roles = [
-        { type: Blizzard.Characters.Role.TANK, label: 'TANK' },
-        { type: Blizzard.Characters.Role.HEAL, label: 'HEAL' },
-        { type: Blizzard.Characters.Role.DPS, label: 'DPS' }
+        { type: GameData.Characters.Role.TANK, label: 'TANK' },
+        { type: GameData.Characters.Role.HEAL, label: 'HEAL' },
+        { type: GameData.Characters.Role.DPS, label: 'DPS' }
     ];
 
     types = [
-        { type: Blizzard.Characters.Type.MAIN, label: 'Mains' },
-        { type: Blizzard.Characters.Type.ALT, label: 'Alts' },
-        { type: Blizzard.Characters.Type.ALT_FUN, label: 'Alts fun' }
+        { type: GameData.Characters.Type.MAIN, label: 'Mains' },
+        { type: GameData.Characters.Type.ALT, label: 'Alts' },
+        { type: GameData.Characters.Type.ALT_FUN, label: 'Alts fun' }
     ];
 
     constructor(props) {
@@ -188,7 +188,7 @@ class CreateNote extends React.Component {
                                     return (
                                         <Row key={role.type} className="mb-2">
                                             <Col lg="12 py-1 bg-white mb-2 border-bottom border-top">
-                                                <div className="text-center"><img src={`/images/Blizzard/role-${role.label}.png`} alt={role.label} width="20" /></div>
+                                                <div className="text-center"><img src={`/images/GameData/role-${role.label}.png`} alt={role.label} width="20" /></div>
                                             </Col>
                                             <Col lg="12 px-0">
                                                 {this.state.characters.filter(c => c.role === role.type && c.type == this.state.selectedType).sort((a, b) => a.class < b.class).map((character, index) => {

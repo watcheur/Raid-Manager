@@ -4,17 +4,17 @@ import classNames from "classnames";
 import { Col } from 'shards-react';
 
 import CharacterCard from '../characters/CharacterCard';
-import Blizzard from '../../data/gamedata';
+import GameData from '../../data/gamedata';
 
 const RoleZone = ({ className, role, characters, onCharacterClick, onCharacterDrop  }) => {
     const [{ isOver, canDrop }, drop] = useDrop({
         accept: 'character',
         canDrop: (item,) => {
-            if (role === Blizzard.Characters.Role.TANK)
-                return Blizzard.Characters.TankClasses.indexOf(item.class) !== -1;
+            if (role === GameData.Characters.Role.TANK)
+                return GameData.Characters.TankClasses.indexOf(item.class) !== -1;
 
-            if (role === Blizzard.Characters.Role.HEAL)
-                return Blizzard.Characters.HealClasses.indexOf(item.class) !== -1;
+            if (role === GameData.Characters.Role.HEAL)
+                return GameData.Characters.HealClasses.indexOf(item.class) !== -1;
             
             return true;
         },
@@ -27,7 +27,7 @@ const RoleZone = ({ className, role, characters, onCharacterClick, onCharacterDr
         }),
       })
 
-    const dpsRole = (role === Blizzard.Characters.Role.DPS);
+    const dpsRole = (role === GameData.Characters.Role.DPS);
 
     let classes = classNames(
         className,
@@ -47,7 +47,7 @@ const RoleZone = ({ className, role, characters, onCharacterClick, onCharacterDr
                 </Col>
             )}
             <Col lg="12" className={classNames(dpsRole ? 'min-vh-10' : '', 'py-1')}>
-                {characters.filter(c => dpsRole ? (!Blizzard.SpecToObj(c.spec).range) : true).sort((a, b) => a.class - b.class).map((character, index) => {
+                {characters.filter(c => dpsRole ? (!GameData.SpecToObj(c.spec).range) : true).sort((a, b) => a.class - b.class).map((character, index) => {
                     return (
                         <CharacterCard key={character.id} character={character} icon={false} className="text-center d-inline-block m-1" onClick={() => onCharacterClick(character) } />
                     )
@@ -60,7 +60,7 @@ const RoleZone = ({ className, role, characters, onCharacterClick, onCharacterDr
                     <h6 className='my-1'>Ranged</h6>
                 </Col>
                 <Col lg="12 min-vh-10 py-1">
-                    {characters.filter(c => dpsRole ? (Blizzard.SpecToObj(c.spec).range) : true).sort((a, b) => a.class - b.class).map((character, index) => {
+                    {characters.filter(c => dpsRole ? (GameData.SpecToObj(c.spec).range) : true).sort((a, b) => a.class - b.class).map((character, index) => {
                         return (
                             <CharacterCard key={character.id} character={character} icon={false} className="text-center d-inline-block m-1" onClick={() => onCharacterClick(character) } />
                         )
