@@ -39,7 +39,7 @@ export default [
   },
   {
     path: "/events/:eventId/manage",
-    exact: false,
+    exact: true,
     layout: DefaultLayout,
     component: EventManage
   },

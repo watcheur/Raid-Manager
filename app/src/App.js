@@ -68,7 +68,7 @@ class EndpointPrompt extends React.Component {
 
 export default () => (
 	<DndProvider backend={Backend}>
-		<Router basename={process.env.REACT_APP_BASENAME || ""}>
+		<Router basename={""}>
 			<div>
 			<EndpointPrompt />
 			{routes.map((route, index) => {

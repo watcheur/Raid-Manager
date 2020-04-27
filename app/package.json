@@ -2,7 +2,7 @@
 	"name": "raid-manager",
 	"version": "1.0.0",
 	"private": true,
-	"homepage": "./",
+	"homepage": "/",
 	"main": "src/start.js",
 	"dependencies": {
 		"axios": "*",
