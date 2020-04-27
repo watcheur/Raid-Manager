@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import Backend from 'react-dnd-html5-backend'
 import { DndProvider } from 'react-dnd'
 
@@ -70,23 +70,25 @@ export default () => (
 	<DndProvider backend={Backend}>
 		<Router basename={""}>
 			<div>
-			<EndpointPrompt />
-			{routes.map((route, index) => {
-				return (
-				<Route
-					key={index}
-					path={route.path}
-					exact={route.exact}
-					component={withTracker(props => {
+				<EndpointPrompt />
+				{routes.map((route, index) => {
 					return (
-						<route.layout {...props}>
-						<route.component {...props} />
-						</route.layout>
+					<Route
+						key={index}
+						path={route.path}
+						exact={route.exact}
+						component={withTracker(props => {
+							if (route.private && !Context.IsLogged())
+								return (<Redirect to="/login" />)
+							return (
+								<route.layout {...props}>
+									<route.component {...props} />
+								</route.layout>
+							);
+						})}
+					/>
 					);
-					})}
-				/>
-				);
-			})}
+				})}
 			</div>
 		</Router>
 	</DndProvider>

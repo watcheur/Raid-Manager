@@ -1,13 +1,24 @@
+require('dotenv').config()
 const Config = require('./config.json');
 const TypeORM = require('typeorm');
 const Restify = require('restify');
 const corsMiddleware = require('restify-cors-middleware')
+const bcrypt = require('bcrypt');
+const Errs = require('restify-errors');
+
 const Controllers = require('./controllers/Controllers');
 const Logger = require('./utils/Logger');
 const Queues = require('./utils/Queues');
 const Socket = require('./utils/Socket');
 const Jobs = require('./jobs/Jobs');
 const Entities = require('./entity/Entities');
+
+if (!process.env.ADMIN && !Config.server.admin) {
+    console.error('You must set a hash for password before starting');
+    process.exit(1);
+}
+
+const hash = bcrypt.hashSync(process.env.ADMIN || Config.server.admin, 10)
 
 const server = Restify.createServer({
     name: 'raid-manager-api',
@@ -33,6 +44,19 @@ TypeORM
     .createConnection(Config.database)
     .then((connection) => {
         Logger.info('Database initialized');
+
+        server.post('/login', (req, res, next) => {
+            if (!req.body.username || !req.body.password) {
+                next(new Errs.BadRequestError('Missing parameters'));
+            }
+
+            if (req.body.username === 'admin' && bcrypt.compareSync(req.body.password, hash)) {
+                res.send({ err: false, data: true });
+                next();
+            }
+            else
+                next(new Errs.NotAuthorizedError());
+        });
 
         server.get('/expansions', Controllers.Expansion.GetAll);
         server.get('/expansions/current', Controllers.Expansion.Get)

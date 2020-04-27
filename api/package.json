@@ -9,9 +9,11 @@
   "author": "Rhogar",
   "license": "ISC",
   "dependencies": {
-    "blizzard.js": "git+https://github.com:watcheur/blizzard.js.git",
+    "bcrypt": "^4.0.1",
+    "blizzard.js": "git://github.com:watcheur/blizzard.js.git",
     "bull": "^3.13.0",
     "cron": "^1.8.2",
+    "dotenv": "^8.2.0",
     "mysql": "^2.18.1",
     "q": "^1.5.1",
     "reflect-metadata": "^0.1.13",

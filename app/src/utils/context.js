@@ -32,6 +32,10 @@ class Context {
             }
         })
     }
+
+    IsLogged() {
+        return (localStorage.getItem('islogged') === '1')
+    }
 }
 
 export default new Context()
