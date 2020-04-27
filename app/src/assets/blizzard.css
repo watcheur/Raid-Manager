@@ -687,23 +687,23 @@
 }
 
 .GameIcon--RACE_GENDER_UNKNOWN .GameIcon-icon {
-	background-image: url(/images/blizzard/race-RACE_GENDER_UNKNOWN.jpg)
+	background-image: url(/images/blizzard/race-race_gender_unknown.jpg)
 }
 
 .GameIcon--UNKNOWN .GameIcon-icon {
-	background-image: url(/images/blizzard/role-UNKNOWN.png)
+	background-image: url(/images/blizzard/role-unknown.png)
 }
 
 .GameIcon--TANK .GameIcon-icon {
-	background-image: url(/images/blizzard/role-TANK.png)
+	background-image: url(/images/blizzard/role-tank.png)
 }
 
 .GameIcon--HEAL .GameIcon-icon {
-	background-image: url(/images/blizzard/role-HEAL.png)
+	background-image: url(/images/blizzard/role-heal.png)
 }
 
 .GameIcon--DPS .GameIcon-icon {
-	background-image: url(/images/blizzard/role-DPS.png)
+	background-image: url(/images/blizzard/role-dps.png)
 }
 
 .GameIcon--Utils-HeartOfAzeroth .GameIcon-icon {

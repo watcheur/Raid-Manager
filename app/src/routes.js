@@ -33,13 +33,13 @@ export default [
   },
   {
     path: "/events/:eventId",
-    exact: true,
+    exact: false,
     layout: DefaultLayout,
     component: EventDetail
   },
   {
     path: "/events/:eventId/manage",
-    exact: true,
+    exact: false,
     layout: DefaultLayout,
     component: EventManage
   },
