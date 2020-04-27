@@ -8,7 +8,7 @@ import Constants from "./constants";
 const dispatcher = new Dispatcher();
 
 const endpoint = url.parse(Api.endpoint);
-const socket = SocketIOClient(`${endpoint.protocol}//${endpoint.host}`, { path:`${endpoint.pathname}/socket.io/` });
+const socket = SocketIOClient(`${endpoint.protocol}//${endpoint.host}`, { path:`${endpoint.pathname}socket.io/` });
 
 
 socket.on(Constants.CHANNEL_CHARACTER, data => {
