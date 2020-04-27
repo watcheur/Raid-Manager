@@ -5,7 +5,7 @@ import { Card, CardBody, CardHeader, CardFooter, Button, ListGroup, ListGroupIte
 
 import { Dispatcher, Constants } from "../../flux";
 import Api from "../../data/api";
-import Blizzard from "../../data/blizzard";
+import Blizzard from "../../data/gamedata";
 
 class EventDetail extends React.Component {
 	defaultState = {

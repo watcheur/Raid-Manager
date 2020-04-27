@@ -24,7 +24,7 @@ import Error from "./Errors";
 import PageTitle from "../components/common/PageTitle";
 import Encounters from "../components/encounter/Encounters";
 
-import Blizzard from "../data/blizzard";
+import Blizzard from "../data/gamedata";
 import Api from '../data/api'
 
 class EventDetail extends React.Component {

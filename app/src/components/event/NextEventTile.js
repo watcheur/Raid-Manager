@@ -5,7 +5,7 @@ import { Card, CardBody } from "shards-react";
 import moment from "moment";
 
 import { Dispatcher, Constants } from "../../flux";
-import Blizzard from "../../data/blizzard";
+import Blizzard from "../../data/gamedata";
 import Api from "../../data/api";
 
 class NextEventTile extends React.Component {

@@ -21,7 +21,7 @@ import {
 import { toast } from 'react-toastify';
 import moment from "moment";
 
-import Blizzard from '../../data/blizzard';
+import Blizzard from '../../data/gamedata';
 import Api from '../../data/api';
 import { Dispatcher, Constants } from "../../flux";
 import CharacterCard from '../characters/CharacterCard';

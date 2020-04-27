@@ -6,7 +6,7 @@ import {
     FormInput
 } from "shards-react";
 import ReactQuill, {Quill} from "react-quill";
-import Blizzard from "../../data/blizzard";
+import Blizzard from "../../data/gamedata";
 
 import "react-quill/dist/quill.snow.css";
 import "../../assets/quill.css";

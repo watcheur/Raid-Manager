@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { Col } from 'shards-react';
 
 import CharacterCard from '../characters/CharacterCard';
-import Blizzard from '../../data/blizzard';
+import Blizzard from '../../data/gamedata';
 
 const RoleZone = ({ className, role, characters, onCharacterClick, onCharacterDrop  }) => {
     const [{ isOver, canDrop }, drop] = useDrop({

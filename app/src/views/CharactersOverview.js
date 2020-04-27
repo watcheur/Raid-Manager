@@ -2,7 +2,7 @@ import React from "react";
 import { Container, Row, Col } from "shards-react";
 
 import PageTitle from "../components/common/PageTitle";
-import Blizzard from "../data/blizzard";
+import Blizzard from "../data/gamedata";
 import CharactersList from "../components/characters/CharacterList";
 import CharacterAdd from "../components/characters/CharacterAdd";
 import Stats from "../components/characters/Stats";

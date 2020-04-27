@@ -27,7 +27,7 @@ import _ from 'lodash';
 import classNames from "classnames";
 
 import Api from '../../data/api';
-import Blizzard from '../../data/blizzard';
+import Blizzard from '../../data/gamedata';
 
 import CharacterCard from '../characters/CharacterCard';
 import RoleZone from './RoleZone';

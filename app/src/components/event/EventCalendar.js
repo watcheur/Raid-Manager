@@ -4,7 +4,7 @@ import moment from 'moment'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import { Dispatcher, Constants } from "../../flux";
 import { Container, Row, Col } from "shards-react";
-import Blizzard from "../../data/blizzard";
+import Blizzard from "../../data/gamedata";
 
 import Api from '../../data/api'
 

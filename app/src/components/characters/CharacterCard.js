@@ -2,7 +2,7 @@ import React from "react";
 import { useDrag } from 'react-dnd';
 import classNames from "classnames";
 
-import Blizzard from '../../data/blizzard';
+import Blizzard from '../../data/gamedata';
 
 const CharacterChard = ({ character, icon = true, className, ...attrs }) => {
     const classes = classNames(

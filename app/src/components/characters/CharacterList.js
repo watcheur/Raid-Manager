@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardHeader, CardBody } from "shards-react";
 
-import Blizzard from '../../data/blizzard';
+import GameData from '../../data/gamedata';
 import Api from '../../data/api';
 import { Dispatcher, Constants } from "../../flux";
 
@@ -227,37 +227,37 @@ export default class CharactersList extends React.Component {
                             {this.state.characters.sort((a, b) => { return (a.role - b.role || a.class - b.class) }).map((character, index) => {
                                 return (
                                     <tr key={index}>
-                                        <td className={`GameColorClass ${Blizzard.ClassToObj(character.class).slug}`} style={{textTransform: 'capitalize'}}>
+                                        <td className={`GameColorClass ${GameData.ClassToObj(character.class).slug}`} style={{textTransform: 'capitalize'}}>
                                             {character.name}
                                         </td>
                                         <td className='char-level'>{character.level}</td>
                                         <td className='char-race'>
-                                            <div className={`GameIcon GameIconRace ${Blizzard.CharToRaceIc(character)} GameIcon--small`}>
+                                            <div className={`GameIcon GameIconRace ${GameData.CharToRaceIc(character)} GameIcon--small`}>
                                                 <div className="GameIcon-icon"></div>
                                             </div>
                                         </td>
                                         <td className='char-class'>
-                                            <div className={`GameIcon GameIconClass GameIcon--${Blizzard.ClassToObj(character.class).slug.toUpperCase()} GameIcon--small`}>
+                                            <div className={`GameIcon GameIconClass GameIcon--${GameData.ClassToObj(character.class).slug.toUpperCase()} GameIcon--small`}>
                                                 <div className="GameIcon-icon"></div>
                                             </div>
                                         </td>
                                         <td className='char-spec'>
-                                            <div className={`GameIcon GameIconClass GameIcon--${Blizzard.SpecToObj(character.spec).class.toUpperCase()} GameIcon--small`}>
+                                            <div className={`GameIcon GameIconClass GameIcon--${GameData.SpecToObj(character.spec).class.toUpperCase()} GameIcon--small`}>
                                                 <div className="GameIcon-icon"></div>
                                             </div>
                                         </td>
                                         <td className='char-role'>
-                                            <div className={`GameIcon GameIconRole GameIcon--${Blizzard.RoleToObj(character.role).slug.toUpperCase()} GameIcon--small`}>
+                                            <div className={`GameIcon GameIconRole GameIcon--${GameData.RoleToObj(character.role).slug.toUpperCase()} GameIcon--small`}>
                                                 <div className="GameIcon-icon"></div>
                                             </div>
                                         </td>
-                                        <td className={Blizzard.AzeriteToClass(character.azerite)}>{character.azerite || (<i className="material-icons">help_outline</i>)}</td>
+                                        <td className={GameData.AzeriteToClass(character.azerite)}>{character.azerite || (<i className="material-icons">help_outline</i>)}</td>
                                         <td className={character.weekly ? 'text-success': 'text-danger'}>{character.weekly || ''} <i className="material-icons">{character.weekly ? '' : 'clear'}</i> </td>
-                                        <td className={Blizzard.IlvlToClass(character.equipped)}>{character.equipped}</td>
+                                        <td className={GameData.IlvlToClass(character.equipped)}>{character.equipped}</td>
                                         {slots.map((value, index) => {
                                             return (
-                                                <td key={index} className={Blizzard.IlvlToClass(character[Blizzard.TrSlot(value)])}>
-                                                    {character[Blizzard.TrSlot(value)]}
+                                                <td key={index} className={GameData.IlvlToClass(character[GameData.TrSlot(value)])}>
+                                                    {character[GameData.TrSlot(value)]}
                                                 </td>
                                             )
                                         })}

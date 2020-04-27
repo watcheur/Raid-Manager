@@ -13,7 +13,7 @@ import PageTitle from "../components/common/PageTitle";
 import CreateComp from "../components/composition/CreateCompCompact";
 import CreateNote from "../components/composition/CreateNote";
 
-import Blizzard from "../data/blizzard";
+import GameData from "../data/gamedata";
 import Api from '../data/api'
 
 class EventManage extends React.Component {

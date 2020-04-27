@@ -5,7 +5,7 @@ import NextRaidTile from "../event/NextEventTile";
 import SmallStatsLike from "../common/SmallStatsLite";
 import Api from '../../data/api';
 import { Dispatcher, Constants } from "../../flux";
-import Blizzard from '../../data/blizzard';
+import Blizzard from '../../data/gamedata';
 
 /**
  * @param {Object} parameters
