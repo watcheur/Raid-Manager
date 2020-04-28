@@ -4,6 +4,7 @@ const Errs = require('restify-errors');
 const Logger = require('../utils/Logger');
 const DefaultController = require('./DefaultController');
 const Enums = require('../utils/Enums');
+const Context = require('../utils/Context');
 
 class StatController extends DefaultController  {
     AvgIlvl = async (req, res, next) => {
@@ -90,7 +91,7 @@ class StatController extends DefaultController  {
                 .select('c.type')
                 .addSelect('COUNT(DISTINCT c.id)', 'runs')
                 .innerJoin('character', 'c', 'c.id = w.character')
-                .where('w.period = 746')
+                .where('w.period = :period', { period: Context.CurrentPeriod.id })
                 .groupBy('c.type')
                 .getRawMany();
 
