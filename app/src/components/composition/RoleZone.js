@@ -49,7 +49,7 @@ const RoleZone = ({ className, role, characters, onCharacterClick, onCharacterDr
             <Col lg="12" className={classNames(dpsRole ? 'min-vh-10' : '', 'py-1')}>
                 {characters.filter(c => dpsRole ? (!GameData.SpecToObj(c.spec).range) : true).sort((a, b) => a.class - b.class).map((character, index) => {
                     return (
-                        <CharacterCard key={character.id} character={character} icon={false} className="text-center d-inline-block m-1" onClick={() => onCharacterClick(character) } />
+                        <CharacterCard key={character.id} character={character} icon={false} className="text-center inline m-1" onClick={() => onCharacterClick(character) } />
                     )
                 })}
             </Col>
@@ -62,7 +62,7 @@ const RoleZone = ({ className, role, characters, onCharacterClick, onCharacterDr
                 <Col lg="12 min-vh-10 py-1">
                     {characters.filter(c => dpsRole ? (GameData.SpecToObj(c.spec).range) : true).sort((a, b) => a.class - b.class).map((character, index) => {
                         return (
-                            <CharacterCard key={character.id} character={character} icon={false} className="text-center d-inline-block m-1" onClick={() => onCharacterClick(character) } />
+                            <CharacterCard key={character.id} character={character} icon={false} className="text-center inline m-1" onClick={() => onCharacterClick(character) } />
                         )
                     })}
                 </Col>

@@ -162,7 +162,7 @@ export default class CharactersList extends React.Component {
         const slots = ['Head', 'Neck', 'Shoulder', 'Back', 'Chest', 'Wrist', 'Hand', 'Waist', 'Leg', 'Foot', 'LeftFinger', 'RightFinger', 'LeftTrinket', 'RightTrinket', 'Weapon', 'Offhand'];
         
         return (
-            <Card small className="mb-4 overflow-hidden text-center">
+            <Card small className="mb-4 overflow-hidden text-center characters-list">
                 {title.length ? (<CardHeader className="bg-dark"><h5 className="m-0 text-white">{title}</h5></CardHeader>) : ''}
                 <CardBody className="bg-dark p-0 pb-3">
                     <table className="table table-dark mb-0">

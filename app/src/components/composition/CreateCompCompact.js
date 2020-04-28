@@ -336,7 +336,7 @@ class CreateCompCompact extends React.Component {
                 {this.state.encounter && (
                     <CardBody className="pt-0 pb-0 h-100 bg-light border-bottom">
                         <Row className="py-0 h-100">
-                            <Col md="2" className="bg-light border-right overflow-auto vh-70">
+                            <Col md="12" lg="2" className="bg-light border-right overflow-auto">
                                 <Row>
                                     <Col className='border-bottom py-2'>
                                         <FormSelect size="sm" className="text-center" onChange={(event) => { this.copyFrom(event.target.value); event.target.value = ''; } }>
@@ -370,10 +370,10 @@ class CreateCompCompact extends React.Component {
                                 {this.roles.map((role, idx) => {
                                     return (
                                         <Row key={role.type} className="mb-2">
-                                            <Col md="12 py-1 bg-white mb-2 border-bottom border-top">
+                                            <Col md="12" className="py-1 bg-white mb-2 border-bottom border-top">
                                                 <div className="text-center"><img src={`/images/GameData/role-${role.label}.png`} alt={role.label} width="20" /></div>
                                             </Col>
-                                            <Col md="12 px-0">
+                                            <Col md="12" className="px-0">
                                                 {this.state.characters.filter(c => c.role === role.type && c.type == this.state.selectedType).sort((a, b) => a.class < b.class).map((character, index) => {
                                                     return (
                                                         <CharacterCard key={character.id} character={character} icon={false} className='border-right-0 border-left-0 my-1 d-block' onClick={() => this.charToComp(character, role.type) } />
@@ -384,10 +384,10 @@ class CreateCompCompact extends React.Component {
                                     )
                                 })}
                             </Col>
-                            <Col md="5">
+                            <Col md="12" lg="5">
                                 <Row className={classNames(this.state.selectedCharaters.length >= (event.difficulty === GameData.Raids.Difficulties.Mythic ? 20: 30) ? 'bg-success' : 'bg-warning', 'px-3')}>
                                     <Col></Col>
-                                    <Col md="7" className="text-center">
+                                    <Col sm="7" md="7" className="text-center">
                                         <h5 className="m-0 py-2">{this.state.encounter.name}</h5>
                                     </Col>
                                     <Col className={classNames('players-count', 'p-0', 'text-right')}>
@@ -401,7 +401,7 @@ class CreateCompCompact extends React.Component {
                                                 <img src={`/images/GameData/role-${role.label}.png`} alt={role.label} width="25" />
                                             </Col>
                                             <Col md="12" className='px-0'>
-                                                <RoleZone className={ (role.type == GameData.Characters.Role.DPS ? 'min-vh-30' : 'vh-10') }
+                                                <RoleZone className={ (role.type == GameData.Characters.Role.DPS ? 'min-vh-30' : 'min-vh-10') }
                                                     onCharacterClick={(character) => this.compToChars(character)}
                                                     onCharacterDrop={(id) => this.charDropped(id, role.type)}
                                                     role={role.type}
@@ -412,7 +412,7 @@ class CreateCompCompact extends React.Component {
                                     )
                                 })}
                             </Col>
-                            <Col md="3" className="border-left">
+                            <Col md="12" lg="3" className="border-left">
                                 <Row className='bg-white border-bottom'>
                                     <Col className="text-center">
                                         <h5 className="m-0 py-2">Note</h5>
@@ -436,7 +436,7 @@ class CreateCompCompact extends React.Component {
                                     </Col>
                                 </Row>
                             </Col>
-                            <Col md="2" className="bg-light border-left overflow-auto vh-100 utilities">
+                            <Col md="12" lg="2" className="bg-light border-left overflow-auto vh-100 utilities">
                                 {this.state.utilities.map((ut, idx) => {
                                     return (
                                         <Row key={idx}>

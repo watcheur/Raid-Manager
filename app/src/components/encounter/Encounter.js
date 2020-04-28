@@ -139,10 +139,10 @@ class Encounter extends React.Component {
             <div>
                 <ListGroupItem className='border-top border-bottom border-0 rounded-0'>
                     <Row>
-                        <Col>
+                        <Col sm="7" md="7">
                             <h6 className="m-0" onClick={this.toggle}>{encounter.name} <i className='material-icons'>{this.state.collapsed ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}</i></h6>
                         </Col>
-                        <Col md="3" className='text-right'>
+                        <Col sm="5" md="5" className='text-right'>
                             <img src="/images/blizzard/role-tank.png" width="15" /> {tanks.length}
                             <img src="/images/blizzard/role-heal.png" width="15" className="ml-2" /> {heals.length}
                             <img src="/images/blizzard/role-dps.png" width="15" className="ml-2" /> {melees.length + rangeds.length}
@@ -176,14 +176,14 @@ class Encounter extends React.Component {
                                 <h6 className="mb-0">Melee</h6>
                                 {melees.map((c, idx) => {
                                     return (
-                                        <CharacterCard key={c.id} character={c} icon={false} className="text-center d-inline-block m-1" />
+                                        <CharacterCard key={c.id} character={c} icon={false} className="text-center inline m-1" />
                                     )
                                 })}
 
                                 <h6 className="mt-2 mb-0">Ranged</h6>
                                 {rangeds.map((c, idx) => {
                                     return (
-                                        <CharacterCard key={c.id} character={c} icon={false} className="text-center d-inline-block m-1" />
+                                        <CharacterCard key={c.id} character={c} icon={false} className="text-center inline m-1" />
                                     )
                                 })}
                             </Col>
