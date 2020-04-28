@@ -85,17 +85,17 @@ export default class Stats extends React.Component {
         return (
             <Row className="justify-content-md-center">
                 { this.state.ilvl ? (
-                    <Col className="col-lg-2 mb-4">
+                    <Col sm="4" className="col-lg-2 mb-4">
                         <SmallStatsLike label="Average mains ilvl" variation="1" value={this.state.ilvl.mains} value-classes={GameData.IlvlToClass(this.state.ilvl.mains)} increase={true} />
                     </Col>
                 ) : ''}
                 { this.state.azerite ? (
-                    <Col className="col-lg-2 mb-4">
+                    <Col sm="4" className="col-lg-2 mb-4">
                         <SmallStatsLike label="Average neck level" variation="1" value={this.state.azerite.mains} value-classes={GameData.AzeriteToClass(this.state.azerite.mains)} increase={true} />
                     </Col>
                 ) : ''}
                 { this.state.weekly.mains ? (
-                    <Col className="col-lg-2 mb-4">
+                    <Col sm="4" className="col-lg-2 mb-4">
                         <SmallStatsLike label="Weekly runs"
                             variation="1"
                             value={`${this.state.weekly.mains.runs} / ${this.state.weekly.mains.roster}`}
@@ -103,7 +103,7 @@ export default class Stats extends React.Component {
                         />
                     </Col>
                 ) : ''}
-                <Col className="col-lg-2 mb-4">
+                <Col sm="12" className="col-lg-2 mb-4">
                     <NextRaidTile />
                 </Col>
             </Row>

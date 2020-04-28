@@ -288,3 +288,84 @@
       transform: translate3d(4px, 0, 0);
     }
 }
+
+.char-name .show-item {
+    display: none;
+}
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+	/* Force table to not be like tables anymore */
+	table, thead, tbody, th, td, tr { 
+		display: block; 
+	}
+	
+	/* Hide table headers (but not display: none;, for accessibility) */
+	thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	
+	tr { border: 1px solid #ccc; }
+	
+	td { 
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee; 
+		position: relative;
+        padding-left: 50%; 
+        text-align: right;
+	}
+	
+	td:before { 
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%; 
+		padding-right: 10px; 
+		white-space: nowrap;
+    }
+
+    td.items, td.char-azerite, td.char-role, td.char-refresh, td.char-delete {
+        display: none;
+    }
+
+    td.char-refresh, td.char-delete {
+        display: none!important;
+    }
+
+    td.char-name { text-align: center; }
+    td.char-name .show-item { display: inline-block }
+
+    tr.selected td { display: block }
+
+    td.char-level:before { content: "Level"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-race:before { content: "Race"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-class:before { content: "Class"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-spec:before { content: "Spec"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-role:before { content: "Role"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-azerite:before { content: "Azerite"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-weekly:before { content: "Weekly"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-equipped:before { content: "Equipped"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-Head:before { content: "Head"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-Neck:before { content: "Neck"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-Shoulder:before { content: "Shoulder"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-Back:before { content: "Back"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-Chest:before { content: "Chest"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-Wrist:before { content: "Wrist"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-Hand:before { content: "Hand"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-Waist:before { content: "Waist"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-Leg:before { content: "Leg"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-Foot:before { content: "Foot"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-LeftFinger:before { content: "Left finger"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-RightFinger:before { content: "Right finger"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-LeftTrinket:before { content: "Left trinket"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-RightTrinket:before { content: "Right trinket"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-Weapon:before { content: "Weapon"; padding: 0.4rem; color: var(--gray); text-align: left; }
+    td.char-Offhand:before { content: "Off-hand"; padding: 0.4rem; color: var(--gray); text-align: left; }
+}
