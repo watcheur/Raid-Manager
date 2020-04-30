@@ -4,6 +4,7 @@ const Errs = require('restify-errors');
 const Logger = require('../utils/Logger');
 const DefaultController = require('./DefaultController');
 const blizzard = require('blizzard.js').initialize(require('../config.json').blizzard);
+const Context = require('../utils/Context');
 
 class PeriodController extends DefaultController  {
     Get = (req, res, next) => {
@@ -34,7 +35,8 @@ class PeriodController extends DefaultController  {
     }
 
     GetCurrent = (req, res, next) => {
-
+        res.send({err: false, data: Context.CurrentPeriod});
+        next();
     }
 
     RefreshPeriods = (req, res, next) => {

@@ -31,7 +31,7 @@ class CharacterController extends DefaultController {
         if (reqs['azerite'])
             reqs['azerite'] = TypeORM.MoreThanOrEqual(reqs['azerite']);
 
-        if (req.weekly === undefined)
+        if (req.weekly)
             req.weekly = Context.CurrentPeriod.Id;
 
         TypeORM.getRepository(Entities.Character)
