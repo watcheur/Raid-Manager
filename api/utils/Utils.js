@@ -39,11 +39,11 @@ module.exports = {
         });
     },
 
-    CharToCharRet: (char) => {
+    CharToCharRet: (char, weekly) => {
         char.role = GetRoleBySpec(char.spec);
         //c.dungeons = c.dungeons.filter(d => d.period >= Context.CurrentPeriod.id - 3);
         if (char.dungeons)
-            char.weekly = Math.max.apply(Math, char.dungeons.map(d => d.level));
+            char.weekly = Math.max.apply(Math, char.dungeons.filter(d => d.period >= weekly).map(d => d.level));
 
         return char;
     }

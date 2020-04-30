@@ -51,7 +51,7 @@ class CharacterController extends DefaultController {
                     if (reqs.refreshWeekly)
                         Queues.Weekly.add({ character: c.id });
 
-                    c = Utils.CharToCharRet(c)
+                    c = Utils.CharToCharRet(c, reqs['weekly'] || Context.CurrentPeriod.id)
                     /*
                     c.role = Utils.GetRoleBySpec(c.spec);
                     //c.dungeons = c.dungeons.filter(d => d.period >= Context.CurrentPeriod.id - 3);
@@ -91,7 +91,7 @@ class CharacterController extends DefaultController {
                     return next(new Errs.NotFoundError('Character not found'));
                 }
 
-                c = Utils.CharToCharRet(c)
+                c = Utils.CharToCharRet(c, Context.CurrentPeriod.id)
                 c.dungeons = c.dungeons.filter(d => d.period >= Context.CurrentPeriod.id - 3);
 
                 res.send({
@@ -270,7 +270,7 @@ class CharacterController extends DefaultController {
         .then(values => {
             TypeORM.getRepository(Entities.Character).findOne({ relations: ['dungeons'], where: { id: req.params.id }})
                 .then(char => {
-                    char = Utils.CharToCharRet(char)
+                    char = Utils.CharToCharRet(char, Context.CurrentPeriod.id)
                     char.dungeons = char.dungeons.filter(d => d.period >= Context.CurrentPeriod.id - 3);
                     
                     res.send({ err: false, data: char })
