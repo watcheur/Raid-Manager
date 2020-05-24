@@ -14,7 +14,7 @@ class PlayerController extends DefaultController  {
         if (reqs['name'])
             reqs['name'] = TypeORM.Like(`%${reqs['name']}%`)
 
-            TypeORM.getRepository(Entities.Players)
+            TypeORM.getRepository(Entities.Player)
                 .find({
                     where: reqs
                 })
@@ -69,13 +69,13 @@ class PlayerController extends DefaultController  {
         const repo = TypeORM.getRepository(Entities.Player);
 
         repo.findOne({ where: { name: props.name }})
-            .then(res => {
-                if (res) {
+            .then(pl => {
+                if (pl) {
                     Logger.info('Player already exist');
                     return next(new Errs.BadRequestError('Player already exist'));
                 }
 
-                repo.save(char)
+                repo.save(props)
                     .then(saved => {
                         res.send({
                             err: false,

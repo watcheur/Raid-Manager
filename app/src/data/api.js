@@ -5,10 +5,8 @@ class Api {
         this.axios = axios.create();
         this.endpoint = "http://api.raid-manager.fr";
 
-        /*
         if (process.env.NODE_ENV && process.env.NODE_ENV === 'development')
             this.endpoint = "http://localhost:3005";
-            */
 
         const local_endpoint = localStorage.getItem('api');
         if (local_endpoint && local_endpoint.length > 0)
@@ -63,6 +61,12 @@ class Api {
     }
 
     Login = (username, password) => this.Post('/login', { username: username, password: password });
+
+    GetPlayers = (args) => this.Get('/players', args);
+    GetPlayer = (id) => this.Get(`/players/${id}`);
+    CreatePlayer = (data) => this.Post('/players', data);
+    UpdatePlayer = (id, data) => this.Put(`/players/${id}`, data);
+    DeletePlayer = (id) => this.Delete(`/players/${id}`);
 
     GetCharacters = (args) => this.Get('/characters', args);
     GetCharacter = (id) => this.Get(`/characters/${id}`);

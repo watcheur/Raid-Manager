@@ -16,6 +16,7 @@
 		"moment": "*",
 		"react": "*",
 		"react-big-calendar": "*",
+		"react-bootstrap-typeahead": "^5.0.0-rc.1",
 		"react-contenteditable": "*",
 		"react-dnd": "*",
 		"react-dnd-html5-backend": "*",

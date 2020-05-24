@@ -15,19 +15,25 @@ import {
   InputGroup
 } from "shards-react";
 import { toast } from 'react-toastify';
+import { Typeahead } from 'react-bootstrap-typeahead';
+
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 import Api from '../../data/api';
 
 class CharacterAdd extends React.Component {
 	defaultState = {
 		realms: [],
+		players: [],
+		player: null,
 		realm: '',
 		name: '',
 		type: 0,
 		invalidName : false,
 		errorNameText: '',
 		invalidRealm: false,
-		loading: false
+		loading: false,
+		error: ''
     }
 
     constructor(props) {
@@ -36,6 +42,29 @@ class CharacterAdd extends React.Component {
 		this.state = {...this.defaultState,...props}
 		this.defaultState.realm = props.realm;
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.selectPlayer = this.selectPlayer.bind(this);
+	}
+
+	selectPlayer(arr) {
+		let value = (arr ? arr[0] : null);
+		if (value) {
+			console.log("select", value);
+			if (value.customOption) {
+				Api.CreatePlayer({ name: value.name })
+				.then(res => {
+					if (!res.data.err) {
+						let players = this.state.players || [];
+						players.push(res.data.data);
+
+						this.setState({ player: res.data.data, players: players })
+						this.defaultState.players = players;
+					}
+				})
+				.catch(err => this.setState({ error: 'SelectPlayer: ' + err.message }));
+			}
+			else
+				this.setState({ player: value })
+		}
 	}
 	
 	handleSubmit(event) {
@@ -50,12 +79,13 @@ class CharacterAdd extends React.Component {
 			return this.setState({ errorNameText: 'You must specify a character name' })
 
 		this.setState({ loading: true });
-		const { name, realm, type } = this.state;
+		const { name, realm, type, player } = this.state;
 		if (name.length > 0 && realm.length > 0) {
 			Api.CreateCharacter({
 				name: name,
 				realm: realm,
-				type: type
+				type: type,
+				player: (player ? player.id : null)
 			})
 			.then(res => {
 				if (!res.data.err) {
@@ -83,7 +113,16 @@ class CharacterAdd extends React.Component {
 					this.defaultState.realms = res.data.data;
 				}
             })
-            .catch(err => alert(err))
+			.catch(err => this.setState({ error: 'GetRealms: ' + err.message }));
+
+		Api.GetPlayers()
+			.then(res => {
+                if (!res.data.err) {
+					this.setState({ players: res.data.data })
+					this.defaultState.players = res.data.data;
+				}
+			})
+			.catch(err => this.setState({ error: 'GetPlayers: ' + err.message }));
 	}
 
 	componentWillUnmount() {
@@ -92,10 +131,17 @@ class CharacterAdd extends React.Component {
 	
 	render() {
 		return (
-			<Card small className="mb-4 overflow-hidden">
+			<Card small className="mb-4">
 				<CardHeader className="border-bottom">
 					<h6 className="m-0">Add a character</h6>
 				</CardHeader>
+				{this.state.error && (
+					<div
+						className="bg-warning text-white text-center"
+						style={{ boxShadow: "inset 0 0 5px rgba(0,0,0,.2)" }}>
+						<i className="material-icons">warning</i> {this.state.error}
+					</div>
+				)}
 				<ListGroup flush>
 					<ListGroupItem className="p-3">
 						<Row>
@@ -103,9 +149,20 @@ class CharacterAdd extends React.Component {
 								<Form onSubmit={this.handleSubmit}>
 									<Row form>
 										<Col md="2" className="form-group">
-											<label htmlFor="feRealm">Type</label>
+											<label htmlFor="fePlayer">Player</label>
+											<Typeahead
+												id="fePlayer"
+												labelKey="name"
+												placeholder="Choose a player..."
+												allowNew={true}
+												options={this.state.players}
+												onChange={ev => this.selectPlayer(ev)}
+											/>
+										</Col>
+										<Col md="2" className="form-group">
+											<label htmlFor="feType">Type</label>
 											<FormSelect
-												id="feRealm"
+												id="feType"
 												value={this.state.type}
 												required
 												onChange={(event) => { this.setState({ type: event.target.value }) }}
@@ -132,7 +189,7 @@ class CharacterAdd extends React.Component {
 											</FormSelect>
 											<FormFeedback valid={false}>A realm must be selected</FormFeedback>
 										</Col>
-										<Col md="6" className="form-group">
+										<Col className="form-group">
 											<label htmlFor="feCharacter">Character</label>
 											<InputGroup>
 												<FormInput

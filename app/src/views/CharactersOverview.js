@@ -17,7 +17,7 @@ const CharactersOverview = () => (
     <Stats />
 
     <Row className="justify-content-md-center">
-      <Col sm="12" md="12" lg="6">
+      <Col sm="12" md="12" lg="9">
         <CharacterAdd parameters={{ category: 'French' }} realm='ysondre' />
       </Col>
     </Row>
