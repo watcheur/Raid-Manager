@@ -224,18 +224,21 @@ export default class CharactersList extends React.Component {
                                 <th scope="col" className="border-0 char-role">
                                     Role
                                 </th>
-                                <th scope="col" className="border-0 char-azerite">
-                                    <div className={`GameIcon GameIconUtils GameIcon--Utils-HeartOfAzeroth GameIcon--small`} data-tip="Heart of Azeroth">
+                                <th scope="col" className="border-0 char-azerite" onClick={ev => this.filter('azerite')}>
+                                    <div className={`GameIcon GameIconUtils GameIcon--Utils-HeartOfAzeroth GameIcon--small ${this.state.filters['azerite'] ? 'border-orange': ''}`}
+                                        data-tip={`Heart of Azeroth${(this.state.filters['azerite'] ? ` (${this.state.filters['azerite']})` : '')}`}>
                                         <div className="GameIcon-icon"></div>
                                     </div>
                                 </th>
-                                <th scope="col" className="border-0 char-weekly">
-                                    <div className={`GameIcon GameIconUtils GameIcon--Utils-Weekly GameIcon--small`} data-tip="Weekly chest">
+                                <th scope="col" className="border-0 char-weekly" onClick={ev => this.filter('weekly')}>
+                                    <div className={`GameIcon GameIconUtils GameIcon--Utils-Weekly GameIcon--small ${this.state.filters['weekly'] ? 'border-orange': ''}`}
+                                        data-tip={`Weekly chest${(this.state.filters['weekly'] ? ` (${this.state.filters['weekly']})` : '')}`}>
                                         <div className="GameIcon-icon"></div>
                                     </div>
                                 </th>
-                                <th scope="col" className="border-0 char-equipped">
-                                    <div className={`GameIcon GameIconUtils GameIcon--Utils-Gear GameIcon--small`} data-tip="Equipped gear">
+                                <th scope="col" className="border-0 char-equipped" onClick={ev => this.filter('equipped')}>
+                                    <div className={`GameIcon GameIconUtils GameIcon--Utils-Gear GameIcon--small ${this.state.filters['equipped'] ? 'border-orange': ''}`}
+                                        data-tip={`Equipped gear${(this.state.filters['equipped'] ? ` (${this.state.filters['equipped']})` : '')}`}>
                                         <div className="GameIcon-icon"></div>
                                     </div>
                                 </th>
