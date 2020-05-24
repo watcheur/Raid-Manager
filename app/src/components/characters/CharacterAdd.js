@@ -43,12 +43,13 @@ class CharacterAdd extends React.Component {
 		this.defaultState.realm = props.realm;
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.selectPlayer = this.selectPlayer.bind(this);
+
+		this.playerRef = React.createRef();
 	}
 
 	selectPlayer(arr) {
 		let value = (arr ? arr[0] : null);
 		if (value) {
-			console.log("select", value);
 			if (value.customOption) {
 				Api.CreatePlayer({ name: value.name })
 				.then(res => {
@@ -94,6 +95,9 @@ class CharacterAdd extends React.Component {
 				}
 				else
 					this.setState({ loading: false });
+
+				if (this.playerRef && this.playerRef.current)
+					this.playerRef.current.clear();
 			})
 			.catch(err => {
 				this.setState({
@@ -151,9 +155,11 @@ class CharacterAdd extends React.Component {
 										<Col md="2" className="form-group">
 											<label htmlFor="fePlayer">Player</label>
 											<Typeahead
+												ref={this.playerRef}
 												id="fePlayer"
 												labelKey="name"
 												placeholder="Choose a player..."
+												selectHintOnEnter={true}
 												allowNew={true}
 												options={this.state.players}
 												onChange={ev => this.selectPlayer(ev)}
