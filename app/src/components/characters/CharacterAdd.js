@@ -159,6 +159,7 @@ class CharacterAdd extends React.Component {
 												id="fePlayer"
 												labelKey="name"
 												placeholder="Choose a player..."
+												newSelectionPrefix="Add: "
 												selectHintOnEnter={true}
 												allowNew={true}
 												options={this.state.players}

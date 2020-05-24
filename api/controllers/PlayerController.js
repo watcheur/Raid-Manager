@@ -8,25 +8,30 @@ const Socket = require('../utils/Socket');
 class PlayerController extends DefaultController  {
     GetAll = (req, res, next) => {
         Logger.info('Players search', req.params);
-        const reqs = this.ClearProps(req.query, [ 'name' ]);
+        const reqs = this.ClearProps(req.query, [ 'name', 'include' ]);
         Logger.info('Players search found params: ', reqs);
 
         if (reqs['name'])
             reqs['name'] = TypeORM.Like(`%${reqs['name']}%`)
 
-            TypeORM.getRepository(Entities.Player)
-                .find({
-                    where: reqs
-                })
-                .then(players => {
-                    res.send({err: false, data: players });
-                    Logger.info('Players search end');
-                    next();
-                })
-                .catch(err => {
-                    Logger.error('Player retrieve failed', err);
-                    next(new Errs.InternalError('Player retrieve failed'));
-                })
+        let relations = [];
+        if (reqs.include)
+            relations = [ 'characters' ];
+
+        TypeORM.getRepository(Entities.Player)
+            .find({
+                relations: relations,
+                where: reqs
+            })
+            .then(players => {
+                res.send({err: false, data: players });
+                Logger.info('Players search end');
+                next();
+            })
+            .catch(err => {
+                Logger.error('Player retrieve failed', err);
+                next(new Errs.InternalError('Player retrieve failed'));
+            })
     }
 
     Get = (req, res, next) => {
@@ -34,6 +39,7 @@ class PlayerController extends DefaultController  {
 
         TypeORM.getRepository(Entities.Player)
             .findOne({
+                relations: [ 'characters' ],
                 where: {
                     id: req.params.id
                 }

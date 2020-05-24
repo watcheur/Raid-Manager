@@ -4,6 +4,16 @@ TODO:
     Characters:
         - filter per role, class, name, etc...
         - Store items in db (item id, ilvl, bonuses, ...)
+        - Detail page (app)
+
+    Platers:
+        - List all players (app)
+        - CRUD players (app)
+
+    Event:
+        - Tell if a character of the same player is present
+        - Duplicate event
+        - Import event from game (csv addon ?)
 
     Note:
         - Add icons (raid, class & spells)
