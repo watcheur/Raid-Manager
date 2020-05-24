@@ -3,8 +3,6 @@ Raid Manager
 TODO:
     Characters:
         - filter per role, class, name, etc...
-        - Allow link between characters (main/alts)
-        - Link characters to another entity (an username for exemple ?)
         - Store items in db (item id, ilvl, bonuses, ...)
 
     Note:
