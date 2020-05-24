@@ -14,7 +14,8 @@ export default class CharactersList extends React.Component {
         characters: [],
         selected: 0,
         isLoading: false,
-        error: null
+        error: null,
+        filters: {}
     }
 
     constructor(props) {
@@ -26,12 +27,49 @@ export default class CharactersList extends React.Component {
         this.error = this.error.bind(this);
         this.success = this.success.bind(this);
         this.toggleSelected = this.toggleSelected.bind(this);
+        this.filter = this.filter.bind(this);
+        this.filterChar = this.filterChar.bind(this);
     }
 
     spin(target) {
         if (target) {
             target.className = 'material-icons spin';
         }
+    }
+
+    filter(target) {
+        let res = window.prompt(`Minimum value for ${target} (empty for clean)`, this.state.filters[target] ?? '');
+        if (res === null)
+            return;
+
+        let filters = this.state.filters;
+
+        if (res.length)
+            filters[target] = res;
+        else
+            delete filters[target];
+
+        this.setState({ filters: filters });
+    }
+
+    filterChar(char) {
+        let keys = Object.keys(this.state.filters).length;
+        if (keys) {
+            let count = 0;
+
+            for (var i in this.state.filters) {
+                if (this.state.filters.hasOwnProperty(i)) {
+                    let value = this.state.filters[i];
+
+                    if (char[GameData.TrSlot(i)] >= value)
+                        count++;
+                }
+            }
+
+            return count == keys;
+        }
+
+        return true;
     }
 
     error(target) {
@@ -203,8 +241,8 @@ export default class CharactersList extends React.Component {
                                 </th>
                                 {slots.map((value, index) => {
                                     return (
-                                        <th scope="col" key={index} className={`border-0 char-${value}`}>
-                                            <div className={`GameIcon GameIcon--slot${value} GameIcon--slot GameIcon--small`} data-tip={value}>
+                                        <th scope="col" key={index} className={`border-0 char-${value}`} onClick={ev => this.filter(value)}>
+                                            <div className={`GameIcon GameIcon--slot${value} GameIcon--slot GameIcon--small ${this.state.filters[value] ? 'border-orange': ''}`} data-tip={value + (this.state.filters[value] ? ` (${this.state.filters[value]})` : '')}>
                                                 <div className="GameIcon-icon"></div>
                                             </div>
                                         </th>
@@ -233,7 +271,7 @@ export default class CharactersList extends React.Component {
                                     </td>
                                 </tr>
                             )}
-                            {this.state.characters.sort((a, b) => { return (a.role - b.role || a.class - b.class) }).map((character, index) => {
+                            {this.state.characters.filter(this.filterChar).sort((a, b) => { return (a.role - b.role || a.class - b.class) }).map((character, index) => {
                                 return (
                                     <tr key={index} className={this.state.selected === character.id ? 'selected' : ''}>
                                         <td onClick={(ev) => this.toggleSelected(character.id)}
