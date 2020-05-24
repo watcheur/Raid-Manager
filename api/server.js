@@ -30,8 +30,9 @@ const cors = corsMiddleware({
     origins: ['*'],
     allowHeaders: [],
     exposeHeaders: []
-})
-  
+});
+
+
 server.pre(cors.preflight)
 server.use(cors.actual)
 server.use(Restify.plugins.queryParser());
@@ -58,9 +59,17 @@ TypeORM
                 next(new Errs.NotAuthorizedError());
         });
 
+        // Expansions endpoints
         server.get('/expansions', Controllers.Expansion.GetAll);
         server.get('/expansions/current', Controllers.Expansion.Get)
         server.get('/expansions/refresh', Controllers.Expansion.Refresh);
+
+        // Players endpoints
+        server.get('/players', Controllers.Player.GetAll);
+        server.post('/players', Controllers.Player.Create);
+        server.get('/players/:id', Controllers.Character.Get);
+        server.put('/players/:id', Controllers.Player.Update);
+        server.del('/players/:id', Controllers.Player.Delete);
 
         // Characters endpoints
         server.get('/characters', Controllers.Character.GetAll);

@@ -10,9 +10,12 @@ const nController   = require('./NoteController');
 const oController   = require('./OptionController');
 const bController   = require('./BlizzardController');
 const sController   = require('./StatController');
+const plController  = require('./PlayerController');
 
 module.exports = {
     Expansion: new exController(),
+
+    Player: new plController(),
     Character: new cController(),
 
     Period: new pController(),

@@ -106,14 +106,22 @@ class CharacterController extends DefaultController {
             })
     }
 
-    Create = (req, res, next) => {
+    Create = async (req, res, next) => {
         Logger.info('Start character create', req.body);
 
         let char = {};
         try {
-            char = this.RequiredProps(req.body, [ 'name', 'realm', 'type' ]);
+            char = this.RequiredProps(req.body, [ 'player', 'name', 'realm', 'type' ]);
         } catch (err) {
             return next(err);
+        }
+
+        if (char.player > 0) {
+            const player = await TypeORM.getRepository(Entities.Player).findOne({ where: { id: char.player } });
+            if (!player)
+                return next(new Errs.NotFoundError('Player not found'));
+            else
+                char.player = player;
         }
 
         char.created = new Date();
@@ -206,21 +214,21 @@ class CharacterController extends DefaultController {
                 if (char == null)
                     return next(new Errs.NotFoundError('Character not found'));
 
-                    repo
-                        .createQueryBuilder()
-                        .update(Entities.Character)
-                        .set(update)
-                        .where("id = :id", { id: req.params.id })
-                        .execute()
-                        .then(query => {
-                            Logger.info('Character update done', { char: req.params.id })
-                            res.send({ err: false, data: Object.assign(char, update) })
-                            next();
-                        })
-                        .catch(err => {
-                            Logger.error('Character update query error', err);
-                            next(new Errs.InternalError('Character update query error'));
-                        })
+                repo
+                    .createQueryBuilder()
+                    .update(Entities.Character)
+                    .set(update)
+                    .where("id = :id", { id: req.params.id })
+                    .execute()
+                    .then(query => {
+                        Logger.info('Character update done', { char: req.params.id })
+                        res.send({ err: false, data: Object.assign(char, update) })
+                        next();
+                    })
+                    .catch(err => {
+                        Logger.error('Character update query error', err);
+                        next(new Errs.InternalError('Character update query error'));
+                    })
             })
             .catch(err => {
                 Logger.error('Character update - Search failed', err);

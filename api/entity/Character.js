@@ -143,6 +143,18 @@ module.exports = {
                 referencedColumnName: 'character'
             },
             inverseSide: 'character'
+        },
+        player: {
+            target: "Player",
+            type: "many-to-one",
+            type: "many-to-one",
+            joinColumn: {
+                name: 'player',
+                referencedColumnName: 'id'
+            },
+            inverseSide: 'id',
+            cascade: true,
+            onDelete: 'CASCADE'
         }
     }
 };

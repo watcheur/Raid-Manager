@@ -2,6 +2,7 @@ const TypeORM = require('typeorm');
 
 const ExpansionSchema       = new TypeORM.EntitySchema(require('./Expansion'));
 
+const PlayerSchema          = new TypeORM.EntitySchema(require('./Player'));
 const CharacterSchema       = new TypeORM.EntitySchema(require('./Character'));
 
 const WeeklySchema          = new TypeORM.EntitySchema(require('./Weekly'));
@@ -22,6 +23,7 @@ const OptionSchema          = new TypeORM.EntitySchema(require('./Option'));
 
 module.exports = {
     All : [
+        PlayerSchema,
         CharacterSchema,
 
         ExpansionSchema,
@@ -42,6 +44,7 @@ module.exports = {
         RealmSchema
     ],
     Expansion: ExpansionSchema,
+    Player: PlayerSchema,
     Character: CharacterSchema,
     // Mythic +
     Period: PeriodSchema,
