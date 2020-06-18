@@ -12,6 +12,7 @@ import EventDetail from "./views/EventDetail";
 import EventManage from "./views/EventManage";
 import NotesOverview from "./views/NotesOverview";
 import LoginView from "./views/LoginView";
+import PlayerOverview from "./views/PlayerOverview";
 
 export default [
   {
@@ -32,6 +33,12 @@ export default [
     private: true,
     layout: DefaultLayout,
     component: CharactersOverview
+  },
+  {
+    path: "/players",
+    exact: true,
+    layout: DefaultLayout,
+    component: PlayerOverview
   },
   {
     path: "/events",

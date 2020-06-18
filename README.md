@@ -6,10 +6,6 @@ TODO:
         - Store items in db (item id, ilvl, bonuses, ...)
         - Detail page (app)
 
-    Platers:
-        - List all players (app)
-        - CRUD players (app)
-
     Event:
         - Tell if a character of the same player is present
         - Duplicate event

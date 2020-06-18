@@ -6,6 +6,11 @@ export default function() {
       htmlBefore: '<i class="material-icons">group</i>',
     },
     {
+      title: "Joueurs",
+      to: "/players",
+      htmlBefore: '<i class="material-icons">group</i>'
+    },
+    {
       title: "Events",
       to: "/events",
       htmlBefore: '<i class="material-icons">event</i>'
