@@ -55,7 +55,7 @@ module.exports = () => {
                 });
             })
             .catch(err => Logger.error("Error occured on character cron job", err));
-    }, null, true, 'Europe/Paris');
+    }, null, true, 'Europe/Paris', null, true);
 
     // Every 8 hours -  Refresh all characters weekly
     new CronJob('0 0 */8 * * *', () => {
@@ -73,7 +73,7 @@ module.exports = () => {
                 Logger.info('End refresh weekly chest cron');
             })
             .catch(err => Logger.error("Error occured on weekly chest cron job", err));
-    }, null, true, 'Europe/Paris');
+    }, null, true, 'Europe/Paris', null, true);
 
     // Every wednesday @ 9am -- Load new period(s)
     new CronJob('0 0 9 * * Wed', () => {
@@ -84,7 +84,7 @@ module.exports = () => {
         });
 
 
-    }, null, true, 'Europe/Paris');
+    }, null, true, 'Europe/Paris', null, true);
 
     // Every wednesday @ 0am -- Load new expansion(s)
     new CronJob('0 0 0 * * Wed', () => {
@@ -93,7 +93,7 @@ module.exports = () => {
         Controllers.Expansion.Refresh(null, null, () => {
             Logger.info('End refresh expansions cron');
         });
-    }, null, true, 'Europe/Paris');
+    }, null, true, 'Europe/Paris', null, true);
 
     // Every first of month
     new CronJob('0 0 0 1 * *', () => {
@@ -102,5 +102,5 @@ module.exports = () => {
         Controllers.Blizzard.LoadRealms(null, null, () => {
             Logger.info('End refresh realms cron');
         });
-    }, null, true, 'Europe/Paris');
+    }, null, true, 'Europe/Paris', null, true);
 }
