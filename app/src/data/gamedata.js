@@ -554,6 +554,14 @@ export default {
         Gender: Genders,
         Faction: Factions
     },
+    Players: {
+        Ranks: {
+            TBD: 0,
+            Out: 1,
+            Apply : 2,
+            Raider: 3
+        }
+    },
     Raids: {
         Difficulties: raidDifficulties
     },

@@ -8,7 +8,7 @@ const Socket = require('../utils/Socket');
 class PlayerController extends DefaultController  {
     GetAll = (req, res, next) => {
         Logger.info('Players search', req.params);
-        const reqs = this.ClearProps(req.query, [ 'name', 'include' ]);
+        const reqs = this.ClearProps(req.query, [ 'name', 'include', 'rank' ]);
         Logger.info('Players search found params: ', reqs);
 
         if (reqs['name'])
@@ -67,7 +67,7 @@ class PlayerController extends DefaultController  {
 
         let props = {};
         try {
-            props = this.RequiredProps(req.body, [ 'name' ]);
+            props = this.RequiredProps(req.body, [ 'name', 'rank' ]);
         } catch (err) {
             return next(err);
         }
@@ -88,6 +88,13 @@ class PlayerController extends DefaultController  {
                             data: saved
                         });
 
+                        Socket.Emit(Socket.Channels.Player, {
+                            action: Socket.Action.Player.Create,
+                            data: {
+                                player: saved
+                            }
+                        });
+
                         Logger.info('End player create', req.body);
                         next()
                     })
@@ -104,7 +111,7 @@ class PlayerController extends DefaultController  {
 
         let update = {};
         try {
-            update = this.RequiredProps(req.body, [ 'name' ]);
+            update = this.ClearProps(req.body, [ 'name', 'rank' ]);
         } catch (err) {
             return next(err);
         }
@@ -125,6 +132,13 @@ class PlayerController extends DefaultController  {
                         res.send({
                             err: false,
                             data: saved
+                        });
+
+                        Socket.Emit(Socket.Channels.Player, {
+                            action: Socket.Action.Player.Update,
+                            data: {
+                                player: saved
+                            }
                         });
 
                         Logger.info('End player update', req.body);
@@ -155,6 +169,13 @@ class PlayerController extends DefaultController  {
                     err: false,
                     data: true
                 })
+
+                Socket.Emit(Socket.Channels.Player, {
+                    action: Socket.Action.Player.Delete,
+                    data: {
+                        player: req.params.id
+                    }
+                });
 
                 Logger.info('Player deleted');
                 next();

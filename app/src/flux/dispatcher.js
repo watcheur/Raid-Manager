@@ -39,4 +39,11 @@ socket.on(Constants.CHANNEL_NOTE, data => {
     })
 });
 
+socket.on(Constants.CHANNEL_PLAYER, data => {
+    dispatcher.dispatch({
+        actionType: data.action,
+        ...data.data
+    })
+});
+
 export default dispatcher;

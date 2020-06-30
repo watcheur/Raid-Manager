@@ -9,6 +9,9 @@ module.exports = {
         name: {
             type: "varchar",
             nullable: true
+        },
+        rank: {
+            type: "int"
         }
     },
     relations: {

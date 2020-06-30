@@ -301,12 +301,35 @@
     border-color: var(--orange);
 }
 
-.players-list .player-name {
+.players-list .player-name, .players-list .player-rank {
     width: 10%;
+    vertical-align: middle;
+    font-weight: 500;
+}
+
+.players-list .player-characters {
+    vertical-align: middle;
 }
 
 .players-list .player-characters span {
     margin-right: 10px;
+    vertical-align: middle;
+}
+
+.red {
+    color: var(--red);
+}
+
+.orange {
+    color: var(--orange);
+}
+
+.yellow {
+    color: var(--yellow);
+}
+
+.green {
+    color: var(--green);
 }
 
 @media 

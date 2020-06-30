@@ -31,7 +31,8 @@ class Socket {
         Event: 'EVENT',
         Composition: 'COMPOSITION',
         Note: 'NOTE',
-        Option: 'OPTION'
+        Option: 'OPTION',
+        Player: 'PLAYER'
     }
 
     Action = {
@@ -39,6 +40,11 @@ class Socket {
             Create: 'CHAR_CREATED',
             Update: 'CHAR_UPDATED',
             Delete: 'CHAR_DELETED'
+        },
+        Player: {
+            Create: 'PLAYER_CREATED',
+            Update: 'PLAYER_UPDATED',
+            Delete: 'PLAYER_DELETED',
         },
         Event: {
             Create: 'EVENT_CREATED',

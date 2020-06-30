@@ -20,6 +20,7 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 import Api from '../../data/api';
+import GameData from '../../data/gamedata';
 
 class CharacterAdd extends React.Component {
 	defaultState = {
@@ -51,7 +52,7 @@ class CharacterAdd extends React.Component {
 		let value = (arr ? arr[0] : null);
 		if (value) {
 			if (value.customOption) {
-				Api.CreatePlayer({ name: value.name })
+				Api.CreatePlayer({ name: value.name, rank: GameData.Players.Ranks.TBD })
 				.then(res => {
 					if (!res.data.err) {
 						let players = this.state.players || [];
