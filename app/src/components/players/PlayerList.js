@@ -125,7 +125,6 @@ export default class PlayersList extends React.Component {
                                                 required
                                                 onChange={(event) => { this.updatePlayer(player, event.target.value); }}
                                             >
-                                                <option>Rank</option>
                                                 <option value={GameData.Players.Ranks.Raider}>Raider</option>
                                                 <option value={GameData.Players.Ranks.Apply}>Apply</option>
                                                 <option value={GameData.Players.Ranks.TBD}>TBD</option>
