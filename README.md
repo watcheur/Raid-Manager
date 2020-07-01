@@ -1,6 +1,7 @@
 Raid Manager
 
 TODO:
+
     Characters:
         - filter per role, class, name, etc...
         - Store items in db (item id, ilvl, bonuses, ...)
