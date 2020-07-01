@@ -24,6 +24,15 @@ module.exports = {
             inverseSide: 'id',
             cascade: true,
             onDelete: 'CASCADE'
+        },
+        drops: {
+            target: "Item",
+            type: "one-to-many",
+            joinColumn: {
+                name: 'id',
+                referencedColumnName: 'source'
+            },
+            inverseSide: 'source'
         }
     }
 }

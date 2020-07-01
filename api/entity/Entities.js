@@ -1,15 +1,18 @@
 const TypeORM = require('typeorm');
+const CharacterItem = require('./CharacterItem');
 
 const ExpansionSchema       = new TypeORM.EntitySchema(require('./Expansion'));
 
 const PlayerSchema          = new TypeORM.EntitySchema(require('./Player'));
 const CharacterSchema       = new TypeORM.EntitySchema(require('./Character'));
+const CharacterItemSchema   = new TypeORM.EntitySchema(require('./CharacterItem'));
 
 const WeeklySchema          = new TypeORM.EntitySchema(require('./Weekly'));
 const PeriodSchema          = new TypeORM.EntitySchema(require('./Period'));
 
 const RaidSchema            = new TypeORM.EntitySchema(require('./Raid'));
 const EncounterSchema       = new TypeORM.EntitySchema(require('./Encounter'));
+const ItemSchema            = new TypeORM.EntitySchema(require('./Item'));
 
 const EventSchema           = new TypeORM.EntitySchema(require('./Event'));
 const CompositionSchema     = new TypeORM.EntitySchema(require('./Composition'));
@@ -23,16 +26,18 @@ const OptionSchema          = new TypeORM.EntitySchema(require('./Option'));
 
 module.exports = {
     All : [
+        ExpansionSchema,
+
+        ItemSchema,
+        RaidSchema,
+        EncounterSchema,
+        
         PlayerSchema,
         CharacterSchema,
-
-        ExpansionSchema,
+        CharacterItemSchema,
 
         WeeklySchema,
         PeriodSchema,
-
-        RaidSchema,
-        EncounterSchema,
 
         EventSchema,
         CompositionSchema,
@@ -46,12 +51,14 @@ module.exports = {
     Expansion: ExpansionSchema,
     Player: PlayerSchema,
     Character: CharacterSchema,
+    CharacterItem: CharacterItemSchema,
     // Mythic +
     Period: PeriodSchema,
     Weekly: WeeklySchema,
     // Raids
     Raid: RaidSchema,
     Encounter: EncounterSchema,
+    Item: ItemSchema,
     // Events
     Event: EventSchema,
     Composition: CompositionSchema,
