@@ -5,14 +5,21 @@ module.exports = {
             primary: true,
             type: "int"
         },
+        name: {
+            type: "varchar",
+            nullable: true
+        },
         slot: {
-            type: "varchar" /* HEAD, NECK, ...*/
+            type: "varchar", /* HEAD, NECK, ...*/
+            nullable: true
         },
         quality: {
-            type: "varchar" /* EPIC, ARTIFACT, COMMON, ... */
+            type: "varchar", /* EPIC, ARTIFACT, COMMON, ... */
+            nullable: true
         },
         level : {
             type: "int",
+            nullable: true
         },
         created: {
             type: "datetime"

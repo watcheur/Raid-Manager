@@ -97,9 +97,9 @@ module.exports = {
             type: "one-to-many",
             joinColumn: {
                 name: 'id',
-                referencedColumnName: 'source'
+                referencedColumnName: 'character'
             },
-            inverseSide: 'source'
+            inverseSide: 'character'
         }
     }
 };

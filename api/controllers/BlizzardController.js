@@ -70,17 +70,17 @@ class BlizzardController extends DefaultController  {
                             Promise.all(promises)
                                 .then(values => {
 
-                                    const realms = [].concat.apply([], values);
+                                    const realms = [].concat.apply([], values.filter(r => r && !r.id));
 
                                     repo
                                         .save(realms)
                                         .then(saved => {
                                             if (res)
-                                            res.send({ err: false, data : saved });
+                                                res.send({ err: false, data : saved });
                                             next();
                                         })
                                         .catch((err) => {
-                                            Logger.error("Error occured while saving periods id", err)
+                                            Logger.error("Error occured while saving realms", err)
                                             next(new Errs.InternalError('Database error'))
                                         });
                                 })
@@ -102,7 +102,7 @@ class BlizzardController extends DefaultController  {
                 })
             })
             .catch(err => {
-                Logger.error("Error occured while fetching raid's ids", err)
+                Logger.error("Error occured while fetching existing realms", err)
                 next(new Errs.InternalError('Database error'))
             })
     }

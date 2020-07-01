@@ -16,11 +16,11 @@ module.exports = {
             type: "varchar", /* colon (:) separated bonuses */
             nullable: true
         },
-        socket: {
+        sockets: {
             type: "varchar", /* NULL if no sockets, 0 if unsocketed, id if socketed */
             nullable: true
         },
-        enchantment: {
+        enchantments: {
             type: "varchar", /* NULL if no enchants possible, 0 if not enchanted, enchant spell id if enchanted */ 
             nullable: true
         }

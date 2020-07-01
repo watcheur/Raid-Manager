@@ -55,7 +55,7 @@ module.exports = () => {
                 });
             })
             .catch(err => Logger.error("Error occured on character cron job", err));
-    }, null, true, 'Europe/Paris', null, true);
+    }, null, true, 'Europe/Paris', null, false);
 
     // Every 8 hours -  Refresh all characters weekly
     new CronJob('0 0 */8 * * *', () => {
@@ -95,7 +95,7 @@ module.exports = () => {
         });
     }, null, true, 'Europe/Paris', null, true);
 
-    // Every first of month
+    // Every first of month -- Refresh all realms
     new CronJob('0 0 0 1 * *', () => {
         Logger.info('Start refresh realms cron');
 
