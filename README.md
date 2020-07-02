@@ -9,7 +9,7 @@ TODO:
         - Detail page (app)
 
     Encounters:
-        - Retrieve drops
+        - Store drops
 
     Event:
         - Tell if a character of the same player is present
@@ -20,6 +20,3 @@ TODO:
     Note:
         - Add icons (raid, class & spells)
         - Add placeholder like (mage(1) mage(2) mage(3))
-
-    Encounters:
-        - Store drops in db
