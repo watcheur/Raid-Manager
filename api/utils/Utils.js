@@ -54,6 +54,7 @@ module.exports = {
                     slot: it.item.slot,
                     quality: it.quality,
                     level: it.level,
+                    sockets: it.sockets,
                     bonuses: it.bonuses,
                     enchantments: it.enchantments
                 } : {};

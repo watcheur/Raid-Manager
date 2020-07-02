@@ -313,7 +313,7 @@ export default class CharactersList extends React.Component {
                                                 return (<td key={index}></td>);
                                             return (
                                                 <td key={index} className={classNames(GameData.IlvlToClass(item.level), 'items', `char-${value}`)}>
-                                                    {item.level}
+                                                    <a href="#" className={classNames(GameData.IlvlToClass(item.level))} data-wowhead={GameData.ItemToWowHead(item)}>{item.level}</a>
                                                 </td>
                                             )
                                         })}
