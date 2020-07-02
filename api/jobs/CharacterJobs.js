@@ -75,6 +75,7 @@ function CharacterUpdate(id, cb)
                                                 bonuses: (ei.bonus_list || []).join(':'),
                                                 sockets: (ei.sockets ? ei.sockets.map(socket => (socket.item ? socket.item.id : 0)).join(':') : null),
                                                 enchantments: (ei.enchantments ? ei.enchantments.map(enchant => enchant.enchantment_id).join(':') : null),
+                                                slot: ei.slot.type,
                                                 item: ei.item.id,
                                                 character: char.id
                                             });

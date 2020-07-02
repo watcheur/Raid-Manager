@@ -6,6 +6,9 @@ module.exports = {
             type: "int",
             generated: true
         },
+        slot: {
+            type: "varchar"
+        },
         quality: {
             type: "varchar" /* EPIC, ARTIFACT, COMMON, ... */
         },
