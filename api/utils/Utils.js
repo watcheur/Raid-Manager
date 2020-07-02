@@ -51,7 +51,7 @@ module.exports = {
                 return it.item ? {
                     id: it.item.id,
                     name: it.item.name,
-                    slot: it.item.slot,
+                    slot: it.slot,
                     quality: it.quality,
                     level: it.level,
                     sockets: it.sockets,
