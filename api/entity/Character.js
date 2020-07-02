@@ -53,70 +53,6 @@ module.exports = {
             type: "int",
             nullable: true
         },
-        head: {
-            type: "int",
-            nullable: true
-        },
-        neck: {
-            type: "int",
-            nullable: true
-        },
-        shoulder: {
-            type: "int",
-            nullable: true
-        },
-        back: {
-            type: "int",
-            nullable: true
-        },
-        chest: {
-            type: "int",
-            nullable: true
-        },
-        wrist: {
-            type: "int",
-            nullable: true
-        },
-        hands: {
-            type: "int",
-            nullable: true
-        },
-        waist: {
-            type: "int",
-            nullable: true
-        },
-        legs: {
-            type: "int",
-            nullable: true
-        },
-        feet: {
-            type: "int",
-            nullable: true
-        },
-        finger_1: {
-            type: "int",
-            nullable: true
-        },
-        finger_2: {
-            type: "int",
-            nullable: true
-        },
-        trinket_1: {
-            type: "int",
-            nullable: true
-        },
-        trinket_2: {
-            type: "int",
-            nullable: true
-        },
-        main_hand: {
-            type: "int",
-            nullable: true
-        },
-        off_hand: {
-            type: "int",
-            nullable: true
-        },
         created: {
             type: "datetime"
         },
@@ -155,6 +91,15 @@ module.exports = {
             inverseSide: 'id',
             cascade: true,
             onDelete: 'CASCADE'
+        },
+        items: {
+            target: "CharacterItem",
+            type: "one-to-many",
+            joinColumn: {
+                name: 'id',
+                referencedColumnName: 'character'
+            },
+            inverseSide: 'character'
         }
     }
 };

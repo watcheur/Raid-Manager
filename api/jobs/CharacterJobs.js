@@ -1,6 +1,6 @@
-const Typeorm = require('typeorm');
-const CharacterEntity = require('../entity/Character');
-const WeeklyEntity = require('../entity/Weekly');
+const TypeORM = require('typeorm');
+const Entities = require('../entity/Entities');
+const Queues = require('../utils/Queues');
 const blizzard = require('blizzard.js').initialize(require('../config.json').blizzard);
 const Logger = require('../utils/Logger');
 const Enums = require('../utils/Enums');
@@ -9,8 +9,8 @@ const Socket = require('../utils/Socket');
 function CharacterUpdate(id, cb)
 {
     Logger.info('Start Character update job', { char: id })
-    const repo = Typeorm.getRepository(CharacterEntity.name);
-    const props = [ 'head', 'neck', 'shoulder', 'back', 'chest', 'wrist', 'hands', 'waist', 'legs', 'feet', 'finger_1', 'finger_2', 'trinket_1', 'trinket_2', 'main_hand', 'off_hand' ]
+    const repo = TypeORM.getRepository(Entities.Character);
+    //const props = [ 'head', 'neck', 'shoulder', 'back', 'chest', 'wrist', 'hands', 'waist', 'legs', 'feet', 'finger_1', 'finger_2', 'trinket_1', 'trinket_2', 'main_hand', 'off_hand' ]
 
     repo
         .createQueryBuilder("c")
@@ -53,19 +53,74 @@ function CharacterUpdate(id, cb)
                                 
                                 blizzard.wow.character('equipment', { origin: 'eu', realm: char.realm.toLowerCase(), name: char.name.toLowerCase(), params: params })
                                     .then(res => {
-                                        res.data.equipped_items.forEach(item => {
+                                        let neck = 0;
+                                        let items = [];
+                                        let characterItems = [];
+                                        res.data.equipped_items.forEach(ei => {
+                                            /*
                                             if (props.indexOf(item.slot.type.toLowerCase()) >= 0)
                                                 char[item.slot.type.toLowerCase()] = item.level.value
+                                            */
+
+                                            let BlizzardItem = {
+                                                id: ei.item.id,
+                                                slot: ei.slot.type,
+                                                created: new Date()
+                                            };
+                                            items.push(BlizzardItem);
+
+                                            characterItems.push({
+                                                quality: ei.quality.type,
+                                                level: ei.level.value,
+                                                bonuses: (ei.bonus_list || []).join(':'),
+                                                sockets: (ei.sockets ? ei.sockets.map(socket => (socket.item ? socket.item.id : 0)).join(':') : null),
+                                                enchantments: (ei.enchantments ? ei.enchantments.map(enchant => enchant.enchantment_id).join(':') : null),
+                                                item: ei.item.id,
+                                                character: char.id
+                                            });
+
+                                            if (ei.slot.type == 'NECK')
+                                                neck = ei.level.value;
                                         });
 
-                                        char.azerite = 1 + ((char.neck - 280 - 45 - 10) / 2); // baselevel + ((neck - base - magni - mother) / 2)
-                                        if (char.azerite < 0)
+                                        TypeORM.getRepository(Entities.Item).save(items)
+                                            .then(itemsRes => {
+                                                itemsRes.map(item => Queues.Item.add({ item: item.id }));
+                                            })
+                                            .catch(err => {
+                                                Logger.error('Items save failed', err);
+                                                cb(new Error('Items save fail'));
+                                            });
+
+                                        TypeORM.getConnection()
+                                            .createQueryBuilder()
+                                            .delete()
+                                            .from(Entities.CharacterItem)
+                                            .where('character = :id', { id : char.id })
+                                            .execute()
+                                            .then(delRes => {
+                                                TypeORM.getRepository(Entities.CharacterItem).save(characterItems).catch(err => {
+                                                    Logger.error('Character Items save failed', err);
+                                                });
+                                            })
+                                            .catch(err => {
+                                                Logger.error('Character Items deletion failed', err);
+                                                cb(new Error('Character Items deletion failed'));
+                                            });
+
+                                        //let neck = characterItems.find(i => i.slot == "NECK");
+                                        if (neck) {
+                                            char.azerite = 1 + ((neck - 280 - 45 - 10) / 2); // baselevel + ((neck - base - magni - mother) / 2)
+                                            if (char.azerite < 0)
+                                                char.azerite = null;
+                                        }
+                                        else
                                             char.azerite = null;
                                         char.updated = new Date();
 
-                                        Typeorm.getConnection()
+                                        TypeORM.getConnection()
                                                 .createQueryBuilder()
-                                                .update(CharacterEntity.name)
+                                                .update(Entities.Character)
                                                 .set(char)
                                                 .where("id = :id", { id: id })
                                                 .execute()
@@ -85,7 +140,10 @@ function CharacterUpdate(id, cb)
                                                 })
                                     })
                                     .catch(err => {
-                                        Logger.error('Blizzard API Equipment failed', { status: err.response.status, statusText: err.response.statusText, character: { id: id, name: char.name, realm: char.realm } });
+                                        if (err.response)
+                                            Logger.error('Blizzard API Equipment failed', { status: err.response.status, statusText: err.response.statusText, character: { id: id, name: char.name, realm: char.realm } });
+                                        else
+                                            Logger.error('Error', err);
                                         cb(new Error('Blizzard API Failed'));
                                     });
                             })
@@ -101,7 +159,10 @@ function CharacterUpdate(id, cb)
                     }
                 })
                 .catch(err => {
-                    Logger.error('Blizzard token access failed', { status: err.response.status, statusText: err.response.statusText });
+                    if (err.response)
+                        Logger.error('Blizzard token access failed', { status: err.response.status, statusText: err.response.statusText });
+                    else
+                        Logger.error('Code error', err);
                     cb(new Error('Blizzard token access failed'));
                 })
         })

@@ -71,11 +71,15 @@ class ExpansionController extends DefaultController  {
                             repo
                                 .save(xpacs)
                                 .then(saved => {
-                                    res.send({
-                                        err: false,
-                                        data : saved
-                                    });
-                                    next();
+                                    if (res) {
+                                        res.send({
+                                            err: false,
+                                            data : saved
+                                        });
+                                    }
+
+                                    if (next)
+                                        next();
                                 })
                                 .catch((err) => {
                                     Logger.error("Error occured while saving periods id", err)

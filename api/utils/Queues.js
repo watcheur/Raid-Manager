@@ -3,5 +3,6 @@ const config = require('../config.json').redis;
 
 module.exports = {
     Character: new Queue('character', { redis: config }),
-    Weekly: new Queue('weekly', { redis: config })
+    Weekly: new Queue('weekly', { redis: config }),
+    Item: new Queue('item', { redis: config })
 }

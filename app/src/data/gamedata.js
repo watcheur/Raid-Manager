@@ -862,5 +862,17 @@ export default {
             { label: 'Crowd Control', data: crowdControls },
             { label: 'Other', data: other }
         ];
+    },
+    ItemToWowHead: (item) => {
+        let str = `item=${item.id}&ilvl=${item.level}`;
+
+        if (item.bonuses)
+            str += `&bonus=${item.bonuses}`;
+        if (item.sockets)
+            str += `&gems=${item.sockets}`;
+        if (item.enchantments)
+            str += `&ench=${item.enchantments}`;
+
+        return str;
     }
 }

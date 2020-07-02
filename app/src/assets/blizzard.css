@@ -153,66 +153,66 @@
 	border-radius: 0
 }
 
-.GameIcon--slotHead .GameIcon-icon {
+.GameIcon--slot--HEAD .GameIcon-icon {
 	background-position: 0 0
 }
 
-.GameIcon--slotNeck .GameIcon-icon {
+.GameIcon--slot--NECK .GameIcon-icon {
 	background-position: 0 -100%
 }
 
-.GameIcon--slotShoulder .GameIcon-icon {
+.GameIcon--slot--SHOULDER .GameIcon-icon {
 	background-position: 0 -200%
 }
 
-.GameIcon--slotBack .GameIcon-icon,
-.GameIcon--slotChest .GameIcon-icon {
+.GameIcon--slot--BACK .GameIcon-icon,
+.GameIcon--slot--CHEST .GameIcon-icon {
 	background-position: 0 -300%
 }
 
-.GameIcon--slotTabard .GameIcon-icon {
+.GameIcon--slot--TABARD .GameIcon-icon {
 	background-position: 0 -400%
 }
 
-.GameIcon--slotShirt .GameIcon-icon {
+.GameIcon--slot--SHIRT .GameIcon-icon {
 	background-position: 0 -500%
 }
 
-.GameIcon--slotWrist .GameIcon-icon {
+.GameIcon--slot--WRIST .GameIcon-icon {
 	background-position: 0 -600%
 }
 
-.GameIcon--slotHand .GameIcon-icon {
+.GameIcon--slot--HANDS .GameIcon-icon {
 	background-position: 0 -700%
 }
 
-.GameIcon--slotWaist .GameIcon-icon {
+.GameIcon--slot--WAIST .GameIcon-icon {
 	background-position: 0 -800%
 }
 
-.GameIcon--slotLeg .GameIcon-icon {
+.GameIcon--slot--LEGS .GameIcon-icon {
 	background-position: 0 -900%
 }
 
-.GameIcon--slotFoot .GameIcon-icon {
+.GameIcon--slot--FEET .GameIcon-icon {
 	background-position: 0 -1000%
 }
 
-.GameIcon--slotLeftFinger .GameIcon-icon,
-.GameIcon--slotRightFinger .GameIcon-icon {
+.GameIcon--slot--FINGER_1 .GameIcon-icon,
+.GameIcon--slot--FINGER_2 .GameIcon-icon {
 	background-position: 0 -1100%
 }
 
-.GameIcon--slotLeftTrinket .GameIcon-icon,
-.GameIcon--slotRightTrinket .GameIcon-icon {
+.GameIcon--slot--TRINKET_1 .GameIcon-icon,
+.GameIcon--slot--TRINKET_2 .GameIcon-icon {
 	background-position: 0 -1200%
 }
 
-.GameIcon--slotWeapon .GameIcon-icon {
+.GameIcon--slot--MAIN_HAND .GameIcon-icon {
 	background-position: 0 -1300%
 }
 
-.GameIcon--slotOffhand .GameIcon-icon {
+.GameIcon--slot--OFF_HAND .GameIcon-icon {
 	background-position: 0 -1400%
 }
 

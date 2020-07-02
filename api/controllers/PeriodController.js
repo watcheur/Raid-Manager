@@ -85,11 +85,15 @@ class PeriodController extends DefaultController  {
                                         .getRepository(Entities.Period)
                                         .save(values)
                                         .then(saved => {
-                                            res.send({
-                                                err: false,
-                                                data : values
-                                            });
-                                            next();
+                                            if (res) {
+                                                res.send({
+                                                    err: false,
+                                                    data : values
+                                                });
+                                            }
+
+                                            if (next)
+                                                next();
                                         })
                                         .catch((err) => {
                                             Logger.error("Error occured while saving periods id", err)
