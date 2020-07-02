@@ -45,6 +45,21 @@ module.exports = {
         if (char.dungeons)
             char.weekly = Math.max.apply(Math, char.dungeons.filter(d => d.period >= weekly).map(d => d.level));
 
+        if (char.items)
+        {
+            char.items = char.items.map(it => {
+                return it.item ? {
+                    id: it.item.id,
+                    name: it.item.name,
+                    slot: it.item.slot,
+                    quality: it.quality,
+                    level: it.level,
+                    bonuses: it.bonuses,
+                    enchantments: it.enchantments
+                } : {};
+            })
+        }
+
         return char;
     }
 }
