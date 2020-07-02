@@ -60,8 +60,9 @@ export default class CharactersList extends React.Component {
             for (var i in this.state.filters) {
                 if (this.state.filters.hasOwnProperty(i)) {
                     let value = this.state.filters[i];
+                    let item = char.items.find(it => it.slot == i);
 
-                    if (char[GameData.TrSlot(i)] >= value)
+                    if (item && item.level >= value)
                         count++;
                 }
             }
@@ -197,7 +198,7 @@ export default class CharactersList extends React.Component {
 
     render() {
         const { title } = this.props;
-        const slots = ['Head', 'Neck', 'Shoulder', 'Back', 'Chest', 'Wrist', 'Hand', 'Waist', 'Leg', 'Foot', 'LeftFinger', 'RightFinger', 'LeftTrinket', 'RightTrinket', 'Weapon', 'Offhand'];
+        const slots = ['HEAD', 'NECK', 'SHOULDER', 'BACK', 'CHEST', 'WRIST', 'HANDS', 'WAIST', 'LEGS', 'FEET', 'FINGER_1', 'FINGER_2', 'TRINKET_1', 'TRINKET_2', 'MAIN_HAND', 'OFF_HAND'];
         
         return (
             <Card small className="mb-4 overflow-hidden text-center characters-list">
@@ -245,7 +246,7 @@ export default class CharactersList extends React.Component {
                                 {slots.map((value, index) => {
                                     return (
                                         <th scope="col" key={index} className={`border-0 char-${value}`} onClick={ev => this.filter(value)}>
-                                            <div className={`GameIcon GameIcon--slot${value} GameIcon--slot GameIcon--small ${this.state.filters[value] ? 'border-orange': ''}`} data-tip={value + (this.state.filters[value] ? ` (${this.state.filters[value]})` : '')}>
+                                            <div className={`GameIcon GameIcon--slot--${value} GameIcon--slot GameIcon--small ${this.state.filters[value] ? 'border-orange': ''}`} data-tip={value + (this.state.filters[value] ? ` (${this.state.filters[value]})` : '')}>
                                                 <div className="GameIcon-icon"></div>
                                             </div>
                                         </th>
@@ -307,9 +308,12 @@ export default class CharactersList extends React.Component {
                                         <td className={classNames(character.weekly ? 'text-success': 'text-danger', 'char-weekly')}>{character.weekly || ''} <i className="material-icons">{character.weekly ? '' : 'clear'}</i> </td>
                                         <td className={classNames(GameData.IlvlToClass(character.equipped), 'char-equipped')}>{character.equipped}</td>
                                         {slots.map((value, index) => {
+                                            let item = character.items.find(it => it.slot == value);
+                                            if (!item)
+                                                return (<td key={index}></td>);
                                             return (
-                                                <td key={index} className={classNames(GameData.IlvlToClass(character[GameData.TrSlot(value)]), 'items', `char-${value}`)}>
-                                                    {character[GameData.TrSlot(value)]}
+                                                <td key={index} className={classNames(GameData.IlvlToClass(item.level), 'items', `char-${value}`)}>
+                                                    {item.level}
                                                 </td>
                                             )
                                         })}
