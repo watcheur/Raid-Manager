@@ -1,0 +1,26 @@
+{
+    "server": {
+        "port": 3005
+    },
+    "blizzard": {
+        "key": "",
+        "secret": "",
+        "locale": "",
+        "origin": ""
+    },
+    "database": {
+        "type": "",
+        "host": "",
+        "port": 3306,
+        "username": "",
+        "password": "",
+        "database": "",
+        "logging": true,
+        "synchronize": true
+    },
+    "redis": {
+        "host": "",
+        "port": 0,
+        "password": ""
+    }
+}
