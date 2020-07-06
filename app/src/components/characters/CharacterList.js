@@ -280,7 +280,12 @@ export default class CharactersList extends React.Component {
                                     <tr key={index} className={this.state.selected === character.id ? 'selected' : ''}>
                                         <td onClick={(ev) => this.toggleSelected(character.id)}
                                             className={classNames('GameColorClass', GameData.ClassToObj(character.class).slug, 'char-name')} style={{textTransform: 'capitalize'}}>
-                                            {character.name}
+                                            <a
+                                                href={`https://worldofwarcraft.com/en-gb/character/eu/${character.realm}/${character.name}`}
+                                                target="_blank"
+                                                className={classNames('GameColorClass', GameData.ClassToObj(character.class).slug)}>
+                                                {character.name}
+                                            </a>
                                             <i className="show-item material-icons">{this.state.selected === character.id ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}</i>
                                         </td>
                                         <td className='char-level'>{character.level}</td>
