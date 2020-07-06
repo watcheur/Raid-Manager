@@ -129,7 +129,7 @@ class CharacterController extends DefaultController {
         const repo = TypeORM.getRepository(Entities.Character);
         repo
             .createQueryBuilder("c")
-            .where("c.name = :name AND c.realm = :realm", { name: char.name, realm: char.realm })
+            .where("BINARY c.name = :name AND c.realm = :realm", { name: char.name, realm: char.realm })
             .getCount()
             .then(async (nb) => {
                 if (nb > 0)
