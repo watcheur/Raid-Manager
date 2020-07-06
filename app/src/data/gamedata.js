@@ -707,7 +707,7 @@ export default {
                 return { label: "Brewmastern", class: 'monk-brewmaster', range: false }
             default:
         }
-        return { label: "Unknown", slug: 'unknown', range: false }
+        return { label: "Unknown", class: 'unknown', range: false }
     },
     /**
      * @param {Race} race
