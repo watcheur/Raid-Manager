@@ -136,7 +136,8 @@ const Specs = {
         Classes.DemonHunter.Vengeance,
         Classes.Druid.Guardian,
         Classes.Warrior.Protection,
-        Classes.Paladin.Protection
+        Classes.Paladin.Protection,
+        Classes.Monk.Brewmaster
     ]
 }
 
