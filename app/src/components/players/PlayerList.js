@@ -102,7 +102,7 @@ export default class PlayersList extends React.Component {
         const { title } = this.props;
 
         return(
-            <Card small className="mb-4 overflow-hidden">
+            <Card small className="mb-4 overflow-hidden players-list">
                 <CardHeader className="py-0"><h5 className={classNames("m-0 py-3", this.props.className)}>{title} ({this.state.players.length})</h5></CardHeader>
                 <CardBody className="p-0 pb-3">
                     <table className="table mb-0">
@@ -117,7 +117,7 @@ export default class PlayersList extends React.Component {
                             {!this.state.players && (<tr className="text-center"><td colspan="3">Aucun joueurs</td></tr>)}
                             {this.state.players && this.state.players.map((player, index) => {
                                 return (
-                                    <tr key={index} className="players-list">
+                                    <tr key={index}>
                                         <td className="player-rank">
                                             <FormSelect
                                                 id="feRank"
@@ -136,7 +136,7 @@ export default class PlayersList extends React.Component {
                                             {player.characters && player.characters.map((char, index) => {
                                                 return (
                                                     <span className={classNames('GameColorClass', GameData.ClassToObj(char.class).slug, 'char-name')}>
-                                                        {char.name} {char.type == GameData.Characters.Type.MAIN && (<i className="material-icons">star</i>)}
+                                                        {char.name.capitalize()} {char.type == GameData.Characters.Type.MAIN && (<i className="material-icons">star</i>)}
                                                     </span>
                                                 );
                                             })}
