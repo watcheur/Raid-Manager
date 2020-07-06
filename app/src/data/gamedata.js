@@ -703,6 +703,8 @@ export default {
                 return { label: "Protection", class: 'warrior-protection', range: false }
             case Classes.Paladin.Protection:
                 return { label: "Protection", class: 'paladin-protection', range: false }
+            case Classes.Monk.Brewmaster:
+                return { label: "Brewmastern", class: 'monk-brewmaster', range: false }
             default:
         }
         return { label: "Unknown", slug: 'unknown', range: false }
