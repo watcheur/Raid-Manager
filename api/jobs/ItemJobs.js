@@ -78,7 +78,10 @@ function ItemUpdate(id, cb) {
                     }
                 })
                 .catch(err => {
-                    Logger.error('Blizzard token access failed', { status: err.response.status, statusText: err.response.statusText });
+                    if (err.response)
+                        Logger.error('Blizzard token access failed', { status: err.response.status, statusText: err.response.statusText });
+                    else
+                        Logger.error('Something else failed... :', { err: err });
                     cb(new Error('Blizzard token access failed'));
                 })
         })
