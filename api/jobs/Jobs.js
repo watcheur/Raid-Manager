@@ -19,7 +19,7 @@ module.exports = {
         Queues.Weekly.process((job, done) => {
             if (!job.data.character)
                 return done(null, null);
-            //WeeklyJobs.Update(job.data.character, done);
+            WeeklyJobs.Update(job.data.character, done);
         }).catch(err => { Logger.error('Weekly queue processing failed '); })
 
         Logger.info('Starting item queue processing');
