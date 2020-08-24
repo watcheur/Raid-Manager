@@ -1,10 +1,10 @@
 const TypeORM = require('typeorm');
+const Entities = require('../entity/Entities');
 const Controllers = require('../controllers/Controllers');
 const Logger = require('../utils/Logger');
 const Queues = require('../utils/Queues');
 const CronJob = require('cron').CronJob;
 const Context = require('../utils/Context');
-const Entities = require('../entity/Entities');
 
 module.exports = () => {
     // Every hours - Refresh current period & current xpac
@@ -102,5 +102,28 @@ module.exports = () => {
         Controllers.Blizzard.LoadRealms(null, null, () => {
             Logger.info('End refresh realms cron');
         });
+    }, null, true, 'Europe/Paris', null, true);
+
+    // Every wednesday @ 1am -- Refresh all items who aren't updated
+    new CronJob('0 1 9 * * Wed', () => {
+        Logger.info('Start refresh unupdated items cron');
+
+        TypeORM.getRepository(Entities.Item)
+            .find({
+                where: {
+                    updated: TypeORM.IsNull()
+                }
+            })
+            .then(items => {
+                if (items) {
+                    items.forEach(item => {
+                        Queues.Item.add({ item: item.id });
+                    });
+                }
+            })
+            .catch(err => {
+                Logger.error('Error retrieving raids', err);
+                next(new Errs.InternalError('Database error'));
+            })
     }, null, true, 'Europe/Paris', null, true);
 }
