@@ -2,7 +2,9 @@ const TypeORM = require('typeorm');
 const Entities = require('../entity/Entities');
 const Errs = require('restify-errors');
 const Logger = require('../utils/Logger');
+const Queues = require('../utils/Queues');
 const DefaultController = require('./DefaultController');
+const EncounterController = require('./EncounterController');
 const blizzard = require('blizzard.js').initialize(require('../config.json').blizzard);
 
 class RaidController extends DefaultController {
@@ -117,7 +119,7 @@ class RaidController extends DefaultController {
                                                 expansion: instanceResponse.data.expansion.id,
                                                 minimum_level: instanceResponse.data.minimum_level,
                                                 encounters: instanceResponse.data.encounters.map(e => { return { id: e.id, name: e.name } })
-                                            })
+                                            });
                                         })
                                         .catch(err => resolve(null));
                                 }));
@@ -134,6 +136,11 @@ class RaidController extends DefaultController {
                                                 err: false,
                                                 data : saved
                                             });
+
+                                            saved.forEach(r => r.encounters.forEach(ec => {
+                                                Queues.Encounter.add({ encounter: ec.id });
+                                            }));
+
                                             next();
                                         })
                                         .catch((err) => {

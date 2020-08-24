@@ -3,6 +3,7 @@ const Entities = require('../entity/Entities');
 const Errs = require('restify-errors');
 const Logger = require('../utils/Logger');
 const DefaultController = require('./DefaultController');
+const Jobs = require('../jobs/Jobs');
 const blizzard = require('blizzard.js').initialize(require('../config.json').blizzard);
 
 class BlizzardController extends DefaultController  {
@@ -105,6 +106,15 @@ class BlizzardController extends DefaultController  {
                 Logger.error("Error occured while fetching existing realms", err)
                 next(new Errs.InternalError('Database error'))
             })
+    }
+
+    Encounter = (req, res, next) => {
+        Jobs.Encounter.LoadDrops(req.params.id, (err) => {
+            if (err)
+                return next(err);
+            res.send({ data: true });
+            next();
+        });
     }
 }
 

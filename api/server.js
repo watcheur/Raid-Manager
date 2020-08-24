@@ -123,6 +123,7 @@ TypeORM
 
         // Blizzard
         server.get('/blizzard/realms', Controllers.Blizzard.Realms);
+        server.get('/blizzard/encounter/:id', Controllers.Blizzard.Encounter);
 
         // Options
         server.get('/options', Controllers.Option.Get);
