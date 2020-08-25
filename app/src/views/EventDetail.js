@@ -17,8 +17,13 @@ import {
     ModalBody,
     ModalHeader,
     ModalFooter,
-    CardFooter
+    CardFooter,
+    InputGroup,
+    DatePicker,
+    FormInput
 } from "shards-react";
+
+import { toast } from 'react-toastify';
 
 import Error from "./Errors";
 import PageTitle from "../components/common/PageTitle";
@@ -32,9 +37,18 @@ class EventDetail extends React.Component {
         eventId: 0,
         encounter : null,
         event: null,
+        
         eventDeleted: false,
         eventNotFound: false,
-        modalOpened: false
+        
+        modalDeleteOpened: false,
+
+        loading: false,
+        date: '',
+        invalidDate: false,
+        time: '',
+        invalidTime: false,
+        modalDuplicateOpened: false
     }
 
     constructor(props) {
@@ -47,17 +61,42 @@ class EventDetail extends React.Component {
 
         this.loadEvent = this.loadEvent.bind(this);
         this.delete = this.deleteEvent.bind(this);
+        this.copyEvent = this.copyEvent.bind(this);
     }
     
     deleteEvent() {
         this.setState({ deletion: true })
         Api.DeleteEvent(this.state.eventId)
             .then((res) => {
-
+                
             })
             .catch((err) => {
                 alert(err)
             });
+    }
+
+    copyEvent()
+    {
+        this.setState({ invalidDate: !this.state.date, invalidTime:  this.state.time.length === 0 });
+        if (this.state.date && this.state.time.length > 0)
+        {
+            this.setState({ loading: true });
+            Api.DuplicateEvent(this.state.eventId, { schedule: moment(this.state.date).format(`YYYY-MM-DD ${this.state.time}:00`) })
+                .then((res) => {
+                    if (!res.data.err) {
+                        toast.success('Event copied', {
+                            onClick: props => {
+                                window.location.href = `/events/${res.data.data.id}`
+                            }
+                        });
+                        this.setState({ modalDuplicateOpened: false, loading: false });
+                    }
+                })
+                .catch(err => {
+                    alert(err);
+                    this.setState({ loading: false });
+                });
+        }
     }
     
     loadEvent() {
@@ -135,14 +174,58 @@ class EventDetail extends React.Component {
         return (
             <Container fluid className="main-content-container px-4">
 
-                <Modal open={this.state.modalOpened}>
+                <Modal open={this.state.modalDeleteOpened}>
                     <ModalHeader>Confirm deletion</ModalHeader>
                     <Row className="border-top py-2 px-2 m-0">
                         <Col md="6">
-                            <Button onClick={() => this.setState({ modalOpened: false })} className="btn-block" theme="light"><i className="material-icons">close</i> Close</Button>
+                            <Button onClick={() => this.setState({ modalDeleteOpened: false })} className="btn-block" theme="light"><i className="material-icons">close</i> Close</Button>
                         </Col>
                         <Col md="6">
                             <Button onClick={() => this.deleteEvent() } className="btn-block" theme="danger"><i className="material-icons">delete</i> Confirm</Button>
+                        </Col>
+                    </Row>
+                </Modal>
+
+                <Modal open={this.state.modalDuplicateOpened}>
+                    <ModalHeader>Copy this event</ModalHeader>
+                    <ModalBody>
+                        <Row>
+                            <Col md="12">
+                                <InputGroup>
+                                    <DatePicker
+                                        id="feDate"
+                                        selected={this.state.date}
+                                        invalid={this.state.invalidDate}
+                                        onChange={(value) => { this.setState({ date: (value ? value : undefined) }); }}
+                                        placeholderText="Start Date"
+                                        dropdownMode="select"
+                                        className="text-center"
+                                        locale="en_GB"
+                                        required
+                                    />
+
+                                    <FormInput
+                                        id="feTime"
+                                        type="time"
+                                        placeholder="Time"
+                                        invalid={this.state.invalidTime}
+                                        value={this.state.time}
+                                        className="text-center"
+                                        required
+                                        onChange={(event) => { this.setState({time: event.target.value}) }} />
+                                </InputGroup>
+                            </Col>
+                        </Row>
+                    </ModalBody>
+                    <Row className="border-top py-2 px-2 m-0">
+                        <Col md="6">
+                            <Button onClick={() => this.setState({ modalDuplicateOpened: false })} className="btn-block" theme="light"><i className="material-icons">close</i> Close</Button>
+                        </Col>
+                        <Col md="6">
+                            <Button disabled={this.state.loading} onClick={() => this.copyEvent() } className="btn-block" theme="success">
+                                <i className={`material-icons ${this.state.loading ? 'spin': ''}`}>{this.state.loading ? 'refresh' : 'content_copy'}</i>
+                                Copy
+                            </Button>
                         </Col>
                     </Row>
                 </Modal>
@@ -193,7 +276,8 @@ class EventDetail extends React.Component {
                                     <CardFooter className="border-top">
                                         <Row>
                                             <Col lg="12">
-                                                <Button onClick={() => this.setState({ modalOpened: true })} className="btn-block" theme="danger"><i className="material-icons">delete</i> Delete</Button>
+                                                <Button onClick={() => this.setState({ modalDuplicateOpened: true })} className="btn-block" theme="info"><i className="material-icons">content_copy</i> Duplicate</Button>
+                                                <Button onClick={() => this.setState({ modalDeleteOpened: true })} className="btn-block" theme="danger"><i className="material-icons">delete</i> Delete</Button>
                                             </Col>
                                         </Row>
 

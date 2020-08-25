@@ -104,6 +104,7 @@ TypeORM
         server.put('/events/:id', Controllers.Event.Update);
         server.del('/events/:id', Controllers.Event.Delete);
         server.get('/events/next', Controllers.Event.NextEvent);
+        server.post('/events/:id/duplicate', Controllers.Event.Duplicate);
 
         // Compositions
         server.post('/compositions', Controllers.Composition.Create);

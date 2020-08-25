@@ -14,7 +14,7 @@ const EventsOverview = () => (
 
     <Row className="justify-content-md-center mb-4">
         <Col md="8">
-          <EventAdd raid={1180} difficulty={3} title="Test" />
+          <EventAdd raid={1180} difficulty={3} />
         </Col>
     </Row>
 

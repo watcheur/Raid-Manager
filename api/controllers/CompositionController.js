@@ -49,7 +49,7 @@ class CompositionController extends DefaultController  {
 
                         if (props.characters) {
                             await TypeORM.getConnection().createQueryBuilder().delete().from(Entities.CharacterComp).where('composition = :composition', { composition: comp.id }).execute();
-                            props.characters.map(c => c.composition = comp.id);
+                            props.characters = props.characters.map(c => { c.composition = comp.id; return c; });
                             await TypeORM.getRepository(Entities.CharacterComp).save(props.characters);
                         }
 

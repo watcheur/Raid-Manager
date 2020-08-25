@@ -283,7 +283,7 @@ class CreateCompCompact extends React.Component {
 
     hasDuplicatePlayer()
     {
-        var players = _.groupBy(this.state.selectedCharaters.map(c => { return { name: c.name, realm: c.realm, player: c.player.name, playerId: c.player.id } }), 'player');
+        var players = _.groupBy(this.state.selectedCharaters.filter(c => c.player).map(c => { return { name: c.name, realm: c.realm, player: c.player.name, playerId: c.player.id } }), 'player');
         
         var ret = [];
         for (var i in players)
@@ -351,7 +351,7 @@ class CreateCompCompact extends React.Component {
                         <i className='material-icons'>error</i> {this.state.error}
                     </CardBody>   
                 )}
-                {players.length && (
+                {players.length > 0 && (
                     <CardBody
                         className="bg-danger text-white text-center p-3 "
                         style={{ boxShadow: "inset 0 0 5px rgba(0,0,0,.2)" }}>

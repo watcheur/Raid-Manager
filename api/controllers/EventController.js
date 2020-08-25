@@ -77,7 +77,7 @@ class EventController extends DefaultController  {
             .getCount()
             .then(cR => {
                 if (cR == 0 )
-                    return next(new Errs.NotFoundError('This raid doesn\'t exist'));
+                    return next(new Errs.NotFoundError('This event doesn\'t exist'));
 
                 const repo = TypeORM.getRepository(Entities.Event);
 
@@ -256,6 +256,118 @@ class EventController extends DefaultController  {
                 Logger.error('Event deletion failed', err)
                 next(new Errs.InternalError('Event deletion failed'))
             });
+    }
+
+    Duplicate = (req, res, next) => {
+        Logger.info('Duplicate event', req.params, req.body);
+
+        let props = {};
+        try {
+            props = this.RequiredProps(req.body, [ 'schedule' ]);
+        } catch (err) {
+            return next(err);
+        }
+
+        var repo = TypeORM.getRepository(Entities.Event);
+        
+        repo
+            .findOne({
+                relations: [ 'raid', 'compositions', 'compositions.encounter', 'compositions.characters', 'compositions.characters.character' ],
+                where: {
+                    id: req.params.id
+                }
+            })
+            .then(originalEvent => {
+                if (originalEvent == null)
+                    return next(new Errs.NotFoundError('Event not found'));
+
+                originalEvent.schedule = new Date(props.schedule);
+                if (isNaN(originalEvent.schedule.getTime()))
+                    return next(new Errs.BadRequestError('Invalid date format'));
+
+                repo
+                    .createQueryBuilder()
+                    .where('schedule = :schedule AND raid = :raid', { schedule: originalEvent.schedule, raid: originalEvent.raid.id })
+                    .getCount()
+                    .then(c => {
+                        if (c > 0)
+                            return next(new Errs.BadRequestError('This event already exist (same raid & same time)'));
+
+                        repo
+                            .save({
+                                title: originalEvent.title,
+                                schedule: originalEvent.schedule,
+                                difficulty: originalEvent.difficulty,
+                                raid: originalEvent.raid,
+                                created: new Date()
+                            })
+                            .then(newEvent => {
+
+                                var comps = originalEvent.compositions.map(cmp => {
+                                    return {
+                                        event: newEvent.id,
+                                        created: new Date(),
+                                        encounter: cmp.encounter.id,
+                                        characters: cmp.characters.map(c => {
+                                            return {
+                                                role: c.role,
+                                                character: c.character.id
+                                            }
+                                        })
+                                    }
+                                });
+
+                                TypeORM.getRepository(Entities.Composition).save(comps)
+                                    .then(saved => {
+                                        newEvent.compositions = comps;
+
+                                        var charComps = [].concat.apply([], saved.map(sv => {
+                                            return sv.characters.map(c => {
+                                                c.composition = sv.id;
+                                                return c;
+                                            })
+                                        }));
+
+                                        TypeORM.getRepository(Entities.CharacterComp).save(charComps)
+                                            .then(saved => {
+                                                res.send({
+                                                    err: false,
+                                                    data: newEvent
+                                                })
+        
+                                                Socket.Emit(Socket.Channels.Event, {
+                                                    action: Socket.Action.Event.Create,
+                                                    data: {
+                                                        event: newEvent.id
+                                                    }
+                                                })
+                                                next();
+                                            })
+                                            .catch(err => {
+                                                Logger.error('Composition save error', err);
+                                                next(new Errs.InternalError('Database error'));
+                                            })
+                                    })
+                                    .catch(err => {
+                                        Logger.error('Composition save error', err);
+                                        next(new Errs.InternalError('Database error'));
+                                    })
+                                
+                            })
+                            .catch(err => {
+                                Logger.error('Events save error', err);
+                                next(new Errs.InternalError('Database error'));
+                            })
+                    })
+                    .catch(err => {
+                        Logger.error('Events retrieve error', err);
+                        next(new Errs.InternalError('Database error'));
+                    });
+            })
+            .catch(err => {
+                Logger.error('Events retrieve error', err);
+                next(new Errs.InternalError('Database error'));
+            })
     }
 
     NextEvent = (req, res, next) => {
