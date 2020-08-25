@@ -7,6 +7,9 @@ const EncounterJobs = require('./EncounterJobs');
 
 module.exports = {
     Start: () => {
+        if (process.env.NODE_ENV !== 'production')
+            return;
+
         Logger.info('Sarting character queue processing');
         Queues.Character.process((job, done) => {
             if (!job.data.character)
@@ -28,7 +31,7 @@ module.exports = {
                 return done(null, null);
             
             ItemJobs.Update(job.data.item, done);
-        });
+        }).catch(err => { Logger.error('Item queue processing failed'); })
 
         Logger.info('Starting encounter queue processing');
         Queues.Encounter.process((job, done) => {
@@ -37,7 +40,7 @@ module.exports = {
                 return done(null, null);
 
             EncounterJobs.LoadDrops(job.data.encounter, done);
-        });
+        }).catch(err => { Logger.error('Encounter queue processing failed'); })
     },
     Character: CharacterJobs,
     Weekly: WeeklyJobs,

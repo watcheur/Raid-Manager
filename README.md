@@ -49,11 +49,7 @@ Here's the syntax:
         - Wishlist
         - Detail page (app)
 
-    Encounters:
-        - Store drops
-
     Event:
-        - Tell if a character of the same player is present
         - Duplicate event
         - Import event from game (csv addon ?)
         - Tell if a player need an item (see wishlist)

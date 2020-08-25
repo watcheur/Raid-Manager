@@ -32,6 +32,7 @@ import GameData from '../../data/gamedata';
 import CharacterCard from '../characters/CharacterCard';
 import RoleZone from './RoleZone';
 import NoteEditor from '../notes/Editor';
+import utils from "../../utils/utils";
 
 class CreateCompCompact extends React.Component {
     characters = []
@@ -191,6 +192,8 @@ class CreateCompCompact extends React.Component {
         let chars = this.state.characters;
         let comp = this.state.selectedCharaters;
 
+        alert("OK");
+
         let newChars = [];
 
         if (comp.length >= (this.props.event.difficulty == GameData.Raids.Difficulties.Mythic ? 20 :30))
@@ -278,6 +281,20 @@ class CreateCompCompact extends React.Component {
             this.setState({ note: note })
     }
 
+    hasDuplicatePlayer()
+    {
+        var players = _.groupBy(this.state.selectedCharaters.map(c => { return { name: c.name, realm: c.realm, player: c.player.name, playerId: c.player.id } }), 'player');
+        
+        var ret = [];
+        for (var i in players)
+        {
+            if (players.hasOwnProperty(i) && players[i].length > 1)
+                ret.push({ player: i, characters: players[i] })
+        }
+
+        return ret;
+    }
+
     save() {
         const chars = this.state.selectedCharaters.map(c => {
             return {
@@ -307,9 +324,10 @@ class CreateCompCompact extends React.Component {
 	render() {
 
         const { event } = this.props;
+        const players = this.hasDuplicatePlayer();
 
         return (
-			<Card small className="h-100">
+			<Card small className="min-h-100">
 				<CardHeader className="border-bottom py-0">
                     <Row>
                         <Col className='py-0'><h6 className="m-0 py-2">Composition manager</h6></Col>
@@ -333,9 +351,18 @@ class CreateCompCompact extends React.Component {
                         <i className='material-icons'>error</i> {this.state.error}
                     </CardBody>   
                 )}
+                {players.length && (
+                    <CardBody
+                        className="bg-danger text-white text-center p-3 "
+                        style={{ boxShadow: "inset 0 0 5px rgba(0,0,0,.2)" }}>
+                        <i className='material-icons'>error</i> Multiple characters from same player(s)<br />{players.map((p, index) => {
+                            return (<span><strong>{p.player}</strong> ({p.characters.map(c => c.name).join(' ')})<br /></span>)
+                        })}
+                    </CardBody>   
+                )}
                 {this.state.encounter && (
-                    <CardBody className="pt-0 pb-0 h-100 bg-light border-bottom">
-                        <Row className="py-0 h-100">
+                    <CardBody className="pt-0 pb-0 min-h-100 bg-light border-bottom">
+                        <Row className="py-0 min-h-100">
                             <Col md="12" lg="2" className="bg-light border-right overflow-auto">
                                 <Row>
                                     <Col className='border-bottom py-2'>

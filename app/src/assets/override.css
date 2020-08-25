@@ -169,6 +169,10 @@
     min-height: 5vh!important;
 }
 
+.min-h-100 {
+    min-height: 100%!important;
+}
+
 .border-black {
     border: 1px solid black;
 }

@@ -95,7 +95,7 @@ class CompositionController extends DefaultController  {
 
         TypeORM.getRepository(Entities.Composition)
             .find({
-                relations: [ 'encounter', 'characters', 'characters.character', 'note' ],
+                relations: [ 'encounter', 'characters', 'characters.character', 'characters.character.player', 'note' ],
                 where: where
             })
             .then(comps => {

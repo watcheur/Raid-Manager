@@ -36,7 +36,7 @@ class CharacterController extends DefaultController {
 
         TypeORM.getRepository(Entities.Character)
             .find({
-                relations: ["dungeons", "items", "items.item"],
+                relations: ["dungeons", "items", "items.item", "player"],
                 where: reqs,
                 order: {
                     type: 'ASC',
