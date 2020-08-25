@@ -50,7 +50,6 @@ Here's the syntax:
         - Detail page (app)
 
     Event:
-        - Duplicate event
         - Import event from game (csv addon ?)
         - Tell if a player need an item (see wishlist)
 

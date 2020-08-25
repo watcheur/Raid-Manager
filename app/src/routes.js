@@ -13,6 +13,8 @@ import EventManage from "./views/EventManage";
 import NotesOverview from "./views/NotesOverview";
 import LoginView from "./views/LoginView";
 import PlayerOverview from "./views/PlayerOverview";
+import CharacterDetail from "./views/CharacterDetail";
+import CharacterWishlist from "./views/CharacterWishlist";
 
 export default [
   {
@@ -35,9 +37,24 @@ export default [
     component: CharactersOverview
   },
   {
+    path: "/characters/:characterId",
+    exact: true,
+    private: true,
+    layout: DefaultLayout,
+    component: CharacterDetail
+  },
+  {
+    path: "/characters/:characterId/wishlist",
+    exact: true,
+    private: true,
+    layout: DefaultLayout,
+    component: CharacterWishlist
+  },
+  {
     path: "/players",
     exact: true,
     layout: DefaultLayout,
+    private: true,
     component: PlayerOverview
   },
   {

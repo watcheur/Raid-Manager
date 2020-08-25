@@ -126,4 +126,27 @@ module.exports = () => {
                 next(new Errs.InternalError('Database error'));
             })
     }, null, true, 'Europe/Paris', null, true);
+
+    // Every wednesday @ 1am -- Refresh all items who aren't updated with a media
+    new CronJob('0 1 9 * * Wed', () => {
+        Logger.info('Start refresh unupdated items media cron');
+
+        TypeORM.getRepository(Entities.Item)
+            .find({
+                where: {
+                    media: TypeORM.IsNull()
+                }
+            })
+            .then(items => {
+                if (items) {
+                    items.forEach(item => {
+                        Queues.Media.add({ item: item.id });
+                    });
+                }
+            })
+            .catch(err => {
+                Logger.error('Error retrieving items', err);
+                next(new Errs.InternalError('Database error'));
+            })
+    }, null, true, 'Europe/Paris', null, true);
 }

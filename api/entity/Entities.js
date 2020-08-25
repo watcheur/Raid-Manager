@@ -6,6 +6,7 @@ const ExpansionSchema       = new TypeORM.EntitySchema(require('./Expansion'));
 const PlayerSchema          = new TypeORM.EntitySchema(require('./Player'));
 const CharacterSchema       = new TypeORM.EntitySchema(require('./Character'));
 const CharacterItemSchema   = new TypeORM.EntitySchema(require('./CharacterItem'));
+const CharacterNeedSchema   = new TypeORM.EntitySchema(require('./CharacterNeed'));
 
 const WeeklySchema          = new TypeORM.EntitySchema(require('./Weekly'));
 const PeriodSchema          = new TypeORM.EntitySchema(require('./Period'));
@@ -35,6 +36,7 @@ module.exports = {
         PlayerSchema,
         CharacterSchema,
         CharacterItemSchema,
+        CharacterNeedSchema,
 
         WeeklySchema,
         PeriodSchema,
@@ -52,6 +54,7 @@ module.exports = {
     Player: PlayerSchema,
     Character: CharacterSchema,
     CharacterItem: CharacterItemSchema,
+    CharacterNeed: CharacterNeedSchema,
     // Mythic +
     Period: PeriodSchema,
     Weekly: WeeklySchema,

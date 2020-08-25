@@ -866,7 +866,7 @@ export default {
             { label: 'Other', data: other }
         ];
     },
-    ItemToWowHead: (item) => {
+    ItemToWowHead: (item, args) => {
         let str = `item=${item.id}&ilvl=${item.level}`;
 
         if (item.bonuses)
@@ -876,6 +876,13 @@ export default {
         if (item.enchantments)
             str += `&ench=${item.enchantments}`;
 
+        if (args)
+            str += args;
+
         return str;
+    },
+    RenderMedia: (media) =>
+    {
+        return `https://render-eu.worldofwarcraft.com${media}`;
     }
 }

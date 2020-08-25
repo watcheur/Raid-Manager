@@ -21,6 +21,10 @@ module.exports = {
             type: "int",
             nullable: true
         },
+        media: {
+            type: "varchar",
+            nullable: true
+        },
         created: {
             type: "datetime"
         },

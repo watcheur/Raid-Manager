@@ -3,15 +3,16 @@ const Entities = require('../entity/Entities');
 const Errs = require('restify-errors');
 const Logger = require('../utils/Logger');
 const Queues = require('../utils/Queues');
+
 const DefaultController = require('./DefaultController');
-const EncounterController = require('./EncounterController');
+
 const blizzard = require('blizzard.js').initialize(require('../config.json').blizzard);
 
 class RaidController extends DefaultController {
     Get = (req, res, next) => {
         TypeORM.getRepository(Entities.Raid)
         .findOne({
-            relations: [ "encounters", "expansion" ],
+            relations: [ "encounters", "expansion", "encounters.drops" ],
             where: {
                 id: req.params.id
             }
@@ -35,7 +36,7 @@ class RaidController extends DefaultController {
         Logger.info('Raids search found params: ', reqs);
 
         if (reqs['name'])
-            reqs['name'] = TypeORM.Like(`%${reqs['name']}%`)
+            reqs['name'] = TypeORM.Like(`%${reqs['name']}%`);
 
         TypeORM.getRepository(Entities.Raid)
             .find({
@@ -66,6 +67,7 @@ class RaidController extends DefaultController {
 
         TypeORM.getRepository(Entities.Encounter)
             .find({
+                relations: [ "raid", "drops" ],
                 where: reqs,
                 order: {
                     order: 'ASC'

@@ -33,6 +33,14 @@ module.exports = {
             ItemJobs.Update(job.data.item, done);
         }).catch(err => { Logger.error('Item queue processing failed'); })
 
+        Logger.info('Starting item queue processing');
+        Queues.Media.process((job, done) => {
+            if (!job.data.item)
+                return done(null, null);
+            
+            ItemJobs.UpdateMedia(job.data.item, done);
+        }).catch(err => { Logger.error('Item queue processing failed'); })
+
         Logger.info('Starting encounter queue processing');
         Queues.Encounter.process((job, done) => {
             console.log("ok", job.data);

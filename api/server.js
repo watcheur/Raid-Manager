@@ -126,6 +126,17 @@ TypeORM
         server.get('/blizzard/realms', Controllers.Blizzard.Realms);
         server.get('/blizzard/encounter/:id', Controllers.Blizzard.Encounter);
 
+        // Items
+        server.get('/items/:id', (req, res, next) => { next(new Error('Not implemented')); })
+        server.get('/items/:id/media', (req, res, next) => {
+            Jobs.Item.UpdateMedia(req.params.id, (err, data) => {
+                if (err)
+                    return next(err);
+                res.send(data);
+                next();
+            });
+        });
+
         // Options
         server.get('/options', Controllers.Option.Get);
         server.post('/options', Controllers.Option.Create);
