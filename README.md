@@ -40,13 +40,13 @@ Here's the syntax:
 }
 ```
 
-
 ## TODO:
 
     Characters:
         - filter per role, class, name, etc...
         - Warning when socket or enchant is missing
         - Detail page (app)
+        - Import wishlist from RaidBots
 
     Event:
         - Import event from game (csv addon ?)

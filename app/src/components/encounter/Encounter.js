@@ -20,6 +20,8 @@ import {
 } from "shards-react";
 import { toast } from 'react-toastify';
 import moment from "moment";
+import _ from 'lodash';
+import classNames from "classnames";
 
 import GameData from '../../data/gamedata';
 import Api from '../../data/api';
@@ -32,6 +34,7 @@ class Encounter extends React.Component {
     state = {
         collapsed: false,
         characters: [],
+        wishlists: [],
         note: null,
         noteFormatted: '',
         noteRaw: '',
@@ -110,6 +113,27 @@ class Encounter extends React.Component {
                 console.log("err", err);
                 this.setState({ error: err.message, loading: false })
             })
+        
+        Api.GetWishlist({ encounter: encounter.id, difficulty: event.difficulty })
+            .then(res => {
+                if (!res.data.err) {
+                    let items = {};
+
+                    res.data.data.forEach(wl => {
+                        if (!items[wl.item.id]) {
+                            items[wl.item.id] = wl.item;
+                            items[wl.item.id].characters = []
+                        }
+
+                        items[wl.item.id].characters.push(wl.character);
+                    });
+
+                    this.setState({ wishlists: Object.values(items) });
+                }
+            })
+            .catch(err => {
+                this.setState({ error: err.message, loading: false })
+            })
     }
 
     copyToClipboard() {
@@ -186,6 +210,30 @@ class Encounter extends React.Component {
                                         <CharacterCard key={c.id} character={c} icon={false} className="text-center inline m-1" />
                                     )
                                 })}
+                            </Col>
+                            <Col md="12" className='wishlist'>
+                                <h5>Needs</h5>
+                                <Row>
+                                {this.state.wishlists.length > 0 ? 
+                                (this.state.wishlists.map((wl, idx) =>  (
+                                    <Col md="3" key={idx}>
+                                        <strong>
+                                            <a href="#" className={classNames(wl.quality.toLowerCase())} data-wowhead={GameData.ItemToWowHead(wl, '&iconSize=true')}>
+                                                {wl.media ? <img src={GameData.RenderMedia(wl.media)} className="rounded border shadow GameIcon-tiny mr-2" /> : ''}
+                                                {wl.name}
+                                            </a>
+                                        </strong>
+                                        <p className="pl-3">
+                                            {wl.characters.map(c =>
+                                                <span className={classNames('mr-2', 'GameColorClass', GameData.ClassToObj(c.class).slug)}>
+                                                    {c.name}
+                                                </span>
+                                            )}
+                                        </p>
+                                    </Col>
+                                ))) :
+                                (<p>None</p>)}
+                                </Row>
                             </Col>
                             {this.state.note && (
                             <Col md="12">

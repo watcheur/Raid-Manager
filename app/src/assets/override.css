@@ -335,6 +335,10 @@
     font-weight: 500;
 }
 
+.char-name {
+    word-wrap: none;
+}
+
 /* DESKTOP */
 @media only screen and (min-width : 1224px){
     .players-list .player-name, .players-list .player-rank {
