@@ -20,9 +20,11 @@ class CharacterWishlist extends React.Component {
         character : null,
         expansions : [],
         encounters: [],
+        wishlist: [],
         raid: '',
 
-        loading: false
+        loading: false,
+        error: ''
     }
 
     constructor(props) {
@@ -36,6 +38,8 @@ class CharacterWishlist extends React.Component {
         this.loadCharacter = this.loadCharacter.bind(this);
         this.loadExpansions = this.loadExpansions.bind(this);
         this.loadEncounters = this.loadEncounters.bind(this);
+        this.dropToBtn = this.dropToBtn.bind(this);
+        this.toggleDrop = this.toggleDrop.bind(this);
     }
 
     loadCharacter() {
@@ -45,13 +49,10 @@ class CharacterWishlist extends React.Component {
             .then(res => {
                 this.setState({ loading: false });
                 if (!res.data.err) {
-                    this.setState({ character: res.data.data });
+                    this.setState({ error: '', character: res.data.data });
                 }
             })
-            .catch(err => {
-                this.setState({ loading: false });
-                alert('An error occured while refreshing this character');
-            })
+            .catch(err => this.setState({ loading: false, error: 'An error occured while fetching the character' }));
     }
 
     loadExpansions()
@@ -67,11 +68,11 @@ class CharacterWishlist extends React.Component {
                         var currentxPac = _.last(res.data.data);
                         var currentRaid = _.last(currentxPac.raids);
 
-                        this.setState({ raid: currentRaid.id }, this.loadEncounters);
+                        this.setState({ error: '', raid: currentRaid.id }, this.loadEncounters);
                     }
 				}
             })
-            .catch(err => alert(err))
+            .catch(err => this.setState({ error: err.message }));
     }
 
     loadEncounters()
@@ -81,10 +82,39 @@ class CharacterWishlist extends React.Component {
             Api.GetRaidEncounters(this.state.raid)
                 .then(res => {
                     if (!res.data.err)
-                        this.setState({ encounters: res.data.data });
+                        this.setState({ error: '', encounters: res.data.data });
                 })
-                .catch(err => alert(err))
+                .catch(err => this.setState({ error: err.message }));
         }
+    }
+
+    toggleDrop(drop, difficulty)
+    {
+        if (this.state.character && drop)
+        {
+            Api.ToggleNeed(this.state.character.id, drop.id, difficulty)
+                .then(res => {
+                    if (!res.data.err) {
+                        var ws = this.state.wishlist;
+                        var f = ws.findIndex(w => w.item == drop.id && w.difficulty == difficulty);
+                        if (f > 0)
+                            ws.splice(f, 1);
+                        else
+                            ws.push({ item: drop.id, difficulty: difficulty });
+
+                        this.setState({ error: '', wishlist: ws });
+                    }
+                })
+                .catch(err => this.setState({ error: err.message }));
+        }
+    }
+
+    dropToBtn(drop, difficulty)
+    {
+        var f = this.state.wishlist.findIndex(w => w.item == drop.id && w.difficulty == difficulty);
+        if (f >= 0)
+            return 'btn-secondary';
+        return 'btn-outline-secondary';
     }
 
     componentDidMount() {
@@ -103,82 +133,70 @@ class CharacterWishlist extends React.Component {
 
                 {character ? (
                     <Container fluid className="main-content-container">
-                        <Row className="mt-5 mb-5">
-                            <Col lg="12" md="12">
-                                <Card small className="card-post mb-4">
-                                    <CardHeader className="border-bottom text-center py-0">
-                                        <Row>
-                                            <Col className='py-0'>
-                                                <h6 className="m-0 py-2">Wishlist</h6>
-                                            </Col>
-                                            <Col md="3" className="border-left form-group py-2 mb-0">
-                                                <FormSelect
-                                                    id="feRaid"
-                                                    size="sm"
-                                                    value={this.state.raid}
-                                                    required
-                                                    onChange={(event) => { this.setState({ raid: event.target.value }, () => { this.loadEncounters(); }); }}>
-                                                    <option value=''>Raid...</option>
-                                                    {this.state.expansions.length > 0 ? this.state.expansions.sort((a, b) => { return (a.id < b.id) }).map((exp, index) => {
-                                                        return (
-                                                            <optgroup key={exp.id} label={exp.name}>
-                                                                {exp.raids.sort((a, b) => { return a.id < b.id }).map((raid, index) => {
-                                                                    return (<option key={raid.id} value={raid.id}>{raid.name}</option>)
-                                                                })}
-                                                            </optgroup>
-                                                        );
-                                                    }) : ''}
-                                                </FormSelect>
-                                            </Col>
-                                        </Row>
-                                    </CardHeader>
-                                    {this.state.encounters.length > 0 ? (
-                                        <CardBody>
-                                            <ListGroup className="p-0">
-                                                {this.state.encounters.map((encounter, idx) => (
-                                                    <ListGroupItem className="border-0" key={idx}>
-                                                        <Row>
-                                                            <Col sm="7" md="7">
-                                                                <h5 className="m-0" onClick={this.toggle}>{encounter.name}</h5>
-                                                            </Col>
-                                                            <Col sm="5" md="5" className='text-right'>
-                                                                XX
-                                                            </Col>
-                                                        </Row>
-                                                        <Row className="my-3">
-                                                            <Col className="">
-                                                                <Row className="mb-3">
-                                                                    {encounter.drops.map((drop, idx) => 
-                                                                        <Col lg="3" sm="3" md="3" className="mb-3">
-                                                                            <Card className='text-center'>
-                                                                                <CardHeader>
-                                                                                    {drop.media ? <img src={GameData.RenderMedia(drop.media)} className="rounded border shadow GameIcon-small mr-2" /> : ''}
-                                                                                    <a href="#" className={classNames(drop.quality.toLowerCase())} data-wowhead={GameData.ItemToWowHead(drop, '&iconSize=true')}>{drop.name}</a>
-                                                                                </CardHeader>
-                                                                                <CardFooter>
-                                                                                    <ButtonGroup className="align-center">
-                                                                                        <Button className="btn-outline-primary">LFR</Button>
-                                                                                        <Button className="btn-outline-primary">NM</Button>
-                                                                                        <Button className="btn-outline-primary">HM</Button>
-                                                                                        <Button className="btn-outline-primary">MM</Button>
-                                                                                    </ButtonGroup>
-                                                                                </CardFooter>
-                                                                            </Card>
-                                                                        </Col>
-                                                                    )}
-                                                                </Row>
-                                                            </Col>
-                                                        </Row>
-                                                    </ListGroupItem>
-                                                ))}
-                                            </ListGroup>
-                                        </CardBody>
-                                    ) : ''}
-                                    <CardFooter>
+                        <Row>
+                            <FormSelect
+                                id="feRaid"
+                                size="md"
+                                value={this.state.raid}
+                                required
+                                onChange={(event) => { this.setState({ raid: event.target.value }, () => { this.loadEncounters(); }); }}>
+                                <option value=''>Raid...</option>
+                                {this.state.expansions.length > 0 ? this.state.expansions.sort((a, b) => { return (a.id < b.id) }).map((exp, index) => {
+                                    return (
+                                        <optgroup key={exp.id} label={exp.name}>
+                                            {exp.raids.sort((a, b) => { return a.id < b.id }).map((raid, index) => {
+                                                return (<option key={raid.id} value={raid.id}>{raid.name}</option>)
+                                            })}
+                                        </optgroup>
+                                    );
+                                }) : ''}
+                            </FormSelect>
+                        </Row>
 
-                                    </CardFooter>
-                                </Card>
-                            </Col>
+                        {this.state.error && (
+                            <Row className="rounded my-2 p-0 py-1 bg-danger text-white text-center" style={{ boxShadow: "inset 0 0 5px rgba(0,0,0,.2)" }}>
+                                <Col>
+                                    <i className="material-icons">warning</i> {this.state.error}
+                                </Col>
+                            </Row>
+                        )}
+
+                        <Row className="mb-3 mt-3">
+                            {this.state.encounters.length > 0 ? this.state.encounters.map((encounter, idx) => (
+                                <Col key={encounter.id} md="4" className="mb-5">
+                                    <Card>
+                                        <CardHeader>
+                                            <h5 className="m-0 text-center">{encounter.name}</h5>
+                                        </CardHeader>
+                                        <CardBody className="px-0 py-0">
+                                            <table className="table table-striped table-sm">
+                                                <tbody>
+                                                    {encounter.drops.map((drop, idx) => 
+                                                        <tr key={drop.id}>
+                                                            <td>
+                                                                <strong>
+                                                                    <a href="#" className={classNames(drop.quality.toLowerCase())} data-wowhead={GameData.ItemToWowHead(drop, '&iconSize=true')}>
+                                                                        {drop.media ? <img src={GameData.RenderMedia(drop.media)} className="rounded border shadow GameIcon-small mr-2" /> : ''}
+                                                                        {drop.name}
+                                                                    </a>
+                                                                </strong>
+                                                            </td>
+                                                            <td>
+                                                                <ButtonGroup className="btn-group-sm float-right">
+                                                                    <Button onClick={ev => this.toggleDrop(drop, GameData.Raids.Difficulties.LFR)} className={classNames(this.dropToBtn(drop, GameData.Raids.Difficulties.LFR))}>LFR</Button>
+                                                                    <Button onClick={ev => this.toggleDrop(drop, GameData.Raids.Difficulties.Normal)} className={classNames(this.dropToBtn(drop, GameData.Raids.Difficulties.Normal))}>NM</Button>
+                                                                    <Button onClick={ev => this.toggleDrop(drop, GameData.Raids.Difficulties.Heroic)} className={classNames(this.dropToBtn(drop, GameData.Raids.Difficulties.Heroic))}>{/*<img src="/images/blizzard/heroic.png" />*/}HM</Button>
+                                                                    <Button onClick={ev => this.toggleDrop(drop, GameData.Raids.Difficulties.Mythic)} className={classNames(this.dropToBtn(drop, GameData.Raids.Difficulties.Mythic))}>MM</Button>
+                                                                </ButtonGroup>
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                        </CardBody>
+                                    </Card>
+                                </Col>
+                            )) : ''}
                         </Row>
                     </Container>
                 ) :

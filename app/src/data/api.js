@@ -74,6 +74,8 @@ class Api {
     CreateCharacter = (data) => this.Post('/characters', data);
     UpdateCharacter = (id, data) => this.Put(`/characters/${id}`, data);
     DeleteCharacter = (id) => this.Delete(`/characters/${id}`);
+    
+    ToggleNeed = (character, id, difficulty) => this.Post(`/wishlist/toggle`, { character: character, item: id, difficulty: difficulty });
 
     GetRaids = (args) => this.Get('/raids', args);
     GetRaid = (id) => this.Get(`/raids/${id}`);
