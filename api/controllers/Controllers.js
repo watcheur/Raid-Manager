@@ -11,12 +11,14 @@ const oController   = require('./OptionController');
 const bController   = require('./BlizzardController');
 const sController   = require('./StatController');
 const plController  = require('./PlayerController');
+const wiController  = require('./WishlistController');
 
 module.exports = {
     Expansion: new exController(),
 
     Player: new plController(),
     Character: new cController(),
+    Wishlist: new wiController(),
 
     Period: new pController(),
     Weekly: new wController(),

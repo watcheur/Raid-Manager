@@ -150,7 +150,7 @@ class NoteEditor extends React.Component {
                     <FormInput value={this.state.title} onChange={(evt) => this.setState({ title: evt.target.value }, () => this.emitChanges())} size="lg" className="m-0 rounded-0 border-0" placeholder="Title..." />
                 </Col>
                 */ }
-                <Col lg="12" className="h-100 min-vh-50 p-0 note-editor">
+                <Col lg="12" className="h-100 min-vh-20 p-0 note-editor">
                     
                     <ReactQuill className="add-new-post__editor mb-1 border-top"
                         formats={['wowchar']}

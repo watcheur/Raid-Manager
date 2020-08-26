@@ -45,5 +45,13 @@ module.exports = {
             cascade: true,
             onDelete: 'CASCADE'
         }
-    }
+    },
+    indices: [
+        {
+            name: "IDX_SOURCE",
+            columns: [
+                "source"
+            ]
+        }
+    ]
 };

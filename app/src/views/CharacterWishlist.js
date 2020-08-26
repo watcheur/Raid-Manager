@@ -38,6 +38,7 @@ class CharacterWishlist extends React.Component {
         this.loadCharacter = this.loadCharacter.bind(this);
         this.loadExpansions = this.loadExpansions.bind(this);
         this.loadEncounters = this.loadEncounters.bind(this);
+        this.loadWishlist = this.loadWishlist.bind(this);
         this.dropToBtn = this.dropToBtn.bind(this);
         this.toggleDrop = this.toggleDrop.bind(this);
     }
@@ -51,8 +52,21 @@ class CharacterWishlist extends React.Component {
                 if (!res.data.err) {
                     this.setState({ error: '', character: res.data.data });
                 }
+                else
+                    this.setState({ error: 'An error occured while fetching the character' });
             })
             .catch(err => this.setState({ loading: false, error: 'An error occured while fetching the character' }));
+    }
+
+    loadWishlist() {
+        if (this.state.raid && this.state.characterId) {
+            Api.GetWishlist({ character: this.state.characterId, raid: this.state.raid })
+                .then(res => {
+                    if (!res.data.err)
+                        this.setState({ wishlist: res.data.data });
+                })
+                .catch(err => this.setState({ loading: false, error: "An error occured while fetching the character's wishlist" }));
+        }
     }
 
     loadExpansions()
@@ -81,8 +95,11 @@ class CharacterWishlist extends React.Component {
         {
             Api.GetRaidEncounters(this.state.raid)
                 .then(res => {
-                    if (!res.data.err)
+                    if (!res.data.err) {
                         this.setState({ error: '', encounters: res.data.data });
+
+                        this.loadWishlist();
+                    }
                 })
                 .catch(err => this.setState({ error: err.message }));
         }
@@ -96,11 +113,11 @@ class CharacterWishlist extends React.Component {
                 .then(res => {
                     if (!res.data.err) {
                         var ws = this.state.wishlist;
-                        var f = ws.findIndex(w => w.item == drop.id && w.difficulty == difficulty);
+                        var f = ws.findIndex(w => w.item.id == drop.id && w.difficulty == difficulty);
                         if (f > 0)
                             ws.splice(f, 1);
                         else
-                            ws.push({ item: drop.id, difficulty: difficulty });
+                            ws.push({ item: drop, difficulty: difficulty });
 
                         this.setState({ error: '', wishlist: ws });
                     }
@@ -111,7 +128,7 @@ class CharacterWishlist extends React.Component {
 
     dropToBtn(drop, difficulty)
     {
-        var f = this.state.wishlist.findIndex(w => w.item == drop.id && w.difficulty == difficulty);
+        var f = this.state.wishlist.findIndex(w => w.item.id == drop.id && w.difficulty == difficulty);
         if (f >= 0)
             return 'btn-secondary';
         return 'btn-outline-secondary';

@@ -34,5 +34,13 @@ module.exports = {
             },
             inverseSide: 'source'
         }
-    }
+    },
+    indices: [
+        {
+            name: "IDX_RAID",
+            columns: [
+                "raid"
+            ]
+        }
+    ]
 }

@@ -79,6 +79,10 @@ TypeORM
         server.del('/characters/:id', Controllers.Character.Delete);
         server.get('/characters/:id/refresh', Controllers.Character.ForceRefresh);
 
+        // Characters wishlist
+        server.get('/wishlist', Controllers.Wishlist.GetAll);
+        server.post('/wishlist/toggle', Controllers.Wishlist.Toggle);
+
         // Period
         server.get('/periods', Controllers.Period.GetAll);
         server.get('/periods/:id', Controllers.Period.Get);
@@ -127,7 +131,7 @@ TypeORM
         server.get('/blizzard/encounter/:id', Controllers.Blizzard.Encounter);
 
         // Items
-        server.get('/items/:id', (req, res, next) => { next(new Error('Not implemented')); })
+        server.get('/items/:id', (req, res, next) => { next(new Error(Errs.NotImplementedError)); })
         server.get('/items/:id/media', (req, res, next) => {
             Jobs.Item.UpdateMedia(req.params.id, (err, data) => {
                 if (err)

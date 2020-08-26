@@ -46,7 +46,6 @@ Here's the syntax:
     Characters:
         - filter per role, class, name, etc...
         - Warning when socket or enchant is missing
-        - Wishlist
         - Detail page (app)
 
     Event:

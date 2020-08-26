@@ -194,7 +194,7 @@
     background: rgba(241, 130, 141, 0.3)
 }
 
-.wowchar.priest, .btn-transparent.GameColorClass.priest, .utilities .GameColorClass.priest, .players-list .priest {
+.wowchar.priest, .btn-transparent.GameColorClass.priest, .utilities .GameColorClass.priest, .players-list .priest, .wishlist .priest {
 	color: #000;
 }
 .wowchar.rogue, .btn-transparent.GameColorClass.rogue, .utilities .GameColorClass.rogue {

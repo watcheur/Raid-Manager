@@ -1,13 +1,17 @@
 module.exports = {
     name: "CharacterNeed",
     columns: {
+        id: {
+            primary: true,
+            type: "int",
+            generated: true
+        },
         difficulty: {
             type: "int"
         }
     },
     relations: {
         item: {
-            primary: true,
             target: "Item",
             type: "many-to-one",
             joinColumn: {

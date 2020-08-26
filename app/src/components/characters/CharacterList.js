@@ -283,6 +283,11 @@ export default class CharactersList extends React.Component {
                                             <a
                                                 href={`https://worldofwarcraft.com/en-gb/character/eu/${character.realm}/${character.name}`}
                                                 target="_blank"
+                                                className='mr-1'>
+                                                <img src="/images/blizzard/logo.png" className='GameIcon--tiny' />
+                                            </a>
+                                            <a
+                                                href={`/characters/${character.id}/wishlist`}
                                                 className={classNames('GameColorClass', GameData.ClassToObj(character.class).slug)}>
                                                 {character.name}
                                             </a>

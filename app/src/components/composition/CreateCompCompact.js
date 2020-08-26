@@ -43,6 +43,7 @@ class CreateCompCompact extends React.Component {
         encounters: [],
         characters: [],
         notes: [],
+        wishlists: [],
         // selection
         encounter: null,
         selectedType: 0,
@@ -181,6 +182,27 @@ class CreateCompCompact extends React.Component {
                     })
 
                     this.loadUtilities();
+                }
+            })
+            .catch(err => {
+                this.setState({ error: err.message, loading: false })
+            })
+        
+        Api.GetWishlist({ encounter: id, difficulty: this.props.event.difficulty })
+            .then(res => {
+                if (!res.data.err) {
+                    let items = {};
+
+                    res.data.data.forEach(wl => {
+                        if (!items[wl.item.id]) {
+                            items[wl.item.id] = wl.item;
+                            items[wl.item.id].characters = []
+                        }
+
+                        items[wl.item.id].characters.push(wl.character);
+                    });
+
+                    this.setState({ wishlists: Object.values(items) });
                 }
             })
             .catch(err => {
@@ -355,7 +377,8 @@ class CreateCompCompact extends React.Component {
                     <CardBody
                         className="bg-danger text-white text-center p-3 "
                         style={{ boxShadow: "inset 0 0 5px rgba(0,0,0,.2)" }}>
-                        <i className='material-icons'>error</i> Multiple characters from same player(s)<br />{players.map((p, index) => {
+                        <i className='material-icons'>error</i> <strong>Multiple characters from same player(s)</strong><br />
+                        {players.map((p, index) => {
                             return (<span><strong>{p.player}</strong> ({p.characters.map(c => c.name).join(' ')})<br /></span>)
                         })}
                     </CardBody>   
@@ -462,8 +485,37 @@ class CreateCompCompact extends React.Component {
                                         <NoteEditor characters={this.state.selectedCharaters} note={this.state.note} onChangeValue={(val) => this.note = val} />
                                     </Col>
                                 </Row>
+                                <Row className='bg-white border-bottom border-top'>
+                                    <Col className="text-center">
+                                        <h5 className="m-0 py-2">Needs</h5>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col className='py-2 overflow-auto wishlist vh-30'>
+                                        {this.state.wishlists.length > 0 ? 
+                                            (this.state.wishlists.map((wl, idx) =>  (
+                                                <p key={idx}>
+                                                    <strong>
+                                                        <a href="#" className={classNames(wl.quality.toLowerCase())} data-wowhead={GameData.ItemToWowHead(wl, '&iconSize=true')}>
+                                                            {wl.media ? <img src={GameData.RenderMedia(wl.media)} className="rounded border shadow GameIcon-tiny mr-2" /> : ''}
+                                                            {wl.name}
+                                                        </a>
+                                                    </strong>
+                                                    <p className="pl-3">
+                                                        {wl.characters.map(c =>
+                                                            <span className={classNames('mr-2', 'GameColorClass', GameData.ClassToObj(c.class).slug)}>
+                                                                {c.name} {this.state.selectedCharaters.findIndex(cs => cs.id == c.id) >= 0 ? (<i className='material-icons'>done</i>) : ''}
+                                                            </span>
+                                                        )}
+                                                    </p>
+                                                </p>
+                                            )))
+                                        :
+                                        (<p className='text-center'>None</p>)}
+                                    </Col>
+                                </Row>
                             </Col>
-                            <Col md="12" lg="2" className="bg-light border-left overflow-auto vh-100 utilities">
+                            <Col md="12" lg="2" className="bg-light border-left vh-100 utilities" style={ { 'overflow-x': 'hidden', 'overflow-y': 'auto' }}>
                                 {this.state.utilities.map((ut, idx) => {
                                     return (
                                         <Row key={idx}>
