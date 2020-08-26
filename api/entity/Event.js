@@ -55,5 +55,13 @@ module.exports = {
             inverseSide: 'id',
             cascade: true
         }
-    }
+    },
+    indices: [
+        {
+            name: "IDX_RAID",
+            columns: [
+                "raid"
+            ]
+        }
+    ]
 }

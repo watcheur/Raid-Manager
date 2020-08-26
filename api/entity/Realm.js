@@ -18,5 +18,13 @@ module.exports = {
             type: "varchar",
             length: 15
         }
-    }
+    },
+    indices: [
+        {
+            name: "IDX_NAME",
+            columns: [
+                "name"
+            ]
+        }
+    ]
 };

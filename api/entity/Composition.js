@@ -57,5 +57,19 @@ module.exports = {
             cascade: true,
             onDelete: "CASCADE"
         }
-    }
+    },
+    indices: [
+        {
+            name: "IDX_ENCOUNTER",
+            columns: [
+                "encounter"
+            ]
+        },
+        {
+            name: "IDX_EVENT",
+            columns: [
+                "event"
+            ]
+        }
+    ]
 }

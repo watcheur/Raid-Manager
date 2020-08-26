@@ -33,5 +33,19 @@ module.exports = {
             cascade: true,
             onDelete: 'CASCADE'
         },
-    }
+    },
+    indices: [
+        {
+            name: "IDX_COMP",
+            columns: [
+                "composition"
+            ]
+        },
+        {
+            name: "IDX_CHAR",
+            columns: [
+                "character"
+            ]
+        }
+    ]
 }

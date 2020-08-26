@@ -34,5 +34,13 @@ module.exports = {
             cascade: true,
             onDelete: 'CASCADE'
         }
-    }
+    },
+    indices: [
+        {
+            name: "IDX_CHAR",
+            columns: [
+                "character"
+            ]
+        }
+    ]
 }

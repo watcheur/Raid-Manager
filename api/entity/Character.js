@@ -101,5 +101,31 @@ module.exports = {
             },
             inverseSide: 'character'
         }
-    }
+    },
+    indices: [
+        {
+            name: "IDX_CLASS",
+            columns: [
+                "class"
+            ]
+        },
+        {
+            name: "IDX_SPEC",
+            columns: [
+                "spec"
+            ]
+        },
+        {
+            name: "IDX_NAME",
+            columns: [
+                "name"
+            ]
+        },
+        {
+            name: "IDX_LEVEL",
+            columns: [
+                "level"
+            ]
+        }
+    ]
 };
