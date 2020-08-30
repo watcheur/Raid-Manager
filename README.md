@@ -50,7 +50,6 @@ Here's the syntax:
 
     Event:
         - Import event from game (csv addon ?)
-        - Tell if a player need an item (see wishlist)
 
     Note:
         - Add icons (raid, class & spells)
