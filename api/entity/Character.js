@@ -99,7 +99,8 @@ module.exports = {
                 name: 'id',
                 referencedColumnName: 'character'
             },
-            inverseSide: 'character'
+            inverseSide: 'character',
+            onDelete: 'CASCADE'
         }
     },
     indices: [
