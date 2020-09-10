@@ -15,7 +15,8 @@ export default class CharactersList extends React.Component {
         selected: 0,
         isLoading: false,
         error: null,
-        filters: {}
+        filters: {},
+        admin: false
     }
 
     constructor(props) {
@@ -29,6 +30,8 @@ export default class CharactersList extends React.Component {
         this.toggleSelected = this.toggleSelected.bind(this);
         this.filter = this.filter.bind(this);
         this.filterChar = this.filterChar.bind(this);
+
+        this.setState({ admin: props.admin || false });
     }
 
     spin(target) {
@@ -252,9 +255,11 @@ export default class CharactersList extends React.Component {
                                         </th>
                                     )
                                 })}
+                                {this.state.admin ? (
                                 <th scope="col" className="border-0 char-refresh">
                                     <a style={{cursor:'pointer'}} onClick={ev => this.loadCharacters(ev.target)} className='material-icons'>refresh</a>
-                                </th>
+                                </th>) : (<th scope="col" className="border-0"></th>)}
+
                                 <th scope="col" className="border-0 char-delete"></th>
                             </tr>
                         </thead>
@@ -287,7 +292,7 @@ export default class CharactersList extends React.Component {
                                                 <img src="/images/blizzard/logo.png" className='GameIcon--tiny' />
                                             </a>
                                             <a
-                                                href={`/characters/${character.id}/wishlist`}
+                                                href={this.state.admin ? `/characters/${character.id}/wishlist` : '#'}
                                                 className={classNames('GameColorClass', GameData.ClassToObj(character.class).slug)}>
                                                 {character.name}
                                             </a>
@@ -327,8 +332,14 @@ export default class CharactersList extends React.Component {
                                                 </td>
                                             )
                                         })}
-                                        <td className='char-refresh'><a style={{cursor:'pointer'}} onClick={ev => this.refreshCharacter(ev.target, character)} className="material-icons">refresh</a></td>
-                                        <td className='char-delete'><a style={{cursor:'pointer'}} onClick={ev => this.deleteCharacter(ev.target, character)} className="material-icons text-danger">clear</a></td>
+                                        
+                                        {this.state.admin ? (
+                                            <td className='char-refresh'><a style={{cursor:'pointer'}} onClick={ev => this.refreshCharacter(ev.target, character)} className="material-icons">refresh</a></td>
+                                        ) : (<td></td>)}
+
+                                        {this.state.admin ? (
+                                            <td className='char-delete'><a style={{cursor:'pointer'}} onClick={ev => this.deleteCharacter(ev.target, character)} className="material-icons text-danger">clear</a></td>
+                                        ): (<td></td>)}
                                     </tr>
                                 )
                             })}

@@ -56,6 +56,8 @@ class NextEventTile extends React.Component {
 		const innerDataFieldClasses = classNames("stats-small__data");
 		const percentageClasses = classNames("stats-small__percentage");
 
+		const props = {...this.props};
+
 		return (
 			<Card small className={cardClasses}>
 				<CardBody className={cardBodyClasses}>
@@ -63,7 +65,7 @@ class NextEventTile extends React.Component {
 						<div className={dataFieldClasses}>
 							<span className={labelClasses}>Next scheduled raid</span>
 							{this.state.event && (
-								<a href={`/events/${this.state.event.id}`}>
+								<a href={props.admin && props.logged ? `/events/${this.state.event.id}` : '#'}>
 									<h6 className={valueClasses}>{this.state.event.title}</h6>
 									{moment(this.state.event.schedule).format("DD/MM/YYYY HH:mm")}
 								</a>

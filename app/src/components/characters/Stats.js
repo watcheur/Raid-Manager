@@ -82,6 +82,7 @@ export default class Stats extends React.Component {
     }
 
     render() {
+        const props = {...this.props};
         return (
             <Row className="justify-content-md-center">
                 { this.state.ilvl ? (
@@ -104,7 +105,7 @@ export default class Stats extends React.Component {
                     </Col>
                 ) : ''}
                 <Col sm="12" className="col-lg-2 mb-4">
-                    <NextRaidTile />
+                    <NextRaidTile {...props} />
                 </Col>
             </Row>
         )

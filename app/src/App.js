@@ -78,11 +78,13 @@ export default () => (
 						path={route.path}
 						exact={route.exact}
 						component={withTracker(props => {
-							if (route.private && !Context.IsLogged())
+							var p = { ... props, ...route };
+							p.logged = Context.IsLogged();
+							if (route.admin && !Context.IsLogged())
 								return (<Redirect to="/login" />)
 							return (
-								<route.layout {...props}>
-									<route.component {...props} />
+								<route.layout {...p}>
+									<route.component {...p} />
 								</route.layout>
 							);
 						})}

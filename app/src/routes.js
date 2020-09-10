@@ -2,7 +2,7 @@ import React from "react";
 import { Redirect } from "react-router-dom";
 
 // Layout Types
-import { DefaultLayout, LoginLayout } from "./layouts";
+import { DefaultLayout, LoginLayout, PublicLayout } from "./layouts";
 
 // Route Views
 import CharactersOverview from "./views/CharactersOverview"
@@ -32,21 +32,21 @@ export default [
   {
     path: "/characters",
     exact: true,
-    private: true,
+    admin: true,
     layout: DefaultLayout,
     component: CharactersOverview
   },
   {
     path: "/characters/:characterId",
     exact: true,
-    private: true,
+    admin: true,
     layout: DefaultLayout,
     component: CharacterDetail
   },
   {
     path: "/characters/:characterId/wishlist",
     exact: true,
-    private: true,
+    admin: true,
     layout: DefaultLayout,
     component: CharacterWishlist
   },
@@ -54,7 +54,7 @@ export default [
     path: "/players",
     exact: true,
     layout: DefaultLayout,
-    private: true,
+    admin: true,
     component: PlayerOverview
   },
   {
@@ -67,29 +67,36 @@ export default [
   {
     path: "/events/:eventId",
     exact: true,
-    private: true,
+    admin: true,
     layout: DefaultLayout,
     component: EventDetail
   },
   {
     path: "/events/:eventId/manage",
     exact: true,
-    private: true,
+    admin: true,
     layout: DefaultLayout,
     component: EventManage
   },
   {
     path: "/notes",
     exact: true,
-    private: true,
+    admin: true,
     layout: DefaultLayout,
     component: NotesOverview
   },
   {
     path: "/options",
     exact: true,
-    private: true,
+    admin: true,
     layout: DefaultLayout,
     component: OptionsOverview
   },
+  {
+    path: "/public/characters",
+    exact: true,
+    admin: false,
+    layout: PublicLayout,
+    component: CharactersOverview
+  }
 ];
