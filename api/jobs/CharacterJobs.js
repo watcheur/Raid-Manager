@@ -87,58 +87,58 @@ function CharacterUpdate(id, cb)
                                         TypeORM.getRepository(Entities.Item).save(items)
                                             .then(itemsRes => {
                                                 itemsRes.map(item => Queues.Item.add({ item: item.id }));
+
+                                                TypeORM.getConnection()
+                                                    .createQueryBuilder()
+                                                    .delete()
+                                                    .from(Entities.CharacterItem)
+                                                    .where('character = :id', { id : char.id })
+                                                    .execute()
+                                                    .then(delRes => {
+                                                        TypeORM.getRepository(Entities.CharacterItem).save(characterItems).catch(err => {
+                                                            Logger.error('Character Items save failed', err);
+                                                        });
+                                                    })
+                                                    .catch(err => {
+                                                        Logger.error('Character Items deletion failed', err);
+                                                        cb(new Error('Character Items deletion failed'));
+                                                    });
+
+                                                //let neck = characterItems.find(i => i.slot == "NECK");
+                                                if (neck) {
+                                                    char.azerite = 1 + ((neck - 280 - 45 - 10) / 2); // baselevel + ((neck - base - magni - mother) / 2)
+                                                    if (char.azerite < 0)
+                                                        char.azerite = null;
+                                                }
+                                                else
+                                                    char.azerite = null;
+                                                char.updated = new Date();
+
+                                                TypeORM.getConnection()
+                                                        .createQueryBuilder()
+                                                        .update(Entities.Character)
+                                                        .set(char)
+                                                        .where("id = :id", { id: id })
+                                                        .execute()
+                                                        .then(query => {
+                                                            Logger.info('End Character update job', { char: id })
+                                                            cb(null, char);
+                                                            Socket.Emit(Socket.Channels.Character, {
+                                                                action: Socket.Action.Character.Update,
+                                                                data: {
+                                                                    character: char
+                                                                }
+                                                            });
+                                                        })
+                                                        .catch(err => {
+                                                            Logger.error('Update query error', err);
+                                                            cb(new Error('Update query error'));
+                                                        })
                                             })
                                             .catch(err => {
                                                 Logger.error('Items save failed', err);
                                                 cb(new Error('Items save fail'));
                                             });
-
-                                        TypeORM.getConnection()
-                                            .createQueryBuilder()
-                                            .delete()
-                                            .from(Entities.CharacterItem)
-                                            .where('character = :id', { id : char.id })
-                                            .execute()
-                                            .then(delRes => {
-                                                TypeORM.getRepository(Entities.CharacterItem).save(characterItems).catch(err => {
-                                                    Logger.error('Character Items save failed', err);
-                                                });
-                                            })
-                                            .catch(err => {
-                                                Logger.error('Character Items deletion failed', err);
-                                                cb(new Error('Character Items deletion failed'));
-                                            });
-
-                                        //let neck = characterItems.find(i => i.slot == "NECK");
-                                        if (neck) {
-                                            char.azerite = 1 + ((neck - 280 - 45 - 10) / 2); // baselevel + ((neck - base - magni - mother) / 2)
-                                            if (char.azerite < 0)
-                                                char.azerite = null;
-                                        }
-                                        else
-                                            char.azerite = null;
-                                        char.updated = new Date();
-
-                                        TypeORM.getConnection()
-                                                .createQueryBuilder()
-                                                .update(Entities.Character)
-                                                .set(char)
-                                                .where("id = :id", { id: id })
-                                                .execute()
-                                                .then(query => {
-                                                    Logger.info('End Character update job', { char: id })
-                                                    cb(null, char);
-                                                    Socket.Emit(Socket.Channels.Character, {
-                                                        action: Socket.Action.Character.Update,
-                                                        data: {
-                                                            character: char
-                                                        }
-                                                    });
-                                                })
-                                                .catch(err => {
-                                                    Logger.error('Update query error', err);
-                                                    cb(new Error('Update query error'));
-                                                })
                                     })
                                     .catch(err => {
                                         if (err.response)

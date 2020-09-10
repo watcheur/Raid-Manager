@@ -37,7 +37,8 @@ module.exports = {
                 referencedColumnName: 'id'
             },
             inverseSide: 'id',
-            cascade: true
+            cascade: true,
+            onDelete: 'CASCADE'
         },
         character: {
             target: "Character",
@@ -47,7 +48,8 @@ module.exports = {
                 referencedColumnName: 'id'
             },
             inverseSide: 'id',
-            cascade: true
+            cascade: true,
+            onDelete: 'CASCADE'
         }
     }
 };
