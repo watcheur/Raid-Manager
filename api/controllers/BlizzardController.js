@@ -116,6 +116,35 @@ class BlizzardController extends DefaultController  {
             next();
         });
     }
+
+    SpellMedia = (req, res, next) => {
+        blizzard
+                .getApplicationToken()
+                .then(response => {
+                    blizzard.defaults.token = response.data.access_token;
+    
+                    let params = {
+                        locale: 'en_GB',
+                        namespace: 'static'
+                    }
+    
+                    blizzard.get(`/data/wow/media/spell/${req.params.id}`, params)
+                        .then(response => {
+                            if (response.data.assets.length > 0)
+                                res.redirect(302, response.data.assets[0].value, next);
+                            else
+                                res.redirect(302, "https://render-eu.worldofwarcraft.com/icons/56/inv_misc_questionmark.jpg", next);
+                        })
+                        .catch(err => {
+                            Logger.error("Blizzard spell media API error", err);
+                            res.redirect(302, "https://render-eu.worldofwarcraft.com/icons/56/inv_misc_questionmark.jpg", next);
+                        })
+                })
+                .catch(err => {
+                    Logger.error("Blizzard token retrieve failed", err);
+                    res.redirect(302, "https://render-eu.worldofwarcraft.com/icons/56/inv_misc_questionmark.jpg", next);
+                })
+    }
 }
 
 module.exports = BlizzardController;

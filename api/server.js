@@ -129,6 +129,7 @@ TypeORM
         // Blizzard
         server.get('/blizzard/realms', Controllers.Blizzard.Realms);
         server.get('/blizzard/encounter/:id', Controllers.Blizzard.Encounter);
+        server.get('/blizzard/spell/:id/media', Controllers.Blizzard.SpellMedia);
 
         // Items
         server.get('/items/:id', (req, res, next) => { next(new Error(Errs.NotImplementedError)); })
