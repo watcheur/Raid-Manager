@@ -15,8 +15,7 @@ export default class CharactersList extends React.Component {
         selected: 0,
         isLoading: false,
         error: null,
-        filters: {},
-        admin: false
+        filters: {}
     }
 
     constructor(props) {
@@ -30,8 +29,6 @@ export default class CharactersList extends React.Component {
         this.toggleSelected = this.toggleSelected.bind(this);
         this.filter = this.filter.bind(this);
         this.filterChar = this.filterChar.bind(this);
-
-        this.setState({ admin: props.admin || false });
     }
 
     spin(target) {
@@ -200,7 +197,7 @@ export default class CharactersList extends React.Component {
     }
 
     render() {
-        const { title } = this.props;
+        const { title, admin, logged } = this.props;
         const slots = ['HEAD', 'NECK', 'SHOULDER', 'BACK', 'CHEST', 'WRIST', 'HANDS', 'WAIST', 'LEGS', 'FEET', 'FINGER_1', 'FINGER_2', 'TRINKET_1', 'TRINKET_2', 'MAIN_HAND', 'OFF_HAND'];
         
         return (
@@ -255,7 +252,7 @@ export default class CharactersList extends React.Component {
                                         </th>
                                     )
                                 })}
-                                {this.state.admin ? (
+                                {admin && logged ? (
                                 <th scope="col" className="border-0 char-refresh">
                                     <a style={{cursor:'pointer'}} onClick={ev => this.loadCharacters(ev.target)} className='material-icons'>refresh</a>
                                 </th>) : (<th scope="col" className="border-0"></th>)}
@@ -333,11 +330,11 @@ export default class CharactersList extends React.Component {
                                             )
                                         })}
                                         
-                                        {this.state.admin ? (
+                                        {admin && logged ? (
                                             <td className='char-refresh'><a style={{cursor:'pointer'}} onClick={ev => this.refreshCharacter(ev.target, character)} className="material-icons">refresh</a></td>
                                         ) : (<td></td>)}
 
-                                        {this.state.admin ? (
+                                        {admin && logged ? (
                                             <td className='char-delete'><a style={{cursor:'pointer'}} onClick={ev => this.deleteCharacter(ev.target, character)} className="material-icons text-danger">clear</a></td>
                                         ): (<td></td>)}
                                     </tr>
