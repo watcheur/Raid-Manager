@@ -55,7 +55,7 @@ module.exports = () => {
                 });
             })
             .catch(err => Logger.error("Error occured on character cron job", err));
-    }, null, true, 'Europe/Paris', null, false);
+    }, null, true, 'Europe/Paris', null, true);
 
     // Every 8 hours -  Refresh all characters weekly
     new CronJob('0 0 */8 * * *', () => {

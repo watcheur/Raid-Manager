@@ -7,8 +7,10 @@ const EncounterJobs = require('./EncounterJobs');
 
 module.exports = {
     Start: () => {
-        if (process.env.NODE_ENV !== 'production')
+        if (process.env.NODE_ENV !== 'production') {
+            Logger.info("Development mode, don't start jobs");
             return;
+        }
 
         Logger.info('Sarting character queue processing');
         Queues.Character.process((job, done) => {

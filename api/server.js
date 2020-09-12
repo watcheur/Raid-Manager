@@ -14,9 +14,11 @@ const Jobs = require('./jobs/Jobs');
 const Entities = require('./entity/Entities');
 
 if (!process.env.ADMIN && !Config.server.admin) {
-    console.error('You must set a hash for password before starting');
+    Logger.error('You must set a hash for password before starting');
     process.exit(1);
 }
+
+Logger.info("Set environment to : " + process.env.NODE_ENV);
 
 const hash = bcrypt.hashSync(process.env.ADMIN || Config.server.admin, 10)
 
