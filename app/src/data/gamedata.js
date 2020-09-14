@@ -543,6 +543,15 @@ const raidDifficulties = {
     Mythic: 3
 }
 
+/*
+{star}{circle}{diamond}{triangle}{moon}{square}{cross}{skull}
+{Warrior}{Paladin}{Hunter}{Rogue}{Priest}{Death Knight}{Shaman}{Mage}{Warlock}{Monk}{Druid}{Demon Hunter}
+
+{wow}{d3}{sc2}{bnet}{alliance}{horde}
+
+{spell:31821}
+*/
+
 export default {
     Characters: {
         Type: CharacterType,
@@ -565,6 +574,35 @@ export default {
     },
     Raids: {
         Difficulties: raidDifficulties
+    },
+    Icons: {
+        Raid: [
+            { name: "skull", path: "skull.png" },
+            { name: "cross", path: "cross.png" },
+            { name: "star", path: "star.png" },
+            { name: "circle", path: "circle.png" },
+            { name: "diamond", path: "diamond.png"},
+            { name: "triangle", path: "triangle.png" },
+            { name: "moon", path: "moon.png" },
+            { name: "square", path: "square.png" }
+        ],
+        Classes: [
+            { name: "Warrior", path: "class-warrior.jpg" },
+            { name: "Paladin", path: "class-paladin.jpg" },
+            { name: "Hunter", path: "class-hunter.jpg" },
+            { name: "Rogue", path: "class-rogue.jpg" },
+            { name: "Priest", path: "class-priest.jpg" },
+            { name: "Death Knight", path: "class-death-knight.jpg" },
+            { name: "Shaman", path: "class-shaman.jpg" },
+            { name: "Mage", path: "class-mage.jpg" },
+            { name: "Warlock", path: "class-warlock.jpg" },
+            { name: "Monk", path: "class-monk.jpg" },
+            { name: "Druid", path: "class-druid.jpg" },
+            { name: "Demon Hunter", path: "class-demon-hunter.jpg" }
+        ],
+        Others: [
+            { name: "wow", path: "logo.png" }
+        ]
     },
     /**
      * @param {CharacterType} type

@@ -5,53 +5,18 @@ import {
     Button,
     FormInput
 } from "shards-react";
+
 import ReactQuill, {Quill} from "react-quill";
 import GameData from "../../data/gamedata";
 
 import "react-quill/dist/quill.snow.css";
 import "../../assets/quill.css";
 
-let Base = Quill.import('blots/embed');
-class CharacterBlot extends Base {
-    static create(value) {
-        let node = super.create(value.name);
+import { CharacterBlot, IconBlot, SpellBlot } from ".";
 
-        node.innerHTML = value.name;
-
-        node.setAttribute('data-character', value.name);
-        node.setAttribute('data-color', value.color);
-        node.setAttribute('data-cl', value.class);
-        node.setAttribute('data-note', `|cff${value.color}${value.name}|r`);
-        node.setAttribute('class', `wowchar GameColorClass ${value.class}`);
-        node.setAttribute('spellcheck', "false");
-        node.setAttribute('autocomplete', "off");
-        node.setAttribute('autocorrect', "off");
-        node.setAttribute('autocapitalize', "off");
-
-        return node;
-    }
-
-    static value(node) {
-        return {
-            name: node.getAttribute('data-character'),
-            color: node.getAttribute('data-color'),
-            class: node.getAttribute('data-cl'),
-            note: node.getAttribute('data-note')
-        }
-    }
-
-    static formats(node) {
-        return {
-            name: node.getAttribute('data-character'),
-            color: node.getAttribute('data-color'),
-            class: node.getAttribute('data-cl'),
-            note: node.getAttribute('data-note')
-        }
-    }
-}
-CharacterBlot.blotName = 'wowchar';
-CharacterBlot.tagName = 'wowchar';
 Quill.register('formats/wowchar', CharacterBlot);
+Quill.register('formats/wowico', IconBlot);
+Quill.register('formats/wowspell', SpellBlot);
 
 class NoteEditor extends React.Component {
     constructor(props) {
@@ -153,7 +118,7 @@ class NoteEditor extends React.Component {
                 <Col lg="12" className="h-100 min-vh-20 p-0 note-editor">
                     
                     <ReactQuill className="add-new-post__editor mb-1 border-top"
-                        formats={['wowchar']}
+                        formats={['wowchar', 'wowico', 'wowspell']}
                         modules={{ toolbar: false }}
                         ref={(el) => { this.reactQuillRef = el }}
                         value={this.state.content}

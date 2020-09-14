@@ -88,8 +88,13 @@ class Encounter extends React.Component {
                             if (parsed.ops) {
                                 parsed.ops.forEach((opt, idx) => {
                                     let txt = '';
+                                    console.log(opt);
                                     if (typeof opt.insert === 'object' && opt.insert.wowchar)
                                         txt = opt.insert.wowchar.note;
+                                    else if (typeof opt.insert === 'object' && opt.insert.wowico)
+                                        txt = `{${opt.insert.wowico.name}}`;
+                                    else if (typeof opt.insert === 'object' && opt.insert.wowspell)
+                                        txt = `{spell:${opt.insert.wowspell.name}}`;
                                     else
                                         txt = opt.insert;
 
@@ -241,9 +246,17 @@ class Encounter extends React.Component {
                                     Note 
                                     {document.queryCommandSupported('copy') && <div className='d-inline px-4'><Button size="sm" spill theme="dark" onClick={this.copyToClipboard}><i className='material-icons'>save</i> {this.state.copy}</Button></div>}
                                 </h5>
-                                <Col className="p-3" dangerouslySetInnerHTML={{__html: this.state.noteFormatted.replace(Utils.colorRegex, Utils.colorReplace).replace(/(\#ffffff)/i, '#000000')}}>
+                                <Col className="p-3" dangerouslySetInnerHTML={
+                                        {
+                                            __html:  this.state.noteFormatted
+                                                            .replace(Utils.colorRegex, Utils.colorReplace)
+                                                            .replace(/(\#ffffff)/i, '#000000')
+                                                            .replace(new RegExp(/\{(spell:([0-9]*))\}/g), `<img class="GameIcon--small" src="${Api.GetEndpoint()}/blizzard/spell/$2/media" alt="{$1}" />`)
+                                                            .replace(new RegExp(/\{([a-zA-Z-\w]+)\}/g), '<img class="GameIcon--small" src="/images/blizzard/$1.png" alt="$1" />')
+                                        }
+                                    }>
                                 </Col>
-                                <textarea ref={this.copyRef} style={{width: '0px', height:'0px', opacity: '.01', height: '0', position: 'absolute', zIndex: -1}}>{this.state.noteRaw}</textarea>
+                                <textarea ref={this.copyRef} style={{width: '0px', height:'0px', opacity: '.01', height: '0', position: 'absolute', zIndex: -1}} value={this.state.noteRaw}></textarea>
                             </Col>)}
                         </Row>
                     </Collapse>

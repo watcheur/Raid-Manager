@@ -60,6 +60,8 @@ class Api {
         });
     }
 
+    GetEndpoint = () => this.endpoint;
+
     Login = (username, password) => this.Post('/login', { username: username, password: password });
 
     GetPlayers = (args) => this.Get('/players', args);
@@ -111,6 +113,8 @@ class Api {
     GetAverageIlvl = () => this.Get('/stats/ilvl');
     GetAverageAzerite = () => this.Get('/stats/azerite');
     GetWeeklyRuns = () => this.Get('/stats/weekly');
+
+    SpellMedia = (id) => `${this.endpoint}/blizzard/spell/${id}/media`;
 }
 
 export default new Api()

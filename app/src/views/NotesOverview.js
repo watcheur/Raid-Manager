@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Card, CardHeader, CardBody, FormInput, Button } from "shards-react";
-import ReactQuill, {Quill} from "react-quill";
+import ReactQuill, { Quill } from "react-quill";
 import { toast } from 'react-toastify';
 
 import "react-quill/dist/quill.snow.css";
@@ -8,8 +8,13 @@ import "../assets/quill.css";
 
 import PageTitle from "../components/common/PageTitle";
 
-import Api from "../data/api";
+import { Api, GameData } from "../data";
 import { Dispatcher, Constants } from "../flux";
+import { CharacterBlot, IconBlot, SpellBlot } from "../components/notes";
+
+Quill.register('formats/wowchar', CharacterBlot);
+Quill.register('formats/wowico', IconBlot);
+Quill.register('formats/wowspell', SpellBlot);
 
 class NotesOverview extends React.Component {
     constructor(props) {
@@ -27,6 +32,9 @@ class NotesOverview extends React.Component {
         this.delete = this.delete.bind(this);
         this.select = this.select.bind(this);
         this.loadNotes = this.loadNotes.bind(this);
+
+        this.insertIco = this.insertIco.bind(this);
+        this.insertSpell = this.insertSpell.bind(this);
         
         this.reactQuillRef = null;
         this.quillRef = null;
@@ -154,6 +162,39 @@ class NotesOverview extends React.Component {
         }
     }
 
+    insertIco(ev, ico) {
+        ev.preventDefault();
+
+        const range = this.quillRef.selection.savedRange;
+        if (range && range.length != 0) return;
+
+        const cursorPosition = range.index;
+
+        this.quillRef.insertEmbed(cursorPosition, 'wowico', ico, 'api');
+        // this.quillRef.insertText(cursorPosition + 2, ' ', 'api');
+        this.quillRef.setSelection(cursorPosition + 1, 'api');
+    }
+
+    insertSpell(ev) {
+        ev.preventDefault();
+
+        const range = this.quillRef.selection.savedRange;
+        if (range && range.length != 0) return;
+
+        const cursorPosition = range.index;
+
+        var spellId = window.prompt("Spell id", "");
+        if (spellId.length > 0)
+        {
+            this.quillRef.insertEmbed(cursorPosition, 'wowspell', {
+                path: Api.SpellMedia(spellId),
+                name: spellId
+            }, 'api');
+            //this.quillRef.insertText(cursorPosition + 2, ' ', 'api');
+            this.quillRef.setSelection(cursorPosition + 1, 'api');
+        }
+    }
+
     render() {
         return(
             <Container fluid className="main-content-container px-4">
@@ -190,18 +231,54 @@ class NotesOverview extends React.Component {
                                         })}
                                     </Col>
                                     <Col md="9" className="p-0">
-                                        <Col md="12" className="p-0">
-                                            <FormInput value={this.state.title} onChange={(evt) => this.setState({ title: evt.target.value })} size="lg" className="m-0 rounded-0 border-0" placeholder="Title..." />
-                                        </Col>
-                                        <Col md="12" className="p-0 note-editor border-top border-bottom">
-                                            <ReactQuill className="add-new-post__editor border-0 vh-50"
-                                                formats={['']}
-                                                modules={{ toolbar: false }}
-                                                ref={(el) => { this.reactQuillRef = el }} />
-                                        </Col>
-                                        <Col md="12" className="py-2 text-right">
-                                            <Button onClick={() => this.save() } className="m-0"><i className='material-icons'>save</i> Save</Button>
-                                        </Col>
+                                        <Row className="border-bottom p-0 m-0">
+                                            <Col md="12" className="p-0">
+                                                <FormInput value={this.state.title} onChange={(evt) => this.setState({ title: evt.target.value })} size="lg" className="m-0 rounded-0 border-0" placeholder="Title..." />
+                                            </Col>
+                                        </Row>
+
+                                        <Row className="p-0 m-0">
+                                            <Col md="9" className="p-0 note-editor">
+                                                <ReactQuill className="add-new-post__editor border-0 vh-50"
+                                                    formats={['wowchar', 'wowico', 'wowspell']}
+                                                    modules={{ toolbar: false }}
+                                                    ref={(el) => { this.reactQuillRef = el }} />
+                                            </Col>
+                                            <Col md="3" className="border-left border-bottom px-0">
+                                                <Col md="12" lg="12" className="py-2 px-0 text-center border-bottom">
+                                                    {GameData.Icons.Raid.map((ico, idx) =>
+                                                        <Button theme="light" onClick={ev => this.insertIco(ev, ico)}>
+                                                            <img className="GameIcon--tiny" src={`/images/blizzard/${ico.path}`} alt={ico.name} />
+                                                        </Button>
+                                                    )}
+                                                </Col>
+                                                <Col md="12" lg="12" className="py-2 px-0 text-center border-bottom">
+                                                    {GameData.Icons.Classes.map((ico, idx) =>
+                                                        <Button theme="light" onClick={ev => this.insertIco(ev, ico)}>
+                                                            <img className="GameIcon--tiny" src={`/images/blizzard/${ico.path}`} alt={ico.name} />
+                                                        </Button>
+                                                    )}
+                                                </Col>
+                                                <Col md="12" lg="12" className="py-2 px-0 text-center border-bottom">
+                                                    {GameData.Icons.Others.map((ico, idx) =>
+                                                        <Button theme="light" onClick={ev => this.insertIco(ev, ico)}>
+                                                            <img className="GameIcon--tiny" src={`/images/blizzard/${ico.path}`} alt={ico.name} />
+                                                        </Button>
+                                                    )}
+                                                </Col>
+                                                <Col md="12" lg="12" className="py-2 px-0 text-center border-bottom">
+                                                    <Button theme="light" className="tiny" onClick={ev => this.insertSpell(ev)}>
+                                                        <img className="GameIcon-tiny rounded" src="/images/blizzard/inv_misc_questionmark.jpg" alt="unknown" /> Spell
+                                                    </Button>
+                                                </Col>
+                                            </Col>
+                                        </Row>
+
+                                        <Row className="border-top p-0 m-0">
+                                            <Col md="12" className="py-2 text-right">
+                                                <Button onClick={() => this.save() } className="m-0"><i className='material-icons'>save</i> Save</Button>
+                                            </Col>
+                                        </Row>
                                     </Col>
                                 </Row>
                             </CardBody>

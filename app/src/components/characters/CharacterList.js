@@ -289,7 +289,7 @@ export default class CharactersList extends React.Component {
                                                 <img src="/images/blizzard/logo.png" className='GameIcon--tiny' />
                                             </a>
                                             <a
-                                                href={this.state.admin ? `/characters/${character.id}/wishlist` : '#'}
+                                                href={admin && logged ? `/characters/${character.id}/wishlist` : '#'}
                                                 className={classNames('GameColorClass', GameData.ClassToObj(character.class).slug)}>
                                                 {character.name}
                                             </a>
