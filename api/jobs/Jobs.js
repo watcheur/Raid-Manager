@@ -54,7 +54,8 @@ module.exports = {
                 return done(null, null);
 
             EncounterJobs.LoadDrops(job.data.encounter, done);
-        }).catch(err => { Logger.error('Encounter queue processing failed'); })
+        })
+        .catch(err => { Logger.error('Encounter queue processing failed'); })
     },
     Character: CharacterJobs,
     Weekly: WeeklyJobs,
