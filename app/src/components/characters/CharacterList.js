@@ -218,7 +218,16 @@ export default class CharactersList extends React.Component {
         
         return (
             <Card small className="mb-4 overflow-hidden text-center characters-list">
-                {title.length ? (<CardHeader className="bg-dark"><h5 className="m-0 text-white">{title}</h5></CardHeader>) : ''}
+                {title.length ? (
+                    <CardHeader className="bg-dark">
+                        <h5 className="m-0 text-white">
+                            {title}
+                            {this.state.isLoading && (
+                                <i className="material-icons spin ">refresh</i>
+                            )}
+                        </h5>
+                    </CardHeader>
+                ) : ''}
                 <CardBody className="bg-dark p-0 pb-3">
                     <table className="table table-dark mb-0">
                         <thead className="thead-dark">
@@ -277,13 +286,6 @@ export default class CharactersList extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.isLoading && (
-                                <tr className="bg-dark p-0 pb-3">
-                                    <td colSpan={11+slots.length}>
-                                        <h1 className="material-icons spin ">refresh</h1>
-                                    </td>
-                                </tr>
-                            )}
                             {this.state.error && (
                                 <tr className="bg-dark p-0 pb-3">
                                     <td colSpan={11+slots.length}
