@@ -69,14 +69,22 @@ export default class CharactersList extends React.Component {
                         else
                             expr = parser.parse('x ' + value);
                     }
-                    catch (err) { expr = parser.parse('x >= ' + value); }
+                    catch (err) {
+                        expr = parser.parse('x >= ' + value);
+                    }
 
                     switch (i) {
                         case 'weekly':
-                            if (value == 0 && !char.weekly)
-                                count++;
-                            else if (expr.evaluate({ x: char.weekly }))
-                                count++;
+                            if (value == 0)
+                            {
+                                if (!char.weekly)
+                                    count++;
+                            }
+                            else
+                            {
+                                if (expr.evaluate({ x: char.weekly || 0 }))
+                                    count++;
+                            }
                             break;
                         case 'azerite':
                         case 'equipped':
