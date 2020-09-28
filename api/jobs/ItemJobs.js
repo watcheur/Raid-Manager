@@ -178,6 +178,7 @@ function ItemUpdateMedia(id, cb) {
                 })
         })
         .catch(err => {
+            Logger.error(err);
             cb(err);
         });
 }

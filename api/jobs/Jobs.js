@@ -14,6 +14,7 @@ module.exports = {
 
         Logger.info('Sarting character queue processing');
         Queues.Character.process((job, done) => {
+            Logger.info('Start processing character data', job.data);
             if (!job.data.character)
                 return done(null, null);
 
@@ -22,6 +23,7 @@ module.exports = {
 
         Logger.info('Starting weekly queue processing');
         Queues.Weekly.process((job, done) => {
+            Logger.info('Start processing character weekly', job.data);
             if (!job.data.character)
                 return done(null, null);
             WeeklyJobs.Update(job.data.character, done);
@@ -29,6 +31,7 @@ module.exports = {
 
         Logger.info('Starting item queue processing');
         Queues.Item.process((job, done) => {
+            Logger.info('Start processing item data', job.data);
             if (!job.data.item)
                 return done(null, null);
             
@@ -37,6 +40,7 @@ module.exports = {
 
         Logger.info('Starting item queue processing');
         Queues.Media.process((job, done) => {
+            Logger.info('Start processing item media', job.data);
             if (!job.data.item)
                 return done(null, null);
             
@@ -45,7 +49,7 @@ module.exports = {
 
         Logger.info('Starting encounter queue processing');
         Queues.Encounter.process((job, done) => {
-            console.log("ok", job.data);
+            Logger.info('Start processing encounter data', job.data);
             if (!job.data.encounter)
                 return done(null, null);
 
