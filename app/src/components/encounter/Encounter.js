@@ -81,24 +81,37 @@ class Encounter extends React.Component {
                         let note = res.data.data[0].note;
 
                         let text = '';
+                        let formatted = '';
 
                         if (note) {
-                            console.log(note.text); 
                             let parsed = JSON.parse(note.text);
                             if (parsed.ops) {
                                 parsed.ops.forEach((opt, idx) => {
                                     let txt = '';
-                                    console.log(opt);
+                                    let txtFormatted = '';
+                                    
                                     if (typeof opt.insert === 'object' && opt.insert.wowchar)
+                                    {
                                         txt = opt.insert.wowchar.note;
+                                        txtFormatted = opt.insert.wowchar.note.replace(Utils.colorRegex, Utils.colorReplace);
+                                    }
                                     else if (typeof opt.insert === 'object' && opt.insert.wowico)
+                                    {
                                         txt = `{${opt.insert.wowico.name}}`;
+                                        txtFormatted = `<img class="GameIcon--small" src="/images/blizzard/${opt.insert.wowico.path}" alt="${opt.insert.wowico.name}" />`
+                                    }
                                     else if (typeof opt.insert === 'object' && opt.insert.wowspell)
+                                    {
                                         txt = `{spell:${opt.insert.wowspell.name}}`;
-                                    else
+                                        txtFormatted = `<img class="GameIcon--small" src="${opt.insert.wowspell.path}" alt="${opt.insert.wowspell.name}" />`;
+                                    }
+                                    else {
                                         txt = opt.insert;
+                                        txtFormatted = opt.insert;
+                                    }
 
                                     text += txt;
+                                    formatted += txtFormatted;
                                 });
                             }
                         }
@@ -106,7 +119,7 @@ class Encounter extends React.Component {
                         this.setState({
                             characters: res.data.data[0].characters,
                             note: note,
-                            noteFormatted: text.split('\n').map((item, i) => {
+                            noteFormatted: formatted.split('\n').map((item, i) => {
                                 return `<p>${item}</p>`;
                             }).join(' '),
                             noteRaw: text
@@ -244,7 +257,7 @@ class Encounter extends React.Component {
                             <Col md="12">
                                 <h5>
                                     Note 
-                                    {document.queryCommandSupported('copy') && <div className='d-inline px-4'><Button size="sm" spill theme="dark" onClick={this.copyToClipboard}><i className='material-icons'>save</i> {this.state.copy}</Button></div>}
+                                    {document.queryCommandSupported('copy') && <div className='d-inline px-4'><Button size="sm" theme="dark" onClick={this.copyToClipboard}><i className='material-icons'>save</i> {this.state.copy}</Button></div>}
                                 </h5>
                                 <Col className="p-3" dangerouslySetInnerHTML={
                                         {
@@ -256,7 +269,7 @@ class Encounter extends React.Component {
                                         }
                                     }>
                                 </Col>
-                                <textarea ref={this.copyRef} style={{width: '0px', height:'0px', opacity: '.01', height: '0', position: 'absolute', zIndex: -1}} value={this.state.noteRaw}></textarea>
+                                <textarea ref={this.copyRef} style={{width: '0px', height:'0px', opacity: '.01', height: '0', position: 'absolute', zIndex: -1}} readOnly value={this.state.noteRaw}></textarea>
                             </Col>)}
                         </Row>
                     </Collapse>

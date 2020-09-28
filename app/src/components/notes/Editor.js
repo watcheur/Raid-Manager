@@ -7,7 +7,7 @@ import {
 } from "shards-react";
 
 import ReactQuill, {Quill} from "react-quill";
-import GameData from "../../data/gamedata";
+import { GameData, Api } from "../../data";
 
 import "react-quill/dist/quill.snow.css";
 import "../../assets/quill.css";
@@ -36,6 +36,8 @@ class NoteEditor extends React.Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.insert = this.insert.bind(this);
+        this.insertIco = this.insertIco.bind(this);
+        this.insertSpell = this.insertSpell.bind(this);
         this.emitChanges = this.emitChanges.bind(this);
         this.contentEditable = React.createRef();
         this.reactQuillRef = null;
@@ -96,11 +98,44 @@ class NoteEditor extends React.Component {
         this.quillRef.insertText(cursorPosition + 2, ' ', 'api');
         this.quillRef.setSelection(cursorPosition + 1, 'api');
     }
+
+    insertIco(ev, ico) {
+        ev.preventDefault();
+
+        const range = this.quillRef.selection.savedRange;
+        if (range && range.length != 0) return;
+
+        const cursorPosition = range.index;
+
+        this.quillRef.insertEmbed(cursorPosition, 'wowico', ico, 'api');
+        // this.quillRef.insertText(cursorPosition + 2, ' ', 'api');
+        this.quillRef.setSelection(cursorPosition + 1, 'api');
+    }
+
+    insertSpell(ev) {
+        ev.preventDefault();
+
+        const range = this.quillRef.selection.savedRange;
+        if (range && range.length != 0) return;
+
+        const cursorPosition = range.index;
+
+        var spellId = window.prompt("Spell id", "");
+        if (spellId.length > 0)
+        {
+            this.quillRef.insertEmbed(cursorPosition, 'wowspell', {
+                path: Api.SpellMedia(spellId),
+                name: spellId
+            }, 'api');
+            //this.quillRef.insertText(cursorPosition + 2, ' ', 'api');
+            this.quillRef.setSelection(cursorPosition + 1, 'api');
+        }
+    }
 	
 	render() {
         return (
             <Row className="border m-1 rounded bg-white">
-                <Col lg="12" className="py-2 text-center">
+                <Col lg="12" className="py-2 text-center border-bottom">
                     {this.state.characters.length === 0 && ('No characters selected')}
                     {this.state.characters.sort((a, b) => (a.class > b.class)).map((char, idx) => {
                         return (
@@ -109,6 +144,26 @@ class NoteEditor extends React.Component {
                                 {char.name.capitalize()}
                             </Button>)
                     })}
+                </Col>
+                <Col md="12" lg="12" className="border-bottom px-0 text-center">
+                        {GameData.Icons.Raid.map((ico, idx) =>
+                            <Button theme="note" onClick={ev => this.insertIco(ev, ico)}>
+                                <img className="GameIcon--tiny" src={`/images/blizzard/${ico.path}`} alt={ico.name} />
+                            </Button>
+                        )}
+                        {GameData.Icons.Classes.map((ico, idx) =>
+                            <Button theme="note" onClick={ev => this.insertIco(ev, ico)}>
+                                <img className="GameIcon--tiny" src={`/images/blizzard/${ico.path}`} alt={ico.name} />
+                            </Button>
+                        )}
+                        {GameData.Icons.Others.map((ico, idx) =>
+                            <Button theme="note" onClick={ev => this.insertIco(ev, ico)}>
+                                <img className="GameIcon--tiny" src={`/images/blizzard/${ico.path}`} alt={ico.name} />
+                            </Button>
+                        )}
+                        <Button theme="note" className="tiny" onClick={ev => this.insertSpell(ev)}>
+                            <img className="GameIcon-tiny rounded" src="/images/blizzard/inv_misc_questionmark.jpg" alt="unknown" /> Spell
+                        </Button>
                 </Col>
                 {/*
                 <Col lg="12" className="p-0">
