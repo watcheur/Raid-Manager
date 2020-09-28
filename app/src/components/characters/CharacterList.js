@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardHeader, CardBody } from "shards-react";
 import classNames from "classnames";
+import { Parser } from "expr-eval"
 
 import GameData from '../../data/gamedata';
 import Api from '../../data/api';
@@ -38,7 +39,7 @@ export default class CharactersList extends React.Component {
     }
 
     filter(target) {
-        let res = window.prompt(`Minimum value for ${target} (empty for clean)`, this.state.filters[target] ?? '');
+        let res = window.prompt(`You may set a filter for the ${target} column (empty to clean)\n\neg "> 21" or "<= 42"\nFor a more arithmetical search use x as "x > 10 and x < 20"`, this.state.filters[target] ?? '');
         if (res === null)
             return;
 
@@ -56,26 +57,36 @@ export default class CharactersList extends React.Component {
         let keys = Object.keys(this.state.filters).length;
         if (keys) {
             let count = 0;
+            let parser = new Parser();
 
             for (var i in this.state.filters) {
                 if (this.state.filters.hasOwnProperty(i)) {
                     let value = this.state.filters[i];
+                    let expr = null
+                    try {
+                        if (value.indexOf("x") >= 0)
+                            expr = parser.parse(value)
+                        else
+                            expr = parser.parse('x ' + value);
+                    }
+                    catch (err) { expr = parser.parse('x >= ' + value); }
 
                     switch (i) {
                         case 'weekly':
                             if (value == 0 && !char.weekly)
                                 count++;
-                            else if (value > 0 && char.weekly >= value)
+                            else if (value > 0 && expr.evaluate({ x: char.weekly }))
                                 count++;
                             break;
                         case 'azerite':
-                            if (char.azerite && char.azerite >= value)
+                        case 'equipped':
+                            if (expr && expr.evaluate({ x: char[i] }))
                                 count++;
                             break;
                         default:
                             let item = char.items.find(it => it.slot == i);
 
-                            if (item && item.level >= value)
+                            if (item && expr.evaluate({ x: item.level }))
                                 count++;
                             break;
                     }

@@ -11,6 +11,7 @@
 		"classnames": "*",
 		"cross-env": "*",
 		"dateformat": "*",
+		"expr-eval": "^2.0.2",
 		"flux": "*",
 		"lodash.find": "*",
 		"moment": "*",
