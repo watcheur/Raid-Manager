@@ -18,7 +18,7 @@ function ItemUpdate(id, cb) {
 
             if (item.updated) {
                 Logger.info('Item already updated');
-                return cb();
+                return cb(null, item);
             }
 
             blizzard
@@ -71,6 +71,7 @@ function ItemUpdate(id, cb) {
                                     Logger.error('Blizzard token access failed', { status: err.response.status, statusText: err.response.statusText });
                                 else
                                     Logger.error('Code error', err);
+                                cb(e);
                             });
                     }
                     catch (e)
