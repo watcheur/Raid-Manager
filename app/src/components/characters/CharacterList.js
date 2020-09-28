@@ -60,10 +60,26 @@ export default class CharactersList extends React.Component {
             for (var i in this.state.filters) {
                 if (this.state.filters.hasOwnProperty(i)) {
                     let value = this.state.filters[i];
-                    let item = char.items.find(it => it.slot == i);
 
-                    if (item && item.level >= value)
-                        count++;
+                    switch (i) {
+                        case 'weekly':
+                            if (value == 0 && !char.weekly)
+                                count++;
+                            else if (value > 0 && char.weekly >= value)
+                                count++;
+                            break;
+                        case 'azerite':
+                            if (char.azerite && char.azerite >= value)
+                                count++;
+                            break;
+                        default:
+                            let item = char.items.find(it => it.slot == i);
+
+                            if (item && item.level >= value)
+                                count++;
+                            break;
+                    }
+                    
                 }
             }
 
