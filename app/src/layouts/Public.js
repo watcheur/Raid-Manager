@@ -19,6 +19,8 @@ const PublicLayout = ({ children }) => (
         {children}
       </Col>
     </Row>
+    <ReactTooltip />
+    <ReactTooltip id="missing" type='error' effect='solid' backgroundColor='#c4183c' textColor='#FFF' className="text-center missing-tooltip" html={true} />
   </Container>
 );
 
