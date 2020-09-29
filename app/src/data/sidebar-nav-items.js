@@ -21,6 +21,11 @@ export default function() {
       htmlBefore: '<i class="material-icons">description</i>'
     },
     {
+      title: "Stats",
+      to: "/stats",
+      htmlBefore: '<i class="material-icons">pie_chart</i>'
+    },
+    {
       title: "Options",
       to: "/options",
       htmlBefore: '<i class="material-icons">settings</i>'

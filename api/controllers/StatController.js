@@ -5,6 +5,7 @@ const Logger = require('../utils/Logger');
 const DefaultController = require('./DefaultController');
 const Enums = require('../utils/Enums');
 const Context = require('../utils/Context');
+const Utils = require('../utils/Utils');
 
 class StatController extends DefaultController  {
     AvgIlvl = async (req, res, next) => {
@@ -140,7 +141,23 @@ class StatController extends DefaultController  {
         }
     }
 
+    CharactersClasses = async (req, res, next) => {
+        let where = this.ClearProps(req.query, [ 'type', 'role' ]);
 
+        let query = TypeORM.getRepository(Entities.Character)
+                .createQueryBuilder()
+                .select('class')
+                .addSelect('COUNT(*)', 'total')
+        
+        if (where.role)
+            query = query.where('spec IN(:specs)', { specs: Utils.GetSpecsByRole(where.role) });
+        if (where.type)
+            query = query.where('type = :type', where);
+
+        let classes = await query.groupBy('class').getRawMany();
+        res.send({ err: false, data: classes });
+        next();
+    }
 }
 
 module.exports = StatController;

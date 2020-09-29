@@ -113,6 +113,7 @@ class Api {
     GetAverageIlvl = () => this.Get('/stats/ilvl');
     GetAverageAzerite = () => this.Get('/stats/azerite');
     GetWeeklyRuns = () => this.Get('/stats/weekly');
+    GetClassesStats = (type, role) => this.Get('/stats/classes', { type: type, role: role });
 
     SpellMedia = (id) => `${this.endpoint}/blizzard/spell/${id}/media`;
 }

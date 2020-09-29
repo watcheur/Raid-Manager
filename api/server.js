@@ -127,6 +127,7 @@ TypeORM
         server.get('/stats/ilvl', Controllers.Stat.AvgIlvl);
         server.get('/stats/azerite', Controllers.Stat.AvgAzerite);
         server.get('/stats/weekly', Controllers.Stat.WeeklyDone);
+        server.get('/stats/classes', Controllers.Stat.CharactersClasses);
 
         // Blizzard
         server.get('/blizzard/realms', Controllers.Blizzard.Realms);

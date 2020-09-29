@@ -63,7 +63,7 @@ export default class Stats extends React.Component {
     componentDidMount() {
         this.dispatcherToken = Dispatcher.register(payload => {
             switch (payload.actionType) {
-                case Constants.NEW_CHAR:
+                case Constants.CHAR_CREATED:
                 case Constants.CHAR_UPDATE:
                 case Constants.CHAR_DELETED:
                     this.loadStats();

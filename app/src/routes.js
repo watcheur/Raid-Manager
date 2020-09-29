@@ -15,6 +15,7 @@ import LoginView from "./views/LoginView";
 import PlayerOverview from "./views/PlayerOverview";
 import CharacterDetail from "./views/CharacterDetail";
 import CharacterWishlist from "./views/CharacterWishlist";
+import StatsOverview from "./views/StatsOverview";
 
 export default [
   {
@@ -91,6 +92,13 @@ export default [
     admin: true,
     layout: DefaultLayout,
     component: OptionsOverview
+  },
+  {
+    path: "/stats",
+    exact: true,
+    admin: true,
+    layout: DefaultLayout,
+    component: StatsOverview
   },
   {
     path: "/public/characters",

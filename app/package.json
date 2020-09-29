@@ -28,6 +28,7 @@
 		"react-scripts": "3.4.1",
 		"react-toastify": "*",
 		"react-tooltip": "*",
+		"recharts": "^1.8.5",
 		"shards-react": "*",
 		"shortid": "*",
 		"socket.io": "*"
