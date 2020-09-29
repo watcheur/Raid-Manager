@@ -41,8 +41,8 @@ export default class Stats extends React.Component {
                             return {
                                 name: GameData.ClassToObj(d.class).label,
                                 color: GameData.ClassToColor(d.class).replace('#FFFFFF', '#bfbeba'),
-                                value: d.total,
-                                class: d.class
+                                total: parseInt(d.total),
+                                cl: d.class
                             }
                         }
                     )});
@@ -103,10 +103,10 @@ export default class Stats extends React.Component {
                                 labelLine={true}
                                 label={this.renderCustomizedLabel}
                                 outerRadius={80}
-                                dataKey="class"
+                                dataKey="total"
                             >
                                 {
-                                    this.state.data.map((entry, index) => <Cell fill={entry.color} />)
+                                    this.state.data.map((entry, index) => <Cell key={index} fill={entry.color} />)
                                 }
                             </Pie>
                         </PieChart>
