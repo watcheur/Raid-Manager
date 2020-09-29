@@ -762,6 +762,9 @@ th .GameIcon {
 }
 
 /** Raids **/
+.bg.icecrown-citadel {
+	background-image: url(/images/blizzard/raids/icecrown-citadel.jpg);
+}
 .bg.uldir {
 	background-image: url(/images/blizzard/raids/uldir-small.jpg);
 }
