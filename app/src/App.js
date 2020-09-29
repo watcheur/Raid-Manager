@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
-import Backend from 'react-dnd-html5-backend'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 import { DndProvider } from 'react-dnd'
 
 import routes from "./routes";
@@ -67,7 +67,7 @@ class EndpointPrompt extends React.Component {
 }
 
 export default () => (
-	<DndProvider backend={Backend}>
+	<DndProvider backend={HTML5Backend}>
 		<Router basename={""}>
 			<div>
 				<EndpointPrompt />

@@ -4,8 +4,6 @@ var sass = require('gulp-sass');
 var cleanCSS = require('gulp-clean-css');
 var rename = require('gulp-rename');
 
-gulp.task('default', ['serve']);
-
 gulp.task('compile:sass', function () {
   return gulp.src('styles/scss/shards-dashboards.scss')
     .pipe(sass({ outputStyle: 'expanded' }).on('error', sass.logError))
@@ -17,9 +15,11 @@ gulp.task('compile:sass', function () {
     .pipe(browserSync.stream());
 });
 
-gulp.task('compile', ['compile:sass']);
+gulp.task('compile', gulp.series('compile:sass'));
 
-gulp.task('serve', ['compile'], function () {
+gulp.task('serve', gulp.series('compile'), function () {
   browserSync.init({ server: '.' });
   gulp.watch('styles/**/*.scss', ['compile:sass']);
 });
+
+gulp.task('default', gulp.series( 'compile', 'serve'));
