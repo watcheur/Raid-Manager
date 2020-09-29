@@ -55,5 +55,4 @@ Here's the syntax:
         - Add placeholder like (mage(1) mage(2) mage(3))
 
     Other:
-        - Stats page
         - Characters stats
