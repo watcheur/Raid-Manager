@@ -339,6 +339,15 @@
     word-wrap: none;
 }
 
+.missing-tooltip p {
+    line-height: 20px;
+    margin: 0;
+}
+
+.missing-tooltip {
+    padding: 10px;
+}
+
 /* DESKTOP */
 @media only screen and (min-width : 1224px){
     .players-list .player-name, .players-list .player-rank {

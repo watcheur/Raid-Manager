@@ -6,6 +6,7 @@ import classNames from "classnames"
 import { Parser } from "expr-eval"
 import { v4 as uuidv4 } from "uuid"
 import { toast } from 'react-toastify'
+import ReactTooltip from "react-tooltip"
 
 import GameData from '../../data/gamedata'
 import Api from '../../data/api'
@@ -271,7 +272,9 @@ export default class CharactersList extends React.Component {
         .then(res => {
             this.setState({ isLoading: false });
             if (!res.data.err) {
-                this.setState({ characters: res.data.data })
+                this.setState({ characters: res.data.data }, () => {
+                    ReactTooltip.rebuild();
+                })
                 this.success(target);
             }
             else {
@@ -447,6 +450,13 @@ export default class CharactersList extends React.Component {
                                             return (
                                                 <td key={index} className={classNames(GameData.IlvlToClass(item.level), 'items', `char-${value}`)}>
                                                     <a href="#" className={classNames(GameData.IlvlToClass(item.level))} data-wowhead={GameData.ItemToWowHead(item)}>{item.level}</a>
+                                                    {(item.missing_enchantment || item.missing_socket) && (
+                                                        <i data-for="missing"
+                                                        data-tip={`${item.missing_enchantment ? '<p>Enchantment missing</p>' : ''}${true ? '<p>Socket missing</p>' : ''}`}
+                                                            className='material-icons text-warning mx-1'>
+                                                            report_problem
+                                                        </i>
+                                                    )}
                                                 </td>
                                             )
                                         })}

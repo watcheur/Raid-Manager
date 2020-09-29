@@ -56,7 +56,9 @@ module.exports = {
                     level: it.level,
                     sockets: it.sockets,
                     bonuses: it.bonuses,
-                    enchantments: it.enchantments
+                    enchantments: it.enchantments,
+                    missing_enchantment: (['FINGER_1', 'FINGER_2'].indexOf(it.slot) >= 0 && !it.enchantments),
+                    missing_socket: (it.sockets != null && it.sockets === '')
                 } : {};
             })
         }

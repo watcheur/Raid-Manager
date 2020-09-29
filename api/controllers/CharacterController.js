@@ -36,6 +36,9 @@ class CharacterController extends DefaultController {
 
         TypeORM.getRepository(Entities.Character)
             .find({
+                select: [
+                    "id", "name", "realm", "type", "level", "race", "gender", "faction", "class", "spec", "azerite", "avg", "equipped"
+                ],
                 relations: ["dungeons", "items", "items.item", "player"],
                 where: reqs,
                 order: {
@@ -80,6 +83,9 @@ class CharacterController extends DefaultController {
 
         TypeORM.getRepository(Entities.Character)
             .findOne({
+                select: [
+                    "id", "name", "realm", "type", "level", "race", "gender", "faction", "class", "spec", "azerite", "avg", "equipped"
+                ],
                 relations: ["dungeons", "items", "items.item"],
                 where: {
                     id: req.params.id
