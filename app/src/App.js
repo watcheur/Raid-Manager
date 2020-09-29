@@ -16,6 +16,7 @@ import "./shards-dashboard/styles/shards-dashboards.1.1.0.css";
 import "./assets/blizzard.css";
 import "./assets/toast.css";
 import "./assets/override.css";
+import "./assets/react-contextmenu.css";
 
 import Context from './utils/context';
 

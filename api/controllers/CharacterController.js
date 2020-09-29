@@ -205,6 +205,8 @@ class CharacterController extends DefaultController {
         const repo = TypeORM.getRepository(Entities.Character);
         const update = this.ClearProps(req.body, [ 'type' ]);
 
+        Logger.info('Start character update', { id: req.params.id, update: update });
+
         update.updated = new Date();
         repo
             .createQueryBuilder("c")
@@ -222,6 +224,14 @@ class CharacterController extends DefaultController {
                     .execute()
                     .then(query => {
                         Logger.info('Character update done', { char: req.params.id })
+
+                        Socket.Emit(Socket.Channels.Character, {
+                            action: Socket.Action.Character.Update,
+                            data: {
+                                character: Object.assign(char, update)
+                            }
+                        });
+
                         res.send({ err: false, data: Object.assign(char, update) })
                         next();
                     })

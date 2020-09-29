@@ -1,11 +1,58 @@
-import React from 'react';
-import { Card, CardHeader, CardBody } from "shards-react";
-import classNames from "classnames";
+import React from 'react'
+import { Card, CardHeader, CardBody } from "shards-react"
+import PropTypes from 'prop-types';
+import { ContextMenu, ContextMenuTrigger, MenuItem, SubMenu, connectMenu } from "react-contextmenu"
+import classNames from "classnames"
 import { Parser } from "expr-eval"
+import { v4 as uuidv4 } from "uuid"
+import { toast } from 'react-toastify'
 
-import GameData from '../../data/gamedata';
-import Api from '../../data/api';
-import { Dispatcher, Constants } from "../../flux";
+import GameData from '../../data/gamedata'
+import Api from '../../data/api'
+import { Dispatcher, Constants } from "../../flux"
+
+const CharacterMenu = (props) => {
+    const { id, trigger, admin } = props;
+    const handleItemClick = trigger ? trigger.onItemClick : null;
+
+    return (
+        <ContextMenu id={id} className='react-char-menu'>
+            {trigger && <h6 className={classNames('GameColorClass', GameData.ClassToObj(trigger.character.class).slug)}>
+                {trigger.character.name}
+            </h6>}
+            {trigger && <MenuItem onClick={(e, data) => window.open(`https://worldofwarcraft.com/en-gb/character/eu/${trigger.character.realm}/${trigger.character.name}`, '_blank')}>
+                <img src="/images/blizzard/logo.png" className='GameIcon--tiny' /> Armory
+            </MenuItem>}
+            {trigger && <MenuItem onClick={(e, data) => window.open(`https://raider.io/characters/eu/${trigger.character.realm}/${trigger.character.name}`, '_blank')}>
+                <img src="/images/raiderio.png" className='GameIcon--tiny' /> Raider.IO
+            </MenuItem>}
+            {admin && trigger && (
+                <SubMenu title='Type'>
+                    <MenuItem onClick={handleItemClick} data={{ character: trigger.character, action: 'UPDATE_TYPE', type: GameData.Characters.Type.MAIN }}>{trigger.character.type == GameData.Characters.Type.MAIN && (<i className='material-icons'>check</i>)} Main</MenuItem>
+                    <MenuItem onClick={handleItemClick} data={{ character: trigger.character, action: 'UPDATE_TYPE', type: GameData.Characters.Type.ALT }}>{trigger.character.type == GameData.Characters.Type.ALT && (<i className='material-icons'>check</i>)}Alt</MenuItem>
+                    <MenuItem onClick={handleItemClick} data={{ character: trigger.character, action: 'UPDATE_TYPE', type: GameData.Characters.Type.ALT_FUN }}>{trigger.character.type == GameData.Characters.Type.ALT_FUN && (<i className='material-icons'>check</i>)} Alt fun</MenuItem>
+                </SubMenu>
+            )}
+        </ContextMenu>
+    );
+}
+
+CharacterMenu.propTypes = {
+    id: PropTypes.string.isRequired,
+    trigger: PropTypes.shape({
+        character: PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            name: PropTypes.string.isRequired,
+            realm: PropTypes.string.isRequired,
+            type: PropTypes.number.isRequired
+        }).isRequired,
+        onItemClick: PropTypes.func.isRequired,
+    }).isRequired
+};
+
+function collect(props) {
+    return props;
+}
 
 /**
  * @param {Object} parameters
@@ -22,7 +69,10 @@ export default class CharactersList extends React.Component {
     constructor(props) {
         super(props);
 
+        this.uniqueID = uuidv4();
+
         this.dispatcherToken = null;
+        this.charAction = this.charAction.bind(this);
         this.refreshCharacter = this.refreshCharacter.bind(this);
         this.deleteCharacter = this.deleteCharacter.bind(this);
         this.error = this.error.bind(this);
@@ -31,6 +81,8 @@ export default class CharactersList extends React.Component {
         this.filter = this.filter.bind(this);
         this.filterChar = this.filterChar.bind(this);
     }
+
+
 
     spin(target) {
         if (target) {
@@ -130,6 +182,35 @@ export default class CharactersList extends React.Component {
         }
     }
 
+    charAction(e, data, target) {
+        const { action, character, type } = data;
+        
+        switch (action) {
+            case 'UPDATE_TYPE':
+                if (character.type != type)
+                {
+                    let characters = [...this.state.characters];
+                    let index = this.state.characters.indexOf(this.state.characters.find(c => c.id === character.id));
+                    if (index >= 0) {
+                        characters.splice(index, 1);
+                        this.setState({ characters: characters });
+                    }
+
+                    Api.UpdateCharacter(character.id, { type: type })
+                        .then(res => {
+					        toast.success(`Character ${character.name.capitalize()} updated`)
+                        })
+                        .catch(err => {
+					        toast.error('An error occured while updating this character')
+                            
+                            characters.splice(index, 0, character);
+                            this.setState({ characters: characters });
+                        })
+                }
+                break;
+        }
+    }
+
     deleteCharacter(target, char) {
         let characters = [...this.state.characters];
         let index = this.state.characters.indexOf(this.state.characters.find(c => c.id === char.id));
@@ -212,6 +293,7 @@ export default class CharactersList extends React.Component {
 
     componentDidMount() {
         this.dispatcherToken = Dispatcher.register(payload => {
+            console.log("payload", payload);
             switch (payload.actionType) {
                 case Constants.CHAR_CREATED:
                 case Constants.CHAR_UPDATE:
@@ -234,6 +316,7 @@ export default class CharactersList extends React.Component {
     render() {
         const { title, admin, logged } = this.props;
         const slots = ['HEAD', 'NECK', 'SHOULDER', 'BACK', 'CHEST', 'WRIST', 'HANDS', 'WAIST', 'LEGS', 'FEET', 'FINGER_1', 'FINGER_2', 'TRINKET_1', 'TRINKET_2', 'MAIN_HAND', 'OFF_HAND'];
+        const ConnectedMenu = connectMenu(this.uniqueID)(CharacterMenu);
         
         return (
             <Card small className="mb-4 overflow-hidden text-center characters-list">
@@ -247,6 +330,7 @@ export default class CharactersList extends React.Component {
                         </h5>
                     </CardHeader>
                 ) : ''}
+                <ConnectedMenu id={this.uniqueID} admin={admin} />
                 <CardBody className="bg-dark p-0 pb-3">
                     <table className="table table-dark mb-0">
                         <thead className="thead-dark">
@@ -316,7 +400,7 @@ export default class CharactersList extends React.Component {
                             )}
                             {this.state.characters.filter(this.filterChar).sort((a, b) => { return (a.role - b.role || a.class - b.class) }).map((character, index) => {
                                 return (
-                                    <tr key={index} className={this.state.selected === character.id ? 'selected' : ''}>
+                                    <ContextMenuTrigger id={this.uniqueID} onItemClick={this.charAction} collect={collect} character={character} key={index} renderTag='tr' className={this.state.selected === character.id ? 'selected' : ''}>
                                         <td onClick={(ev) => this.toggleSelected(character.id)}
                                             className={classNames('GameColorClass', GameData.ClassToObj(character.class).slug, 'char-name')} style={{textTransform: 'capitalize'}}>
                                             <a
@@ -374,7 +458,7 @@ export default class CharactersList extends React.Component {
                                         {admin && logged ? (
                                             <td className='char-delete'><a style={{cursor:'pointer'}} onClick={ev => this.deleteCharacter(ev.target, character)} className="material-icons text-danger">clear</a></td>
                                         ): (<td></td>)}
-                                    </tr>
+                                    </ContextMenuTrigger>
                                 )
                             })}
                         </tbody>

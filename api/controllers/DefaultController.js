@@ -16,7 +16,7 @@ class DefaultController {
         let ret = {};
 
         props.forEach((prop) => {
-            if (obj.hasOwnProperty(prop) && (obj[prop].length || Number(obj[prop])))
+            if (obj.hasOwnProperty(prop) && (obj[prop].length || !isNaN(Number(obj[prop]))))
                 ret[prop] = obj[prop];
         })
 
