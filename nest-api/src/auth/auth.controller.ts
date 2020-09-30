@@ -10,8 +10,9 @@ import {
     Put,
     Param,
     Delete,
+    HttpException
 } from '@nestjs/common';
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from 'src/auth/auth.service';
 import { UsersService } from 'src/users/users.service';
 import { CreateUserDto } from 'src/users/users.dto';
@@ -26,31 +27,28 @@ export class AuthController {
         private readonly usersService: UsersService,
     ) {}
         
+    @ApiOperation({ summary: 'Register user' })
     @Post('register')
-    public async register(@Response() res, @Body() createUserDto: CreateUserDto) {
+    public async register(@Body() createUserDto: CreateUserDto) {
         const result = await this.authService.register(createUserDto);
-        if (!result.success) {
-            return res.status(HttpStatus.BAD_REQUEST).json(result);
-        }
-        return res.status(HttpStatus.OK).json(result);
+        if (!result.success)
+            throw new HttpException('Error', HttpStatus.BAD_REQUEST);
+        return result;
     }
     
     @UseGuards(AuthGuard('local'))
+    @ApiOperation({ summary: 'Login user and return jwt token' })
     @Post('login')
-    public async login(@Response() res, @Body() login: LoginUserDto) {
+    public async login(@Body() login: LoginUserDto) {
         const user = await this.usersService.findByEmail(login.email);
         if (!user) {
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-                message: 'User Not Found',
-            });
-        } else {
+            throw new HttpException('Login failed', HttpStatus.BAD_REQUEST);
+        }
+        else {
             if (!await user.comparePassword(login.password))
-                return res.status(HttpStatus.BAD_REQUEST).json({
-                    message: 'Login failed'
-                });
+                throw new HttpException('Login failed', HttpStatus.BAD_REQUEST);
             
-            const token = this.authService.createToken(user);
-            return res.status(HttpStatus.OK).json(token);
+            return this.authService.createToken(user);
         }
     }
 }
