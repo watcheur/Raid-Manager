@@ -88,3 +88,7 @@ typings/
 .dynamodb/
 
 api/config.json
+
+nest-api/ormconfig.json
+
+nest-api/dist/
