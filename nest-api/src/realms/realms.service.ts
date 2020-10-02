@@ -44,19 +44,4 @@ export class RealmsService {
     public async delete(id: number): Promise<DeleteResult> {
         return await this.realmRepository.delete(id);
     }
-
-    public async save(realmDto: RealmDto): Promise<Realm> {
-        const { name } = realmDto;
-
-        let realm = await this.realmRepository.findOne({ name: name });
-        if (realm) {
-            throw new HttpException(
-                'Realm already exists',
-                HttpStatus.BAD_REQUEST
-            )
-        }
-
-        realm = await this.realmRepository.create(realmDto);
-        return await this.realmRepository.save(realm);
-    }
 }

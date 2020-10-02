@@ -32,7 +32,9 @@ export class Team {
 	@Transform(user => user.id)
 	founder: User;
 
-	@ManyToMany(type => User)
+	@ManyToMany(type => User, user => user.teams, {
+		cascade: true
+	})
 	@JoinTable()
 	users: User[];
 	

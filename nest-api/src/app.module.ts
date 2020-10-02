@@ -8,14 +8,12 @@ import { UsersModule } from './users/users.module';
 import { RealmsModule } from './realms/realms.module';
 import { TeamsModule } from './teams/teams.module';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
-import { InvitesService } from './invites/invites.service';
 import { InvitesModule } from './invites/invites.module';
-import { TeamsService } from './teams/teams.service';
-import { UsersService } from './users/users.service';
-import { RealmsService } from './realms/realms.service';
+import { RaidsModule } from './raids/raids.module';
+import { ExpansionsModule } from './expansions/expansions.module';
 
 @Module({
-	imports: [TypeOrmModule.forRoot(), AuthModule, UsersModule, RealmsModule, TeamsModule, InvitesModule],
+	imports: [TypeOrmModule.forRoot(), AuthModule, UsersModule, RealmsModule, TeamsModule, InvitesModule, RaidsModule, ExpansionsModule],
 	controllers: [AppController],
 	providers: [
 		AppService,

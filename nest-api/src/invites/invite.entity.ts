@@ -7,7 +7,7 @@ import {
     ManyToMany,
 	JoinTable,
     CreateDateColumn,
-	UpdateDateColumn, ManyToOne, OneToOne
+	UpdateDateColumn, ManyToOne, OneToOne, Index
 } from 'typeorm';
 
 import { Team } from 'src/teams/team.entity';
@@ -24,6 +24,7 @@ export class Invite {
     @Column()
     expire: Date;
 
+    @Index({ unique: true })
     @Column()
     hash: string;
     

@@ -16,13 +16,16 @@ import { AuthGuard } from '@nestjs/passport';
 import { classToPlain, plainToClass } from 'class-transformer';
 import { InvitesService } from './invites.service';
 import { Invite } from './invite.entity';
-import { get } from 'http';
+import { InviteDto } from './invites.dto';
+import { TeamsService } from 'src/teams/teams.service';
+import * as moment from 'moment';
 
 @ApiTags('invites')
 @Controller('invites')
 export class InvitesController {
     constructor(
-        private readonly invitesService: InvitesService
+        private readonly invitesService: InvitesService,
+        private readonly teamsService: TeamsService
     ) {}
 
     @UseGuards(AuthGuard('jwt'))
@@ -38,9 +41,9 @@ export class InvitesController {
 
     @UseGuards(AuthGuard('jwt'))
     @ApiOperation({ summary: 'Generate invitation' })
-    @Post('/create/:team')
-    async create(@Request() req, @Param('team') team: number): Promise<Partial<Invite>> {
-        let invite = await this.invitesService.create(team, req.user);
+    @Post()
+    async create(@Request() req, @Body() inviteDto: InviteDto): Promise<Partial<Invite>> {
+        let invite = await this.invitesService.create(inviteDto.team, req.user);
         return {
             hash: invite.hash,
             expire: invite.expire
@@ -50,13 +53,20 @@ export class InvitesController {
     @UseGuards(AuthGuard('jwt'))
     @ApiOperation({ summary: 'Join server' })
     @Get('/join/:hash')
-    async invite(@Request() req, @Param('hash') hash: string): Promise<boolean> {
+    async join(@Request() req, @Param('hash') hash: string): Promise<boolean> {
         let invite = await this.invitesService.findByHash(hash);
 
         if (!invite)
             throw new HttpException('Invite not found', HttpStatus.NOT_FOUND);
 
-        
+        if (moment(invite.expire).isBefore(moment().utc()))
+            throw new HttpException('Invite expired', HttpStatus.BAD_REQUEST);
+
+        let team = await this.teamsService.findByIdAndUser(invite.team.id, req.user);
+        if (team)
+            throw new HttpException('User already in', HttpStatus.BAD_REQUEST);
+
+        this.teamsService.addUser(invite.team, req.user);
 
         return true;
     }

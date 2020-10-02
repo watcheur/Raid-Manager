@@ -21,7 +21,12 @@ export class TeamsService {
 
     public async findById(id: number) : Promise<Team | null>
     {
-        return await this.teamRepository.findOne(id);
+        return await this.teamRepository.findOne({
+            relations: [ 'users' ],
+            where: {
+                id: id
+            }
+        });
     }
 
     public async findByIdAndUser(id: number, user:User) : Promise<Team | null>
@@ -69,5 +74,13 @@ export class TeamsService {
 
         await this.teamRepository.update(id, newValue);
         return await this.teamRepository.findOneOrFail(id);
+    }
+
+    public async addUser(team: Team, user: User) : Promise<void>
+    {
+        return this.teamRepository.createQueryBuilder()
+            .relation(Team, 'users')
+            .of(team)
+            .add(user);
     }
 }

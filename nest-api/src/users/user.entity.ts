@@ -7,7 +7,7 @@ import {
 	BeforeInsert,
 	OneToMany,
 	ManyToMany,
-	JoinTable
+	JoinTable, Index
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserRO } from './users.ro';
@@ -15,6 +15,7 @@ import { UserRO } from './users.ro';
 import { Invite } from 'src/invites/invite.entity';
 import { Exclude } from 'class-transformer';
 import { IsEmail } from 'class-validator';
+import { Team } from 'src/teams/team.entity';
 
 @Entity()
 export class User {
@@ -22,10 +23,12 @@ export class User {
 	id: number;
 	
 	@Column()
+	@Index()
 	name: string;
 	
 	@Exclude()
 	@IsEmail()
+	@Index({ unique: true })
 	@Column()
 	email: string;
 	
@@ -35,6 +38,9 @@ export class User {
 
 	@OneToMany(type => Invite, invite => invite.owner)
 	invites: Invite[];
+
+	@ManyToMany(type => Team, team => team.users)
+	teams: Team[];
 
 	@CreateDateColumn({ name: 'created_at' })
 	createdAt: Date;

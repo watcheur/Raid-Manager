@@ -30,6 +30,10 @@ export class AuthController {
     @ApiOperation({ summary: 'Register user' })
     @Post('register')
     public async register(@Body() createUserDto: CreateUserDto) {
+        const user = await this.usersService.findByEmail(createUserDto.email);
+        if (user)
+            throw new HttpException('User already exist', HttpStatus.BAD_REQUEST);
+
         const result = await this.authService.register(createUserDto);
         if (!result.success)
             throw new HttpException('Error', HttpStatus.BAD_REQUEST);

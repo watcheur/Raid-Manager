@@ -9,14 +9,16 @@ import {
     Body,
     Put,
     Param,
-    Delete, UseInterceptors, ClassSerializerInterceptor, HttpException
+    Delete,
+    UseInterceptors,
+    ClassSerializerInterceptor,
+    HttpException
 } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { TeamsService } from './teams.service';
 import { AuthGuard } from '@nestjs/passport';
 import { TeamDto } from './teams.dto';
 import { Team } from './team.entity';
-import { exception } from 'console';
 import { classToPlain, plainToClass } from 'class-transformer';
 
 @ApiTags('teams')
@@ -37,8 +39,11 @@ export class TeamsController {
     @ApiOperation({ summary: 'Return teams for logged user' })
     @Get(':id')
     async get(@Request() req, @Param('id') id: number): Promise<Team | null> {
-        let team = await this.teamsService.findByIdAndUser(id, req.user);
+        let team = await this.teamsService.findById(id);
         if (!team)
+            throw new HttpException('Team not found', HttpStatus.NOT_FOUND);
+
+        if (team.users.findIndex(u => u.id == req.user.id) == -1)
             throw new HttpException('Team not found', HttpStatus.NOT_FOUND);
 
         return plainToClass(Team, team);
