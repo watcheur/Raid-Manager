@@ -11,23 +11,18 @@ import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { InvitesModule } from './invites/invites.module';
 import { RaidsModule } from './raids/raids.module';
 import { ExpansionsModule } from './expansions/expansions.module';
-import { EncountersService } from './encounters/encounters.service';
-import { EncountersController } from './encounters/encounters.controller';
 import { EncountersModule } from './encounters/encounters.module';
-import { ItemsService } from './items/items.service';
 import { ItemsModule } from './items/items.module';
 
 @Module({
 	imports: [TypeOrmModule.forRoot(), AuthModule, UsersModule, RealmsModule, TeamsModule, InvitesModule, RaidsModule, ExpansionsModule, EncountersModule, ItemsModule],
-	controllers: [AppController, EncountersController],
+	controllers: [AppController],
 	providers: [
 		AppService,
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: TransformInterceptor
-		},
-		EncountersService,
-		ItemsService
+		}
 	],
 })
 export class AppModule {}

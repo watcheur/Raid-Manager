@@ -1,15 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module, Injectable } from '@nestjs/common';
 import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { Raid } from './raid.entity';
 import { RaidsController } from './raids.controller';
 
-@Module({
-    imports: [TypeOrmModule.forFeature([Raid])],
-    controllers: [RaidsController],
-    providers: [RaidsService],
-    exports: [RaidsService]
-})
+@Injectable()
 export class RaidsService {
     constructor(
         @InjectRepository(Raid)

@@ -1,3 +1,4 @@
+import { Encounter } from 'src/encounters/encounter.entity';
 import { Expansion } from 'src/expansions/expansion.entity';
 import {
     Entity,
@@ -25,4 +26,8 @@ export class Raid {
 
     @ManyToOne(type => Expansion, exp => exp.id)
     expansion: Expansion;
+
+    @OneToMany(type => Encounter, encounter => encounter.raid)
+    @JoinTable()
+    encounters: Encounter[];
 }
