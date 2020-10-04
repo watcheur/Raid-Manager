@@ -13,7 +13,7 @@ import {
     UseInterceptors,
     ClassSerializerInterceptor,
     HttpException,
-    Query
+    Query, NotFoundException
 } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -44,7 +44,7 @@ export class ExpansionsController {
     {
         let expansion = await this.expansionsService.findById(id);
         if (!expansion)
-            throw new HttpException('Expansion not found', HttpStatus.NOT_FOUND);
+            throw new NotFoundException('Expansion not found');
         return expansion;
     }
 }

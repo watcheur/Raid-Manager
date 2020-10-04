@@ -12,7 +12,7 @@ import {
     Delete,
     UseInterceptors,
     ClassSerializerInterceptor,
-    HttpException
+    HttpException, NotFoundException
 } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { TeamsService } from './teams.service';
@@ -41,10 +41,10 @@ export class TeamsController {
     async get(@Request() req, @Param('id') id: number): Promise<Team | null> {
         let team = await this.teamsService.findById(id);
         if (!team)
-            throw new HttpException('Team not found', HttpStatus.NOT_FOUND);
+            throw new NotFoundException('Team not found');
 
         if (team.users.findIndex(u => u.id == req.user.id) == -1)
-            throw new HttpException('Team not found', HttpStatus.NOT_FOUND);
+            throw new NotFoundException('Team not found');
 
         return plainToClass(Team, team);
     }

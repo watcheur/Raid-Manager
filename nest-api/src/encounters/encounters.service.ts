@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Encounter } from './encounter.entity';
 
 @Injectable()
@@ -21,6 +21,15 @@ export class EncountersService {
             relations: [ 'items' ],
             where: {
                 id: id
+            }
+        });
+    }
+
+    public async findByName(name: string): Promise<Encounter[]>
+    {
+        return await this.encountersRepository.find({
+            where: {
+                name: Like(name)
             }
         });
     }

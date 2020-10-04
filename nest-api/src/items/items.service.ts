@@ -34,11 +34,13 @@ export class ItemsService {
         });
     }
 
-    public async findByRaid(encounter: number): Promise<Item[]>
+    public async findByRaid(raid: number): Promise<Item[]>
     {
         return await this.itemsRepository.find({
             where: {
-                encounter: encounter
+                encounter: {
+                    raid: raid
+                }
             }
         });
     }

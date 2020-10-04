@@ -9,7 +9,7 @@ import {
     Body,
     Put,
     Param,
-    Delete, UseInterceptors, ClassSerializerInterceptor, HttpException, Query
+    Delete, UseInterceptors, ClassSerializerInterceptor, HttpException, Query, NotFoundException
 } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -41,7 +41,7 @@ export class RaidsController {
     {
         let raid = await this.raidsService.findById(id);
         if (!raid)
-            throw new HttpException('Raid not found', HttpStatus.NOT_FOUND);
+            throw new NotFoundException('Raid not found');
         return raid;
     }
 }
