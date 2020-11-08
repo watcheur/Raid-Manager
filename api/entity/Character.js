@@ -41,10 +41,6 @@ module.exports = {
             type: "int",
             nullable: true
         },
-        azerite: {
-            type: "int",
-            nullable: true
-        },
         avg: {
             type: "int",
             nullable: true

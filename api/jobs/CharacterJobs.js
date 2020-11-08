@@ -53,7 +53,6 @@ function CharacterUpdate(id, cb)
                                 
                                 blizzard.wow.character('equipment', { origin: 'eu', realm: char.realm.toLowerCase(), name: char.name.toLowerCase(), params: params })
                                     .then(res => {
-                                        let neck = 0;
                                         let items = [];
                                         let characterItems = [];
                                         res.data.equipped_items.forEach(ei => {
@@ -79,9 +78,6 @@ function CharacterUpdate(id, cb)
                                                 item: ei.item.id,
                                                 character: char.id
                                             });
-
-                                            if (ei.slot.type == 'NECK')
-                                                neck = ei.level.value;
                                         });
 
                                         TypeORM.getRepository(Entities.Item).save(items)
@@ -105,13 +101,6 @@ function CharacterUpdate(id, cb)
                                                     });
 
                                                 //let neck = characterItems.find(i => i.slot == "NECK");
-                                                if (neck) {
-                                                    char.azerite = 1 + ((neck - 280 - 45 - 10) / 2); // baselevel + ((neck - base - magni - mother) / 2)
-                                                    if (char.azerite < 0)
-                                                        char.azerite = null;
-                                                }
-                                                else
-                                                    char.azerite = null;
                                                 char.updated = new Date();
 
                                                 TypeORM.getConnection()

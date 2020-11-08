@@ -17,11 +17,6 @@ export default class Stats extends React.Component {
             alts: null,
             altsfun: null
         },
-        azerite: {
-            mains: null,
-            alts: null,
-            altsfun: null
-        },
         weekly: {
             mains: null,
             alts: null,
@@ -42,13 +37,6 @@ export default class Stats extends React.Component {
             .then(res => {
                 if (!res.data.res)
                     this.setState({ ilvl: res.data.data });
-            })
-            .catch()
-        
-        Api.GetAverageAzerite()
-            .then(res => {
-                if (!res.data.res)
-                    this.setState({ azerite: res.data.data });
             })
             .catch()
         
@@ -88,11 +76,6 @@ export default class Stats extends React.Component {
                 { this.state.ilvl ? (
                     <Col sm="4" className="col-lg-2 mb-4">
                         <SmallStatsLike label="Average mains ilvl" variation="1" value={this.state.ilvl.mains} value-classes={GameData.IlvlToClass(this.state.ilvl.mains)} increase={true} />
-                    </Col>
-                ) : ''}
-                { this.state.azerite ? (
-                    <Col sm="4" className="col-lg-2 mb-4">
-                        <SmallStatsLike label="Average neck level" variation="1" value={this.state.azerite.mains} value-classes={GameData.AzeriteToClass(this.state.azerite.mains)} increase={true} />
                     </Col>
                 ) : ''}
                 { this.state.weekly.mains ? (

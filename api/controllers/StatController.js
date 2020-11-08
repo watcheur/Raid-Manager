@@ -43,41 +43,6 @@ class StatController extends DefaultController  {
         }
     }
 
-    AvgAzerite = async (req, res, next) => {
-        try {
-            let avgs = await TypeORM.getRepository(Entities.Character)
-                .createQueryBuilder()
-                .select('type')
-                .addSelect('AVG(azerite)', 'avg')
-                .groupBy('type')
-                .getRawMany();
-
-            let main = 0, alts = 0, altsfun = 0
-            avgs.forEach(r => {
-                if (r.type == Enums.Characters.Type.MAIN)
-                    main = parseInt(r.avg);
-                if (r.type == Enums.Characters.Type.ALT)
-                    alts = parseInt(r.avg);
-                if (r.type == Enums.Characters.Type.ALT_FUN)
-                    altsfun = parseInt(r.avg);
-            })
-
-            res.send({
-                err: false,
-                data: {
-                    mains: main,
-                    alts: alts,
-                    altsfun: altsfun
-                }
-            })
-            next()
-        }
-        catch(err) {
-            Logger.error('Average azerite error', err);
-            next(new Errs.InternalError('DatabaseError'));
-        }
-    }
-
     WeeklyDone = async (req, res, next) => {
         try {
             let rosters = await TypeORM.getRepository(Entities.Character)

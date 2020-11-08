@@ -139,7 +139,6 @@ export default class CharactersList extends React.Component {
                                     count++;
                             }
                             break;
-                        case 'azerite':
                         case 'equipped':
                             if (expr.evaluate({ x: char[i] }))
                                 count++;
@@ -253,7 +252,7 @@ export default class CharactersList extends React.Component {
 
     loadCharacters(target = null) {
         this.spin(target);
-        const { name, realm, type, level, cl, spec, role, equipped, avg, azerite, weekly} = this.props;
+        const { name, realm, type, level, cl, spec, role, equipped, avg, weekly} = this.props;
         
         this.setState({ isLoading: true, error: null });
         Api.GetCharacters({
@@ -266,7 +265,6 @@ export default class CharactersList extends React.Component {
             role: role,
             equipped: equipped,
             avg: avg,
-            azerite: azerite,
             weekly: weekly
         })
         .then(res => {
@@ -356,12 +354,6 @@ export default class CharactersList extends React.Component {
                                 <th scope="col" className="border-0 char-role">
                                     Role
                                 </th>
-                                <th scope="col" className="border-0 char-azerite" onClick={ev => this.filter('azerite')}>
-                                    <div className={`GameIcon GameIconUtils GameIcon--Utils-HeartOfAzeroth GameIcon--small ${this.state.filters['azerite'] ? 'border-orange': ''}`}
-                                        data-tip={`Heart of Azeroth${(this.state.filters['azerite'] ? ` (${this.state.filters['azerite']})` : '')}`}>
-                                        <div className="GameIcon-icon"></div>
-                                    </div>
-                                </th>
                                 <th scope="col" className="border-0 char-weekly" onClick={ev => this.filter('weekly')}>
                                     <div className={`GameIcon GameIconUtils GameIcon--Utils-Weekly GameIcon--small ${this.state.filters['weekly'] ? 'border-orange': ''}`}
                                         data-tip={`Weekly chest${(this.state.filters['weekly'] ? ` (${this.state.filters['weekly']})` : '')}`}>
@@ -440,7 +432,6 @@ export default class CharactersList extends React.Component {
                                                 <div className="GameIcon-icon"></div>
                                             </div>
                                         </td>
-                                        <td className={classNames(GameData.AzeriteToClass(character.azerite), 'char-azerite')}>{character.azerite || (<i className="material-icons">help_outline</i>)}</td>
                                         <td className={classNames(character.weekly ? 'text-success': 'text-danger', 'char-weekly')}>{character.weekly || ''} <i className="material-icons">{character.weekly ? '' : 'clear'}</i> </td>
                                         <td className={classNames(GameData.IlvlToClass(character.equipped), 'char-equipped')}>{character.equipped}</td>
                                         {slots.map((value, index) => {

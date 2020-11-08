@@ -15,7 +15,7 @@ const Socket = require('../utils/Socket');
 class CharacterController extends DefaultController {
     GetAll = (req, res, next) => {
         Logger.info('Characters search', req.params);
-        const reqs = this.ClearProps(req.query, [ 'name', 'realm', 'level', 'type', 'class', 'spec', 'role', 'equipped', 'avg', 'azerite', 'weekly', 'refresh', 'refreshWeekly' ]);
+        const reqs = this.ClearProps(req.query, [ 'name', 'realm', 'level', 'type', 'class', 'spec', 'role', 'equipped', 'avg', 'weekly', 'refresh', 'refreshWeekly' ]);
         Logger.info('Characters search found params: ', reqs);
 
         if (reqs['name'])
@@ -28,8 +28,6 @@ class CharacterController extends DefaultController {
             reqs['equipped'] = TypeORM.MoreThanOrEqual(reqs['equipped']);
         if (reqs['avg'])
             reqs['avg'] = TypeORM.MoreThanOrEqual(reqs['avg']);
-        if (reqs['azerite'])
-            reqs['azerite'] = TypeORM.MoreThanOrEqual(reqs['azerite']);
 
         if (req.weekly)
             req.weekly = Context.CurrentPeriod.Id;
@@ -37,7 +35,7 @@ class CharacterController extends DefaultController {
         TypeORM.getRepository(Entities.Character)
             .find({
                 select: [
-                    "id", "name", "realm", "type", "level", "race", "gender", "faction", "class", "spec", "azerite", "avg", "equipped"
+                    "id", "name", "realm", "type", "level", "race", "gender", "faction", "class", "spec", "avg", "equipped"
                 ],
                 relations: ["dungeons", "items", "items.item", "player"],
                 where: reqs,
@@ -84,7 +82,7 @@ class CharacterController extends DefaultController {
         TypeORM.getRepository(Entities.Character)
             .findOne({
                 select: [
-                    "id", "name", "realm", "type", "level", "race", "gender", "faction", "class", "spec", "azerite", "avg", "equipped"
+                    "id", "name", "realm", "type", "level", "race", "gender", "faction", "class", "spec", "avg", "equipped"
                 ],
                 relations: ["dungeons", "items", "items.item"],
                 where: {
