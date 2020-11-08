@@ -296,7 +296,6 @@ export default class CharactersList extends React.Component {
 
     componentDidMount() {
         this.dispatcherToken = Dispatcher.register(payload => {
-            console.log("payload", payload);
             switch (payload.actionType) {
                 case Constants.CHAR_CREATED:
                 case Constants.CHAR_UPDATE:
