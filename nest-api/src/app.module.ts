@@ -15,16 +15,20 @@ import { ExpansionsModule } from './expansions/expansions.module';
 import { EncountersModule } from './encounters/encounters.module';
 import { ItemsModule } from './items/items.module';
 import * as Joi from 'joi';
+import { AppGateway } from './app.gateway';
 
 @Module({
 	imports: [
 		ConfigModule.forRoot({
 			validationSchema: Joi.object({
-				// JWT Congifuration
+				// JWT Configuration
 				JWT_SECRET: Joi.string().required(),
 				JWT_EXPIRATION_TIME: Joi.string().required(),
 				JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
 				JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.string().required(),
+
+				// SERVER Configuration
+				SERVER_PORT: Joi.string().required()
 			})
 		}),
 		TypeOrmModule.forRoot(),
@@ -44,7 +48,8 @@ import * as Joi from 'joi';
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: TransformInterceptor
-		}
+		},
+		AppGateway
 	],
 })
 export class AppModule {}

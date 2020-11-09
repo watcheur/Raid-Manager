@@ -11,6 +11,31 @@ class Api {
         const local_endpoint = localStorage.getItem('api');
         if (local_endpoint && local_endpoint.length > 0)
             this.endpoint = local_endpoint;
+
+        this.axios.interceptors.response.use(
+            response => response,
+            async error => {
+                try {
+                    if (!error.response)
+                        return Promise.reject(error);
+
+                    const { response } = error;
+
+                    if (response.status !== 401)
+                        return Promise.reject(error);
+                    
+                    try {
+                        const res = await Api.Refresh();
+                        if (res)
+                            return this.axios.request(error.config);
+                    }
+                    catch (err) {}
+                }
+                catch (err) {}
+                
+                return Promise.reject(error);
+            }
+        );
     }
 
     Get = (endpoint, args) => {
@@ -36,7 +61,6 @@ class Api {
     }
 
     Post = (endpoint, data, args) => {
-        console.log("data", data);
         return this.axios.post(`${this.endpoint}${endpoint}`, {...data }, {
             headers: {
                 'Accept': 'application/json',
@@ -62,7 +86,8 @@ class Api {
 
     GetEndpoint = () => this.endpoint;
 
-    Login = (username, password) => this.Post('/login', { username: username, password: password });
+    Login = (email, password) => this.Post('/auth/login', { email: email, password: password });
+    Refresh = () => this.Get('/auth/refresh');
 
     GetPlayers = (args) => this.Get('/players', args);
     GetPlayer = (id) => this.Get(`/players/${id}`);

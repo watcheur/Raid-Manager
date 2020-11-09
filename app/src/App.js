@@ -1,10 +1,12 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom";
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { DndProvider } from 'react-dnd'
 
 import routes from "./routes";
 import withTracker from "./withTracker";
+import AppRoute from './components/AppRoute';
+import { AuthProvider } from "./context";
 
 import { Modal, ModalHeader, Row, Col, FormInput, Button, Form } from "shards-react";
 
@@ -69,30 +71,30 @@ class EndpointPrompt extends React.Component {
 
 export default () => (
 	<DndProvider backend={HTML5Backend}>
-		<Router basename={""}>
-			<div>
-				<EndpointPrompt />
-				{routes.map((route, index) => {
-					return (
-					<Route
-						key={index}
-						path={route.path}
-						exact={route.exact}
-						component={withTracker(props => {
-							var p = { ... props, ...route };
-							p.logged = Context.IsLogged();
-							if (route.admin && !Context.IsLogged())
-								return (<Redirect to="/login" />)
+		<AuthProvider>
+			<Router basename={""}>
+				<div>
+					<EndpointPrompt />
+					<Switch>
+						{routes.map((route, index) => {
 							return (
-								<route.layout {...p}>
-									<route.component {...p} />
-								</route.layout>
+								<AppRoute
+									key={index}
+									path={route.path}
+									isPrivate={route.isPrivate}
+									exact={route.exact}
+									component={withTracker(props => (
+											<route.layout {...props}>
+												<route.component {...props} />
+											</route.layout>
+										)
+									)}
+								/>
 							);
 						})}
-					/>
-					);
-				})}
-			</div>
-		</Router>
+					</Switch>
+				</div>
+			</Router>
+		</AuthProvider>
 	</DndProvider>
 )

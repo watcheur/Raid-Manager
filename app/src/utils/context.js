@@ -22,19 +22,21 @@ class Context {
     }
 
     constructor() {
-        Api.GetOptions().then(res => {
-            if (!res.data.err) {
-                res.data.data.forEach(opt => this.Options[opt.key] = opt.value );
+        this.LoadData();
+    }
+
+    async LoadData() {
+        try {
+            const optResponse = await Api.GetOptions();
+            if (optResponse.data.err) {
+                optResponse.data.data.forEach(opt => this.Options[opt.key] = opt.value );
 
                 Dispatcher.dispatch({
                     actionType: Constants.OPTIONS_LOADED
                 });
             }
-        })
-    }
-
-    IsLogged() {
-        return (localStorage.getItem('islogged') === '1')
+        }
+        catch (err) {}
     }
 }
 

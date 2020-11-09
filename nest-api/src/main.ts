@@ -4,9 +4,11 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import * as helmet from 'helmet';
 import * as rateLimit from 'express-rate-limit';
 import * as cookieParser from 'cookie-parser';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
+	const config = app.get<ConfigService>(ConfigService);
 
 	const options = new DocumentBuilder()
 		.setTitle("Raid-Manager API")
@@ -16,13 +18,16 @@ async function bootstrap() {
 	const document = SwaggerModule.createDocument(app, options);
 	SwaggerModule.setup('api', app, document);
 
+	app.enableCors({
+		origin: 'http://localhost:3000'
+	});
 	app.use(helmet());
 	app.use(cookieParser());
 	app.use(rateLimit({
 		windowMs: 15 * 60 * 1000, // 15 minutes
-		max: 100 // 100 request per window
+		max: 150000 // 100 request per window
 	}))
 
-  	await app.listen(3000);
+  	await app.listen(config.get('PORT', 3005));
 }
 bootstrap();

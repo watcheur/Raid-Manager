@@ -14,6 +14,7 @@ const CharactersOverview = (props) => (
       <PageTitle title="Characters" subtitle="Dashboard" className="text-sm-left mb-3" />
     </Row>
 
+  {/*
     <Stats {...props}/>
 
     {props.admin && (
@@ -40,6 +41,7 @@ const CharactersOverview = (props) => (
         <CharactersList title="Alts fun" type={GameData.Characters.Type.ALT_FUN} {...props} />
       </Col>
     </Row>
+    */}
   </Container>
 );
 

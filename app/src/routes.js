@@ -33,21 +33,21 @@ export default [
   {
     path: "/characters",
     exact: true,
-    admin: true,
+    isPrivate: true,
     layout: DefaultLayout,
     component: CharactersOverview
   },
   {
     path: "/characters/:characterId",
     exact: true,
-    admin: true,
+    isPrivate: true,
     layout: DefaultLayout,
     component: CharacterDetail
   },
   {
     path: "/characters/:characterId/wishlist",
     exact: true,
-    admin: true,
+    isPrivate: true,
     layout: DefaultLayout,
     component: CharacterWishlist
   },
@@ -55,7 +55,7 @@ export default [
     path: "/players",
     exact: true,
     layout: DefaultLayout,
-    admin: true,
+    isPrivate: true,
     component: PlayerOverview
   },
   {
@@ -68,42 +68,42 @@ export default [
   {
     path: "/events/:eventId",
     exact: true,
-    admin: true,
+    isPrivate: true,
     layout: DefaultLayout,
     component: EventDetail
   },
   {
     path: "/events/:eventId/manage",
     exact: true,
-    admin: true,
+    isPrivate: true,
     layout: DefaultLayout,
     component: EventManage
   },
   {
     path: "/notes",
     exact: true,
-    admin: true,
+    isPrivate: true,
     layout: DefaultLayout,
     component: NotesOverview
   },
   {
     path: "/options",
     exact: true,
-    admin: true,
+    isPrivate: true,
     layout: DefaultLayout,
     component: OptionsOverview
   },
   {
     path: "/stats",
     exact: true,
-    admin: true,
+    isPrivate: true,
     layout: DefaultLayout,
     component: StatsOverview
   },
   {
     path: "/public/characters",
     exact: true,
-    admin: false,
+    isPrivate: false,
     layout: PublicLayout,
     component: CharactersOverview
   }
