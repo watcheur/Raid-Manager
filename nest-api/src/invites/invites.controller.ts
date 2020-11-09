@@ -19,6 +19,7 @@ import { Invite } from './invite.entity';
 import { InviteDto } from './invites.dto';
 import { TeamsService } from 'src/teams/teams.service';
 import * as moment from 'moment';
+import JwtAuthenticationGuard from 'src/auth/jwt-authentication.guard';
 
 @ApiTags('invites')
 @Controller('invites')
@@ -28,7 +29,7 @@ export class InvitesController {
         private readonly teamsService: TeamsService
     ) {}
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Return invitation info' })
     @Get(':hash')
     async get(@Request() req, @Param('hash') hash: string): Promise<Invite> {
@@ -39,7 +40,7 @@ export class InvitesController {
         return plainToClass(Invite, invite);
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Generate invitation' })
     @Post()
     async create(@Request() req, @Body() inviteDto: InviteDto): Promise<Partial<Invite>> {
@@ -50,7 +51,7 @@ export class InvitesController {
         }
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Join server' })
     @Get('/join/:hash')
     async join(@Request() req, @Param('hash') hash: string): Promise<boolean> {

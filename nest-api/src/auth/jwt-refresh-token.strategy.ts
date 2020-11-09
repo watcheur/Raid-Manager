@@ -9,25 +9,24 @@ import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { User } from 'src/users/user.entity';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refresh-token') {
     constructor(
         private readonly authService: AuthService,
         private readonly configService: ConfigService
     ) {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([(request: Request) => {
-                return request?.cookies?.Authentication;
+                return request?.cookies?.Refresh;
             }]),
-            //jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: configService.get('JWT_SECRET'),
+            secretOrKey: configService.get('JWT_REFRESH_TOKEN_SECRET'),
         });
     }
     
-    async validate(payload: any, done: Function) : Promise<User | null> {
-        const user = await this.authService.validateUserToken(payload);
+    async validate(request: Request, payload: JwtPayload): Promise<User | null> {
+        const user = await this.authService.validateUserRefreshToken(request.cookies?.Refresh, payload);
         if (!user)
-            throw new UnauthorizedException();
+           throw new UnauthorizedException()
         return user;
     }
 }

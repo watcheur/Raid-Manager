@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -13,9 +14,30 @@ import { RaidsModule } from './raids/raids.module';
 import { ExpansionsModule } from './expansions/expansions.module';
 import { EncountersModule } from './encounters/encounters.module';
 import { ItemsModule } from './items/items.module';
+import * as Joi from 'joi';
 
 @Module({
-	imports: [TypeOrmModule.forRoot(), AuthModule, UsersModule, RealmsModule, TeamsModule, InvitesModule, RaidsModule, ExpansionsModule, EncountersModule, ItemsModule],
+	imports: [
+		ConfigModule.forRoot({
+			validationSchema: Joi.object({
+				// JWT Congifuration
+				JWT_SECRET: Joi.string().required(),
+				JWT_EXPIRATION_TIME: Joi.string().required(),
+				JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
+				JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.string().required(),
+			})
+		}),
+		TypeOrmModule.forRoot(),
+		AuthModule,
+		UsersModule,
+		RealmsModule,
+		TeamsModule,
+		InvitesModule,
+		RaidsModule,
+		ExpansionsModule,
+		EncountersModule,
+		ItemsModule
+	],
 	controllers: [AppController],
 	providers: [
 		AppService,

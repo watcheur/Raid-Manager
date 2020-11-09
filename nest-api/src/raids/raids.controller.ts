@@ -16,6 +16,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { classToPlain, plainToClass } from 'class-transformer';
 import { RaidsService } from './raids.service';
 import { Raid } from './raid.entity';
+import JwtAuthenticationGuard from 'src/auth/jwt-authentication.guard';
 
 @ApiTags('raids')
 @Controller('raids')
@@ -24,7 +25,7 @@ export class RaidsController {
         private readonly raidsService: RaidsService
     ) {}
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Get all raids' })
     @Get()
     async getAll(@Request() req, @Query('expansion') expansion: number) : Promise<Raid[]>
@@ -34,7 +35,7 @@ export class RaidsController {
         return await this.raidsService.findAll();
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Retrieve given raid' })
     @Get(':id')
     async get(@Request() req, @Param('id') id: number) : Promise<Raid>

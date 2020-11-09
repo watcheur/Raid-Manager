@@ -4,13 +4,17 @@ import { UsersService } from 'src/users/users.service';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { User } from 'src/users/user.entity';
 import { UserRO } from 'src/users/users.ro';
-import { debug } from 'console';
 import { RegistrationStatus } from './interfaces/registrationStatus.interface';
 import { CreateUserDto } from 'src/users/users.dto';
+import { ConfigService } from '@nestjs/config';
+import { IToken } from './interfaces/token.interface';
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly usersService: UsersService) {}
+    constructor(
+        private readonly usersService: UsersService,
+        private readonly configService: ConfigService
+    ) {}
     
     private readonly logger = new Logger(AuthService.name);
     
@@ -28,27 +32,41 @@ export class AuthService {
         return status;
     }
 
-    createToken(user: User) {
-        const expiresIn = 3600;
-        
-        const accessToken = jwt.sign(
+    createToken(user: User) : IToken {
+        const token = jwt.sign(
             {
                 id: user.id,
-                email: user.email,
                 name: user.name
             },
-            'RaidManager',
-            { expiresIn },
+            this.configService.get('JWT_SECRET'),
+            { expiresIn: +this.configService.get<number>('JWT_EXPIRATION_TIME') },
         );
         
         return {
-            expiresIn,
-            accessToken,
+            expiresIn: +this.configService.get<number>('JWT_EXPIRATION_TIME'),
+            token
         };
     }
+
+    createRefreshToken(user: User) : IToken {
+        const token = jwt.sign({
+            id: user.id,
+            name: user.name,
+        }, this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
+        { expiresIn: +this.configService.get<number>('JWT_REFRESH_TOKEN_EXPIRATION_TIME') })
+
+        return {
+            expiresIn: +this.configService.get<number>('JWT_REFRESH_TOKEN_EXPIRATION_TIME'),
+            token
+        }
+    }
     
-    async validateUserToken(payload: JwtPayload): Promise<User> {
+    async validateUserToken(payload: JwtPayload): Promise<User | null> {
         return await this.usersService.findById(payload.id);
+    }
+
+    async validateUserRefreshToken(token: string, payload: JwtPayload): Promise<User | null> {
+        return await this.usersService.findByRefreshTokenAndId(token, payload.id);
     }
 
     async validateUser(email: string, password: string): Promise<UserRO> {

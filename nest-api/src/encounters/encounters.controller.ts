@@ -1,6 +1,7 @@
 import { Controller, Get, NotFoundException, Param, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import JwtAuthenticationGuard from 'src/auth/jwt-authentication.guard';
 import { Encounter } from './encounter.entity';
 import { EncountersService } from './encounters.service';
 
@@ -11,7 +12,7 @@ export class EncountersController {
         private readonly encountersService: EncountersService
     ) {}
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Get all encounters' })
     @Get()
     async getAll() : Promise<Encounter[]>
@@ -19,7 +20,7 @@ export class EncountersController {
         return await this.encountersService.findAll();
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Get given encounter' })
     @Get(':id')
     async get(@Param('id') id: number) : Promise<Encounter | null>

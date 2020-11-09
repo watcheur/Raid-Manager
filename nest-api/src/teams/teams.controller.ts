@@ -20,6 +20,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { TeamDto } from './teams.dto';
 import { Team } from './team.entity';
 import { classToPlain, plainToClass } from 'class-transformer';
+import JwtAuthenticationGuard from 'src/auth/jwt-authentication.guard';
 
 @ApiTags('teams')
 @Controller('teams')
@@ -28,14 +29,14 @@ export class TeamsController {
         private readonly teamsService: TeamsService
     ) {}
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Return teams for logged user' })
     @Get()
     async getAll(@Request() req): Promise<Team[]> {
         return plainToClass(Team, await this.teamsService.findByUser(req.user));
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Return teams for logged user' })
     @Get(':id')
     async get(@Request() req, @Param('id') id: number): Promise<Team | null> {
@@ -49,7 +50,7 @@ export class TeamsController {
         return plainToClass(Team, team);
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Create a Team with current user as founder' })
     @UseInterceptors(ClassSerializerInterceptor)
     @Post()
@@ -57,7 +58,7 @@ export class TeamsController {
         return plainToClass(Team, await this.teamsService.create(teamDto, req.user));
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Update a team' })
     @Put(':id')
     async update(@Request() req, @Param('id') id: number, @Body() teamDto: TeamDto): Promise<Team> {

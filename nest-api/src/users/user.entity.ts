@@ -36,6 +36,12 @@ export class User {
 	@Column()
 	password: string;
 
+	@Column({
+		nullable: true
+	})
+	@Exclude()
+	public refreshToken?: string;
+
 	@OneToMany(type => Invite, invite => invite.owner)
 	invites: Invite[];
 
@@ -59,6 +65,12 @@ export class User {
 	
 	async comparePassword(attempt: string): Promise<boolean> {
 		return await bcrypt.compare(attempt, this.password);
+	}
+
+	async compareRefreshToken(attempt: string): Promise<boolean> {
+		if (!this.refreshToken || !attempt)
+			return false;
+		return await bcrypt.compare(attempt, this.refreshToken);
 	}
 	
 	toResponseObject(showToken: boolean = true): UserRO {

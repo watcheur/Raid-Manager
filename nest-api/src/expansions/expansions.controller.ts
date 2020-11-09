@@ -20,7 +20,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { classToPlain, plainToClass } from 'class-transformer';
 import { ExpansionsService } from './expansions.service';
 import { Expansion } from './expansion.entity';
-import { get } from 'http';
+import JwtAuthenticationGuard from 'src/auth/jwt-authentication.guard';
 
 @ApiTags('expansions')
 @Controller('expansions')
@@ -29,7 +29,7 @@ export class ExpansionsController {
         private readonly expansionsService: ExpansionsService
     ) {}
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Get all expansions' })
     @Get()
     async getAll(@Request() req) : Promise<Expansion[]>
@@ -37,7 +37,7 @@ export class ExpansionsController {
         return await this.expansionsService.findAll();
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Retrieve given expansion' })
     @Get(':id')
     async get(@Request() req, @Param('id') id: number) : Promise<Expansion>

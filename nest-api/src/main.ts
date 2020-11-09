@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import * as helmet from 'helmet';
 import * as rateLimit from 'express-rate-limit';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
@@ -16,6 +17,7 @@ async function bootstrap() {
 	SwaggerModule.setup('api', app, document);
 
 	app.use(helmet());
+	app.use(cookieParser());
 	app.use(rateLimit({
 		windowMs: 15 * 60 * 1000, // 15 minutes
 		max: 100 // 100 request per window
