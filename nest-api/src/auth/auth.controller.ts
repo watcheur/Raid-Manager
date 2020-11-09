@@ -82,6 +82,7 @@ export class AuthController {
                     name: 'Refresh',
                     value: refreshToken.token,
                     options: {
+                        path: '/auth/refresh',
                         maxAge: refreshToken.expiresIn * 1000,
                         httpOnly: true
                     }
@@ -125,19 +126,18 @@ export class AuthController {
     @UseGuards(JwtRefreshGuard)
     @Get('refresh')
     public async refresh(@Request() req) {
-        const refreshToken = this.authService.createRefreshToken(req.user);
-        await this.usersService.setRefreshToken(refreshToken.token, req.user.id);
+        const accessToken = this.authService.createToken(req.user);
 
         req._cookies = [
             {
-                name: 'Refresh',
-                value: refreshToken.token,
+                name: 'Authentication',
+                value: accessToken.token,
                 options: {
-                    maxAge: refreshToken.expiresIn * 1000,
-                    httpOnly: true
+                    maxAge: accessToken.expiresIn * 1000,
+                    httpOnly: true,
                 }
             }
-        ]
+        ];
 
         return plainToClass(User, req.user);
     }
