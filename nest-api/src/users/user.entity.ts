@@ -26,13 +26,12 @@ export class User {
 	@Index()
 	name: string;
 	
-	@Exclude()
 	@IsEmail()
 	@Index({ unique: true })
 	@Column()
 	email: string;
 	
-	@Exclude()
+	@Exclude({ toClassOnly: true })
 	@Column()
 	password: string;
 
