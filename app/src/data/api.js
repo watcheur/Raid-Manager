@@ -21,17 +21,21 @@ class Api {
 
                     const { response } = error;
 
-                    if (response.status !== 401)
+                    if (error.config.url === "/api/auth/refresh" || response.status !== 401)
                         return Promise.reject(error);
                     
                     try {
-                        const res = await Api.Refresh();
+                        const res = await this.Refresh();
                         if (res)
                             return this.axios.request(error.config);
                     }
-                    catch (err) {}
+                    catch (err) {
+                        console.log("err token api.refresh", err);
+                    }
                 }
-                catch (err) {}
+                catch (err) {
+                    console.log("err token refresh", err);
+                }
                 
                 return Promise.reject(error);
             }

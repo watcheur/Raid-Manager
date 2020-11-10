@@ -82,7 +82,6 @@ export class AuthController {
                     name: 'Refresh',
                     value: refreshToken.token,
                     options: {
-                        path: '/auth/refresh',
                         maxAge: refreshToken.expiresIn * 1000,
                         httpOnly: true
                     }
@@ -114,7 +113,6 @@ export class AuthController {
                 name: 'Refresh',
                 value: '',
                 options: {
-                    path: '/auth/refresh',
                     maxAge: 0,
                     httpOnly: true
                 }
