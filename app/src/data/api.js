@@ -39,7 +39,7 @@ class Api {
     }
 
     Get = (endpoint, args) => {
-        return this.axios.get(`${this.endpoint}${endpoint}`, {
+        return this.axios.get(`/api${endpoint}`, {
             headers: {
                 'Accept': 'application/json'
             },
@@ -50,7 +50,7 @@ class Api {
     }
 
     Delete = (endpoint, args) => {
-        return this.axios.delete(`${this.endpoint}${endpoint}`, {
+        return this.axios.delete(`/api${endpoint}`, {
             headers: {
                 'Accept': 'application/json'
             },
@@ -61,7 +61,7 @@ class Api {
     }
 
     Post = (endpoint, data, args) => {
-        return this.axios.post(`${this.endpoint}${endpoint}`, {...data }, {
+        return this.axios.post(`/api${endpoint}`, {...data }, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -73,7 +73,7 @@ class Api {
     }
 
     Put = (endpoint, data, args) => {
-        return this.axios.put(`${this.endpoint}${endpoint}`, {...data }, {
+        return this.axios.put(`/api${endpoint}`, {...data }, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -87,7 +87,10 @@ class Api {
     GetEndpoint = () => this.endpoint;
 
     Login = (email, password) => this.Post('/auth/login', { email: email, password: password });
+    Logout = () => this.Get('/auth/logout');
     Refresh = () => this.Get('/auth/refresh');
+
+    GetCurrentUser = () => this.Get('/users/current');
 
     GetPlayers = (args) => this.Get('/players', args);
     GetPlayer = (id) => this.Get(`/players/${id}`);

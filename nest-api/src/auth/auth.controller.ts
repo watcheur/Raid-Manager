@@ -114,6 +114,7 @@ export class AuthController {
                 name: 'Refresh',
                 value: '',
                 options: {
+                    path: '/auth/refresh',
                     maxAge: 0,
                     httpOnly: true
                 }

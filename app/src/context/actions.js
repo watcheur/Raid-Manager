@@ -23,6 +23,14 @@ export async function loginUser(dispatch, username, password) {
 }
 
 export async function logoutUser(dispatch) {
-    dispatch({ type: 'LOGOUT' });
-    localStorage.removeItem('user');
+    try {
+        await Api.Logout();
+
+        dispatch({ type: 'LOGOUT' });
+        localStorage.removeItem('user');
+    }
+    catch (error) {
+        console.log("err", error);
+        dispatch({ type: 'LOGIN_ERROR', error: "Error disconnect" });
+    }
 }

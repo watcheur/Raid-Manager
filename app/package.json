@@ -13,6 +13,7 @@
 		"dateformat": "*",
 		"expr-eval": "^2.0.2",
 		"flux": "*",
+		"http-proxy-middleware": "^1.0.6",
 		"lodash.find": "*",
 		"moment": "^2.29.0",
 		"react": "*",
