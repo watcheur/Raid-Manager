@@ -34,6 +34,16 @@ export class ExpansionsService {
         });
     }
 
+    public async findCurrent(): Promise<Expansion | null>
+    {
+        return this.expansionsRepository.findOne({
+            relations: [ 'raids' ],
+            order: {
+                id: 'DESC'
+            }
+        })
+    }
+
     public async create(expansion: Expansion) : Promise<Expansion> {
         return await this.expansionsRepository.save(expansion);
     }

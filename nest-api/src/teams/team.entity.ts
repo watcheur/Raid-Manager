@@ -12,6 +12,7 @@ import {
 
 import { User } from 'src/users/user.entity';
 import { Invite } from 'src/invites/invite.entity';
+import { Player } from 'src/players/player.entity';
 import { Transform } from 'class-transformer';
 
 @Entity()
@@ -37,6 +38,10 @@ export class Team {
 	})
 	@JoinTable()
 	users: User[];
+
+	@OneToMany(type => Player, player => player.team)
+	@JoinTable()
+	players: Player[];
 	
 	@OneToMany(type => Invite, invite => invite.team)
 	invites: Invite[];

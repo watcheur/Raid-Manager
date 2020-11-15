@@ -22,7 +22,7 @@ export class TeamsService {
     public async findById(id: number) : Promise<Team | null>
     {
         return await this.teamRepository.findOne({
-            relations: [ 'users' ],
+            relations: [ 'users', 'founder' ],
             where: {
                 id: id
             }

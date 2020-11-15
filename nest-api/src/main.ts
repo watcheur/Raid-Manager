@@ -5,12 +5,14 @@ import * as helmet from 'helmet';
 import * as rateLimit from 'express-rate-limit';
 import * as cookieParser from 'cookie-parser';
 import { ConfigService } from '@nestjs/config';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 	const config = app.get<ConfigService>(ConfigService);
 
 	const options = new DocumentBuilder()
+		.addBearerAuth()
 		.setTitle("Raid-Manager API")
 		.setVersion("0.0.1")
 		.build();
@@ -18,6 +20,7 @@ async function bootstrap() {
 	const document = SwaggerModule.createDocument(app, options);
 	SwaggerModule.setup('api', app, document);
 
+	app.useGlobalPipes(new ValidationPipe());
 	app.enableCors({
 		origin: 'http://localhost:3000'
 	});

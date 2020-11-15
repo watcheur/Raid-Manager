@@ -20,17 +20,6 @@ function UserActions() {
 	const { user } = useAuthState();
 	
 	const [ visible, toggleVisible ] = useState(false);
-	const [ username, changeUsername ] = useState('');
-
-	if (!username) {
-		Api.GetCurrentUser()
-			.then(response => {
-				if (response.data.data) {
-					changeUsername(response.data.data.name);
-				}
-			})
-			.catch(err => { })
-	}
 
 	return (
 		<NavItem tag={Dropdown} caret toggle={(ev) => toggleVisible(!visible)}>
@@ -40,7 +29,7 @@ function UserActions() {
 					src="/images/blizzard/inv_misc_questionmark.jpg"
 					alt="Avatar"
 				/>{" "}
-				<span className="d-none d-md-inline-block">{username}</span>
+				<span className="d-none d-md-inline-block">{user?.name}</span>
 			</DropdownToggle>
 			<Collapse tag={DropdownMenu} right small open={visible}>
 				<DropdownItem tag={Link} to="user-profile">

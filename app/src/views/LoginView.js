@@ -14,7 +14,7 @@ function Login(props) {
     const { loading, errorMessage, user } = useAuthState();
 
     if (user)
-        history.push('/');
+        history.push('/characters');
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -22,7 +22,7 @@ function Login(props) {
         try {
             let response = await loginUser(dispatch, username, password);
             if (response)
-               history.push('/');
+               history.push('/characters');
         } catch (error) {
             dispatch({ type: 'LOGIN_ERROR', error: "Error" });
         }

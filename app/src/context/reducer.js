@@ -6,7 +6,7 @@ const storageUser = localStorage.getItem('user');
 
 if (storageUser)
     user = JSON.parse(storageUser) || "";
-    
+
 export const initialState = {
     user: user || "",
     loading: false,

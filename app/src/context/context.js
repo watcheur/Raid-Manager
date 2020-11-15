@@ -1,6 +1,7 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 
 import { AuthReducer, initialState } from "./reducer";
+import { Api } from "../data";
 
 const AuthStateContext = React.createContext();
 const AuthDispatchContext = React.createContext();

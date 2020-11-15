@@ -25,7 +25,12 @@ export class UsersService {
     }
 
     public async findById(id: number) : Promise<User | null> {
-        return await this.userRepository.findOneOrFail(id);
+        return await this.userRepository.findOneOrFail({
+            relations: [ 'teams' ],
+            where: {
+                id: id
+            }
+        });
     }
 
     public async findByRefreshTokenAndId(refreshToken: string, userId: number): Promise<User | null> {

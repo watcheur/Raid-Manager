@@ -11,6 +11,48 @@ import {
 	JoinTable, Index, PrimaryColumn, ManyToOne
 } from 'typeorm';
 
+export enum ItemQuality {
+    COMMON = "COMMON",
+    UNCOMMON = "UNCOMMON",
+    RARE = "RARE",
+    EPIC = "EPIC",
+    LEGENDARY = "LEGENDARY",
+    ARTIFACT = "ARTIFACT",
+    HEIRLOOM = "HEIRLOOM"
+}
+
+// See https://wow.gamepedia.com/API_C_Item.GetItemInventoryType
+export enum ItemSlot {
+    HEAD = "HEAD",
+    NECK = "NECK",
+    SHOULDER = "SHOULDER",
+    CLOAK = "CLOAK",
+    CHEST = "CHEST",
+    SHIRT = "SHIRT",
+    TABARD = "TABARD",
+    WRIST = "WRIST",
+    HAND = "HAND",
+    WAIST = "WAIST",
+    LEGS = "LEGS",
+    FEET = "FEET",
+    FINGER = "FINGER",
+    TRINKET = "TRINKET",
+    WEAPON = "WEAPON",
+    SHIELD = "SHIELD",
+    RANGED = "RANGED",
+    TWOHWEAPON = "2HWEAPON",
+    BAG = "BAG",
+    ROBE = "ROBE",
+    WEAPONMAINHAND = "WEAPONMAINHAND",
+    WEAPONOFFHAND = "WEAPONOFFHAND",
+    HOLDABLE = "HOLDABLE",
+    AMMO = "AMMO",
+    THROWN = "THROWN",
+    RANGEDRIGHT = "RANGEDRIGHT",
+    QUIVER = "QUIVER",
+    RELIC = "RELIC"
+}
+
 @Entity()
 export class Item {
     @PrimaryColumn()
@@ -21,12 +63,22 @@ export class Item {
     name: string;
 
     @Index()
-    @Column({ nullable: true })
+    @Column({
+        type: "enum",
+        enum: ItemSlot,
+        default: null,
+        nullable: true
+    })
     slot: string;
 
     @Index()
-    @Column({ nullable: true })
-    quality: string;
+    @Column({
+        type: "enum",
+        enum: ItemQuality,
+        default: null,
+        nullable: true,
+    })
+    quality: ItemQuality;
 
     @Index()
     @Column({ nullable: true })

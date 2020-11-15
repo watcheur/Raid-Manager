@@ -14,8 +14,13 @@ import { RaidsModule } from './raids/raids.module';
 import { ExpansionsModule } from './expansions/expansions.module';
 import { EncountersModule } from './encounters/encounters.module';
 import { ItemsModule } from './items/items.module';
-import * as Joi from 'joi';
 import { AppGateway } from './app.gateway';
+import { PlayersModule } from './players/players.module';
+import { CharactersModule } from './characters/characters.module';
+import { WeeklysModule } from './weeklys/weeklys.module';
+import { PeriodsModule } from './periods/periods.module';
+
+import * as Joi from 'joi';
 
 @Module({
 	imports: [
@@ -40,7 +45,11 @@ import { AppGateway } from './app.gateway';
 		RaidsModule,
 		ExpansionsModule,
 		EncountersModule,
-		ItemsModule
+		ItemsModule,
+		PlayersModule,
+		CharactersModule,
+		WeeklysModule,
+		PeriodsModule
 	],
 	controllers: [AppController],
 	providers: [

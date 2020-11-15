@@ -12,9 +12,10 @@ export class UsersController {
     ) {}
 
     @UseGuards(JwtAuthenticationGuard)
-    @ApiOperation({ summary: 'Return all realms' })
+    @ApiOperation({ summary: 'Return all users' })
     @Get()
     async getAll(): Promise<User[]> {
+        return [];
         return plainToClass(User, await this.usersService.findAll());
     }
 
