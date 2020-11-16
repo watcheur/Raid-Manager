@@ -192,7 +192,7 @@ class CharacterWishlist extends React.Component {
                                                         <tr key={drop.id}>
                                                             <td>
                                                                 <strong>
-                                                                    <a href="#" className={classNames(drop.quality.toLowerCase())} data-wowhead={GameData.ItemToWowHead(drop, '&iconSize=true')}>
+                                                                    <a href="#" className={classNames(drop.quality?.toLowerCase())} data-wowhead={GameData.ItemToWowHead(drop, '&iconSize=true')}>
                                                                         {drop.media ? <img src={GameData.RenderMedia(drop.media)} className="rounded border shadow GameIcon-small mr-2" /> : ''}
                                                                         {drop.name}
                                                                     </a>
