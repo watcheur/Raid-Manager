@@ -114,7 +114,7 @@ class RaidController extends DefaultController {
                                         .then(instanceResponse => {
                                             if (instanceResponse.data.category.type !== 'RAID')
                                                 return resolve(null);
-                                            
+
                                             resolve({
                                                 id : instanceResponse.data.id,
                                                 name: instanceResponse.data.name,
@@ -128,8 +128,13 @@ class RaidController extends DefaultController {
                             });
 
                             Promise.all(promises)
-                                .then(values => {
+                                .then(async values => {
                                     const raids = values.filter(v => v != null);
+
+                                    const encounters = [].concat(...raids.map(v => v.encounters));
+
+                                    const savedEncounters = (await TypeORM.getRepository(Entities.Encounter).createQueryBuilder().select('DISTINCT id', 'id').getRawMany()).map(r => r.id);
+                                    await TypeORM.getRepository(Entities.Encounter).save(encounters.filter(ec => savedEncounters.indexOf(ec.id) <= 0));
 
                                     repo
                                         .save(raids)
