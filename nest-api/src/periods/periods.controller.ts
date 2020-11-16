@@ -1,10 +1,11 @@
 import { Controller, Param, Get, UseGuards, NotFoundException } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import JwtAuthenticationGuard from 'src/auth/jwt-authentication.guard';
 import { Period } from './period.entity';
 import { PeriodsService } from './periods.service';
 
+@ApiTags('periods')
 @Controller('periods')
 export class PeriodsController {
     constructor(

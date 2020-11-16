@@ -28,7 +28,7 @@ export class Weekly {
     timestamp: number;
 
     @Index()
-    @OneToMany(type => Period, period => period.id)
+    @ManyToOne(type => Period, period => period.id)
     period: Period;
 
     @Index()

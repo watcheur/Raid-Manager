@@ -1,10 +1,11 @@
 import { Controller, Get, NotFoundException, Param, Res, UseGuards } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import JwtAuthenticationGuard from 'src/auth/jwt-authentication.guard';
 import { Item } from './item.entity';
 import { ItemsService } from './items.service';
 
+@ApiTags('items')
 @Controller('items')
 export class ItemsController {
     constructor(

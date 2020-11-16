@@ -2,6 +2,7 @@ import { Exclude } from 'class-transformer';
 import { MaxLength } from 'class-validator';
 import { Player } from 'src/players/player.entity';
 import { Realm } from 'src/realms/realm.entity';
+import { Weekly } from 'src/weeklys/weekly.entity';
 import {
 	Entity,
 	PrimaryGeneratedColumn,
@@ -248,6 +249,9 @@ export class Character {
     @Index()
     @ManyToOne(type => Player, player => player.characters, { cascade: true })
     player: Player;
+
+    @OneToMany(type => Weekly, weekly => weekly.character)
+    weeklys: Weekly[];
     
     /*
     @Index()

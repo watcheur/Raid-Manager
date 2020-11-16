@@ -1,7 +1,4 @@
-import { Exclude } from 'class-transformer';
-import { MaxLength } from 'class-validator';
-import { Player } from 'src/players/player.entity';
-import { Realm } from 'src/realms/realm.entity';
+import { Season } from 'src/seasons/season.entity';
 import {
 	Entity,
 	PrimaryGeneratedColumn,
@@ -23,5 +20,9 @@ export class Period {
     start: Date;
 
     @Column()
-    end: Date;
+	end: Date;
+	
+    @Index()
+    @ManyToOne(type => Season, season => season.periods)
+    season: Season;
 }

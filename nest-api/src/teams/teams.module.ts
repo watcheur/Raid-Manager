@@ -8,7 +8,7 @@ import { Team } from 'src/teams/team.entity';
 import { User } from 'src/users/user.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Team, User])],
+    imports: [TypeOrmModule.forFeature([Team])],
     controllers: [TeamsController],
     providers: [TeamsService],
     exports: [TeamsService]

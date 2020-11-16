@@ -26,8 +26,10 @@ export class Realm {
     @Column()
     category: string;
     
+    /*
     @BeforeInsert()
     async slugName() {
         this.slug = slugify(this.name) 
     }
+    */
 }

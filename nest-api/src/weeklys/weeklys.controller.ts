@@ -1,10 +1,11 @@
 import { Controller, Get, NotFoundException, Param, UseGuards } from '@nestjs/common';
 import { WeeklysService } from './weeklys.service';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import JwtAuthenticationGuard from 'src/auth/jwt-authentication.guard';
 import { Weekly } from './weekly.entity';
 
+@ApiTags('weeklys')
 @Controller('weeklys')
 export class WeeklysController {
     constructor(

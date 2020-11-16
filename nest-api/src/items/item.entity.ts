@@ -66,7 +66,6 @@ export class Item {
     @Column({
         type: "enum",
         enum: ItemSlot,
-        default: null,
         nullable: true
     })
     slot: string;
@@ -75,7 +74,6 @@ export class Item {
     @Column({
         type: "enum",
         enum: ItemQuality,
-        default: null,
         nullable: true,
     })
     quality: ItemQuality;

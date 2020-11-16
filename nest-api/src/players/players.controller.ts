@@ -1,5 +1,5 @@
 import { BadRequestException, Body, Controller, ForbiddenException, Get, NotFoundException, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import JwtAuthenticationGuard from 'src/auth/jwt-authentication.guard';
 import { RequestWithUser } from 'src/interfaces/request-with-user.interface';
@@ -9,6 +9,7 @@ import { PlayerDto } from './player.dto';
 import { Player } from './player.entity';
 import { PlayersService } from './players.service';
 
+@ApiTags('players')
 @Controller('players')
 export class PlayersController {
     constructor(

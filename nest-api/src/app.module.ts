@@ -19,6 +19,11 @@ import { PlayersModule } from './players/players.module';
 import { CharactersModule } from './characters/characters.module';
 import { WeeklysModule } from './weeklys/weeklys.module';
 import { PeriodsModule } from './periods/periods.module';
+import { BlizzardModule } from './blizzard/blizzard.module';
+import { SeasonsService } from './seasons/seasons.service';
+import { SeasonsController } from './seasons/seasons.controller';
+import { SeasonsModule } from './seasons/seasons.module';
+import { CovenantsModule } from './covenants/covenants.module';
 
 import * as Joi from 'joi';
 
@@ -33,7 +38,13 @@ import * as Joi from 'joi';
 				JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.string().required(),
 
 				// SERVER Configuration
-				SERVER_PORT: Joi.string().required()
+				SERVER_PORT: Joi.string().required(),
+
+				// BLIZZARD Configuration
+				BLIZZARD_KEY: Joi.string().required(),
+				BLIZZARD_SECRET: Joi.string().required(),
+				BLIZZARD_ORIGIN: Joi.string().optional(),
+				BLIZZARD_LOCALE: Joi.string().optional()
 			})
 		}),
 		TypeOrmModule.forRoot(),
@@ -48,8 +59,10 @@ import * as Joi from 'joi';
 		ItemsModule,
 		PlayersModule,
 		CharactersModule,
+		PeriodsModule,
+		SeasonsModule,
 		WeeklysModule,
-		PeriodsModule
+		BlizzardModule
 	],
 	controllers: [AppController],
 	providers: [
