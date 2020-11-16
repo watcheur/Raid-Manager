@@ -12,7 +12,7 @@ import {
 	BeforeInsert,
 	OneToMany,
 	ManyToMany,
-	JoinTable, Index, PrimaryColumn, ManyToOne
+	JoinTable, Index, PrimaryColumn, ManyToOne, JoinColumn
 } from 'typeorm';
 
 export enum Type {
@@ -247,10 +247,11 @@ export class Character {
     updatedAt: Date;
 
     @Index()
-    @ManyToOne(type => Player, player => player.characters, { cascade: true })
+    @ManyToOne(type => Player, player => player.characters)
+    @JoinColumn({ name: 'player' })
     player: Player;
 
-    @OneToMany(type => Weekly, weekly => weekly.character)
+    @OneToMany(type => Weekly, weekly => weekly.character, { cascade: true, onDelete: "CASCADE" })
     weeklys: Weekly[];
     
     /*

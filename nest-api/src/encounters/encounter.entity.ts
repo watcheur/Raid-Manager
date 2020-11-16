@@ -7,7 +7,7 @@ import {
 	BeforeInsert,
 	OneToMany,
 	ManyToMany,
-	JoinTable, Index, PrimaryColumn, ManyToOne
+	JoinTable, Index, PrimaryColumn, ManyToOne, JoinColumn
 } from 'typeorm';
 
 import { Item } from 'src/items/item.entity';
@@ -26,9 +26,10 @@ export class Encounter {
 
     @Index()
     @ManyToOne(type => Raid, raid => raid.encounters)
+    @JoinColumn({ name: 'raid' })
     raid: Raid;
 
-    @OneToMany(type => Item, item => item.source)
+    @OneToMany(type => Item, item => item.source, { cascade: true, onDelete: "CASCADE" })
     @JoinTable()
     items: Item[];
 }

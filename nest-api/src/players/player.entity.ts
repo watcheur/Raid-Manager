@@ -10,7 +10,7 @@ import {
 	BeforeInsert,
 	OneToMany,
 	ManyToMany,
-	JoinTable, Index, PrimaryColumn, ManyToOne, Unique
+	JoinTable, Index, PrimaryColumn, ManyToOne, Unique, JoinColumn
 } from 'typeorm';
 
 export enum Rank {
@@ -42,6 +42,7 @@ export class Player {
     
     @Index()
     @ManyToOne(type => Team, team => team.players)
+	@JoinColumn({ name: 'team' })
 	team: Team;
 	
 	@OneToMany(type => Character, character => character.player)

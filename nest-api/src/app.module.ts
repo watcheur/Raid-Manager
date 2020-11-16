@@ -20,10 +20,8 @@ import { CharactersModule } from './characters/characters.module';
 import { WeeklysModule } from './weeklys/weeklys.module';
 import { PeriodsModule } from './periods/periods.module';
 import { BlizzardModule } from './blizzard/blizzard.module';
-import { SeasonsService } from './seasons/seasons.service';
-import { SeasonsController } from './seasons/seasons.controller';
 import { SeasonsModule } from './seasons/seasons.module';
-import { CovenantsModule } from './covenants/covenants.module';
+import { WishlistsModule } from './wishlists/wishlists.module';
 
 import * as Joi from 'joi';
 
@@ -62,7 +60,8 @@ import * as Joi from 'joi';
 		PeriodsModule,
 		SeasonsModule,
 		WeeklysModule,
-		BlizzardModule
+		BlizzardModule,
+		WishlistsModule
 	],
 	controllers: [AppController],
 	providers: [

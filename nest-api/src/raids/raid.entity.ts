@@ -9,8 +9,16 @@ import {
     OneToMany,
     ManyToMany,
     JoinTable,
-    Index, PrimaryColumn, ManyToOne
+    Index, PrimaryColumn, ManyToOne, JoinColumn
 } from 'typeorm';
+
+export enum RaidDifficulty
+{
+    LFR = 'LFR',
+    NORMAL = 'NORMAL',
+    HEROIC = 'HEROIC',
+    MYTHIC = 'MYTHIC'
+}
 
 @Entity()
 export class Raid {
@@ -25,9 +33,10 @@ export class Raid {
     minimumLevel: number;
 
     @ManyToOne(type => Expansion, exp => exp.id)
+    @JoinColumn({ name: 'expansion' })
     expansion: Expansion;
 
-    @OneToMany(type => Encounter, encounter => encounter.raid)
+    @OneToMany(type => Encounter, encounter => encounter.raid, { cascade: true, onDelete: "CASCADE" })
     @JoinTable()
     encounters: Encounter[];
 }

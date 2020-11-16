@@ -7,7 +7,8 @@ import {
     OneToMany,
     Index,
     PrimaryColumn,
-    ManyToOne
+    ManyToOne,
+    JoinColumn
 } from 'typeorm';
 
 @Entity()
@@ -29,9 +30,11 @@ export class Weekly {
 
     @Index()
     @ManyToOne(type => Period, period => period.id)
+	@JoinColumn({ name: 'period' })
     period: Period;
 
     @Index()
-    @ManyToOne(type => Character, character => character.id, { cascade: true })
+    @ManyToOne(type => Character, character => character.id)
+	@JoinColumn({ name: 'character' })
     character: Character;
 }

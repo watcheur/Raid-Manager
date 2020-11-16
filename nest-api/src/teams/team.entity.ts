@@ -7,7 +7,7 @@ import {
     ManyToMany,
 	JoinTable,
     CreateDateColumn,
-	UpdateDateColumn, ManyToOne
+	UpdateDateColumn, ManyToOne, JoinColumn
 } from 'typeorm';
 
 import { User } from 'src/users/user.entity';
@@ -31,6 +31,7 @@ export class Team {
 
 	@ManyToOne(type => User)
 	@Transform(user => user.id)
+	@JoinColumn({ name: 'founder' })
 	founder: User;
 
 	@ManyToMany(type => User, user => user.teams, {

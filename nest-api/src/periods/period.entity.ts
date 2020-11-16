@@ -8,7 +8,7 @@ import {
 	BeforeInsert,
 	OneToMany,
 	ManyToMany,
-	JoinTable, Index, PrimaryColumn, ManyToOne
+	JoinTable, Index, PrimaryColumn, ManyToOne, JoinColumn
 } from 'typeorm';
 
 @Entity()
@@ -24,5 +24,6 @@ export class Period {
 	
     @Index()
     @ManyToOne(type => Season, season => season.periods)
+	@JoinColumn({ name: 'season' })
     season: Season;
 }

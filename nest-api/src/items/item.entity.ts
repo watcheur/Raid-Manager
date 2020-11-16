@@ -8,7 +8,7 @@ import {
 	BeforeInsert,
 	OneToMany,
 	ManyToMany,
-	JoinTable, Index, PrimaryColumn, ManyToOne
+	JoinTable, Index, PrimaryColumn, ManyToOne, JoinColumn
 } from 'typeorm';
 
 export enum ItemQuality {
@@ -93,5 +93,6 @@ export class Item {
     
     @Index()
     @ManyToOne(type => Encounter, encounter => encounter.items)
+    @JoinColumn({ name: 'source' })
     source: Encounter;
 }

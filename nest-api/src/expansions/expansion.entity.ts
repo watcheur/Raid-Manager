@@ -20,7 +20,7 @@ export class Expansion {
     @Column()
     name: string;
 
-    @OneToMany(type => Raid, raid => raid.id)
+    @OneToMany(type => Raid, raid => raid.id, { cascade: true, onDelete: "CASCADE" })
     @JoinTable()
     raids: Raid[];
 }
