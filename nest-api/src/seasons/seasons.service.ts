@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Raw, Repository } from 'typeorm';
+import { IsNull, LessThanOrEqual, Raw, Repository } from 'typeorm';
 import { Season } from './season.entity';
 
 @Injectable()
@@ -30,7 +30,7 @@ export class SeasonsService {
         return await this.seasonsRepository.findOne({
             relations: [ 'periods' ],
             where: {
-                start: Raw('<= NOW()'),
+                start: LessThanOrEqual(new Date()),
                 end: IsNull()
             }
         })

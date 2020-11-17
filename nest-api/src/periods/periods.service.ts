@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Raw, Repository } from 'typeorm';
+import { Between, LessThanOrEqual, MoreThanOrEqual, Raw, Repository } from 'typeorm';
 import { Period } from './period.entity';
 
 @Injectable()
@@ -24,8 +24,8 @@ export class PeriodsService {
     {
         return await this.periodsReposity.findOne({
             where: {
-                start: Raw('>= NOW()'),
-                end: Raw('<= NOW()')
+                start: MoreThanOrEqual(new Date()),
+                end: LessThanOrEqual(new Date())
             }
         })
     }

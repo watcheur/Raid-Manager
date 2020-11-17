@@ -22,6 +22,9 @@ import { PeriodsModule } from './periods/periods.module';
 import { BlizzardModule } from './blizzard/blizzard.module';
 import { SeasonsModule } from './seasons/seasons.module';
 import { WishlistsModule } from './wishlists/wishlists.module';
+import { EventsModule } from './events/events.module';
+import { NotesModule } from './notes/notes.module';
+import { CompositionsModule } from './compositions/compositions.module';
 
 import * as Joi from 'joi';
 
@@ -61,7 +64,10 @@ import * as Joi from 'joi';
 		SeasonsModule,
 		WeeklysModule,
 		BlizzardModule,
-		WishlistsModule
+		WishlistsModule,
+		EventsModule,
+		NotesModule,
+		CompositionsModule
 	],
 	controllers: [AppController],
 	providers: [

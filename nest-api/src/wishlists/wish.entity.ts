@@ -3,7 +3,7 @@ import { Item } from "src/items/item.entity";
 import { RaidDifficulty } from "src/raids/raid.entity";
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
 
-@Index("idx_need_unique", [ "difficulty", "item", "character" ], { unique: true })
+@Unique("need", [ "difficulty", "item", "character" ])
 @Entity()
 export class Wish
 {
