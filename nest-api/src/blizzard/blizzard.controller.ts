@@ -1,5 +1,6 @@
-import { Controller, Get, NotFoundException, Param, Res, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, NotFoundException, Param, Query, Res, UseGuards } from '@nestjs/common';
+import { SchedulerRegistry } from '@nestjs/schedule';
+import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import JwtAuthenticationGuard from 'src/auth/jwt-authentication.guard';
 import { BlizzardService } from './blizzard.service';
 
@@ -7,7 +8,8 @@ import { BlizzardService } from './blizzard.service';
 @Controller('blizzard')
 export class BlizzardController {
     constructor(
-        private readonly blizzardService: BlizzardService
+        private readonly blizzardService: BlizzardService,
+        private readonly schedulerRegistry: SchedulerRegistry
     ) {}
 
     @UseGuards(JwtAuthenticationGuard)
@@ -30,14 +32,25 @@ export class BlizzardController {
         return this.blizzardService.Character(option, {
             realm: realm,
             name: name
-        })             
+        })
     }
 
-    @UseGuards(JwtAuthenticationGuard)
+    //@UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Retrieve all realms' })
+    @ApiQuery({ name: 'refresh', required: false })
     @Get('/realms')
-    async getRealms()
+    async getRealms(@Query('refresh') refresh: boolean)
     {
+        if (refresh)
+        {
+            const job = this.schedulerRegistry.getCronJob('realms');
+            console.log("job", job);
+            if (job)
+                job.start();
+        }
+
+        return [];
+
         return this.blizzardService.GetRealms();
     }
 
@@ -46,10 +59,7 @@ export class BlizzardController {
     @Get('/expansions')
     async getExpansions()
     {
-        return this.blizzardService.Get('/data/wow/journal-expansion/index', {
-            namespace: 'static',
-            locale: 'en_GB'
-        });
+        return this.blizzardService.GetExpansions();
     }
 
     @UseGuards(JwtAuthenticationGuard)
@@ -57,10 +67,7 @@ export class BlizzardController {
     @Get('/expansions/:id')
     async getExpansion(@Param('id') id: number)
     {
-        return this.blizzardService.Get(`/data/wow/journal-expansion/${id}`, {
-            namespace: 'static',
-            locale: 'en_GB'
-        });
+        return this.blizzardService.GetExpansion(id);
     }
 
     @UseGuards(JwtAuthenticationGuard)
@@ -68,10 +75,7 @@ export class BlizzardController {
     @Get('/instances')
     async getInstances()
     {
-        return this.blizzardService.Get(`/data/wow/journal-instance/index`, {
-            namespace: 'static',
-            locale: 'en_GB'
-        });
+        return this.blizzardService.GetInstances();
     }
 
     @UseGuards(JwtAuthenticationGuard)
@@ -79,10 +83,7 @@ export class BlizzardController {
     @Get('/instances/:id')
     async getInstance(@Param('id') id: number)
     {
-        return this.blizzardService.Get(`/data/wow/journal-instance/${id}`, {
-            namespace: 'static',
-            locale: 'en_GB'
-        });
+        return this.blizzardService.GetInstance(id);
     }
 
     @UseGuards(JwtAuthenticationGuard)
@@ -90,10 +91,7 @@ export class BlizzardController {
     @Get('/encounters')
     async getEncounters()
     {
-        return this.blizzardService.Get(`/data/wow/journal-encounter/index`, {
-            namespace: 'static',
-            locale: 'en_GB'
-        });
+        return this.blizzardService.GetEncounters();
     }
 
     @UseGuards(JwtAuthenticationGuard)
@@ -101,30 +99,21 @@ export class BlizzardController {
     @Get('/encounters/:id')
     async getEncounter(@Param('id') id: number)
     {
-        return this.blizzardService.Get(`/data/wow/journal-encounter/${id}`, {
-            namespace: 'static',
-            locale: 'en_GB'
-        });
+        return this.blizzardService.GetEncounter(id);
     }
 
     @ApiOperation({ summary: 'Get mythic keystone seasons' })
     @Get('/mythic-keystone/seasons')
     async getMythicKeystoneSeasons()
     {
-        return this.blizzardService.Get(`/data/wow/mythic-keystone/season/index`, {
-            namespace: 'dynamic',
-            locale: 'en_GB'
-        });
+        return this.blizzardService.GetMythicKeystoneSeasons();
     }
 
     @ApiOperation({ summary: 'Get mythic keystone seasons' })
     @Get('/mythic-keystone/seasons/:id')
     async getMythicKeystoneSeason(@Param('id') id: number)
     {
-        return this.blizzardService.Get(`/data/wow/mythic-keystone/season/${id}`, {
-            namespace: 'dynamic',
-            locale: 'en_GB'
-        });
+        return this.blizzardService.GetMythicKeystoneSeason(id);
     }
 
     @UseGuards(JwtAuthenticationGuard)
@@ -132,10 +121,7 @@ export class BlizzardController {
     @Get('/mythic-keystone/period')
     async getMythicKeystonePeriods()
     {
-        return this.blizzardService.Get(`/data/wow/mythic-keystone/period/index`, {
-            namespace: 'dynamic',
-            locale: 'en_GB'
-        });
+        return this.blizzardService.GetMythicKeystoneSeasons();
     }
 
     @UseGuards(JwtAuthenticationGuard)
@@ -143,9 +129,6 @@ export class BlizzardController {
     @Get('/mythic-keystone/period/:id')
     async getMythicKeystonePeriod(@Param('id') id: number)
     {
-        return this.blizzardService.Get(`/data/wow/mythic-keystone/period/${id}`, {
-            namespace: 'dynamic',
-            locale: 'en_GB'
-        });
+        return this.blizzardService.GetMythicKeystoneSeason(id);
     }
 }

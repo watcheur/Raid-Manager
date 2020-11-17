@@ -13,6 +13,8 @@ import {
 
 @Entity()
 export class Expansion {
+    constructor() {}
+
     @PrimaryGeneratedColumn()
     id: number;
 

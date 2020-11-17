@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteResult, Like } from 'typeorm';
+import { Repository, DeleteResult, Like, DeepPartial } from 'typeorm';
 import { Realm } from './realm.entity';
 import { RealmDto } from './realms.dto';
 
@@ -23,8 +23,12 @@ export class RealmsService {
         return await this.realmRepository.findOne(id);
     }
 
-    public async create(realm: RealmDto): Promise<Realm> {
+    public async save(realm: RealmDto): Promise<RealmDto> {
         return await this.realmRepository.save(realm);
+    }
+
+    public async saveBatch(realms: RealmDto[]): Promise<RealmDto[]> {
+        return await this.realmRepository.save(realms);
     }
 
     public async update(

@@ -25,6 +25,8 @@ import { WishlistsModule } from './wishlists/wishlists.module';
 import { EventsModule } from './events/events.module';
 import { NotesModule } from './notes/notes.module';
 import { CompositionsModule } from './compositions/compositions.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksModule } from './tasks/tasks.module';
 
 import * as Joi from 'joi';
 
@@ -48,6 +50,7 @@ import * as Joi from 'joi';
 				BLIZZARD_LOCALE: Joi.string().optional()
 			})
 		}),
+		ScheduleModule.forRoot(),
 		TypeOrmModule.forRoot(),
 		AuthModule,
 		UsersModule,
@@ -67,7 +70,8 @@ import * as Joi from 'joi';
 		WishlistsModule,
 		EventsModule,
 		NotesModule,
-		CompositionsModule
+		CompositionsModule,
+		TasksModule
 	],
 	controllers: [AppController],
 	providers: [

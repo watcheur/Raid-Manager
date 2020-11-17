@@ -231,4 +231,84 @@ export class BlizzardService {
         else
             return [];
     }
+
+    public async GetExpansions()
+    {
+        return (await this.Get('/data/wow/journal-expansion/index', {
+            namespace: 'static',
+            locale: 'en_GB'
+        }))?.tiers;
+    }
+
+    public async GetExpansion(id: number)
+    {
+        return this.Get(`/data/wow/journal-expansion/${id}`, {
+            namespace: 'static',
+            locale: 'en_GB'
+        });
+    }
+
+    public async GetInstances()
+    {
+        this.Get(`/data/wow/journal-instance/index`, {
+            namespace: 'static',
+            locale: 'en_GB'
+        });
+    }
+
+    public async GetInstance(id: number)
+    {
+        this.Get(`/data/wow/journal-instance/${id}`, {
+            namespace: 'static',
+            locale: 'en_GB'
+        });
+    }
+
+    public async GetEncounters()
+    {
+        this.Get(`/data/wow/journal-encounter/index`, {
+            namespace: 'static',
+            locale: 'en_GB'
+        });
+    }
+
+    public async GetEncounter(id: number)
+    {
+        return this.Get(`/data/wow/journal-encounter/${id}`, {
+            namespace: 'static',
+            locale: 'en_GB'
+        });
+    }
+
+    public async GetMythicKeystoneSeasons()
+    {
+        this.Get(`/data/wow/mythic-keystone/season/index`, {
+            namespace: 'dynamic',
+            locale: 'en_GB'
+        });
+    }
+
+    public async GetMythicKeystoneSeason(id: number)
+    {
+        this.Get(`/data/wow/mythic-keystone/season/${id}`, {
+            namespace: 'dynamic',
+            locale: 'en_GB'
+        });
+    }
+
+    public async GetMythicKeystonePeriods()
+    {
+        return this.Get(`/data/wow/mythic-keystone/period/index`, {
+            namespace: 'dynamic',
+            locale: 'en_GB'
+        });
+    }
+
+    public async GetMythicKeystonePeriod(id: number)
+    {
+        return this.Get(`/data/wow/mythic-keystone/period/${id}`, {
+            namespace: 'dynamic',
+            locale: 'en_GB'
+        });
+    }
 }

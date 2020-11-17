@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
+import { RealmDto } from 'src/realms/realms.dto';
 import { DeleteResult, Repository } from 'typeorm';
 import { Expansion } from './expansion.entity';
 import { ExpansionsController } from './expansions.controller';
@@ -44,8 +45,13 @@ export class ExpansionsService {
         })
     }
 
-    public async create(expansion: Expansion) : Promise<Expansion> {
+    public async save(expansion: Expansion) : Promise<Expansion> {
         return await this.expansionsRepository.save(expansion);
+    }
+
+    public async saveBatch(expansions: Expansion[]): Promise<Expansion[]>
+    {
+        return await this.expansionsRepository.save(expansions);
     }
 
     public async delete(id: number): Promise<DeleteResult> {

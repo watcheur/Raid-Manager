@@ -25,7 +25,7 @@ export class EventsService {
     public async findById(id: number): Promise<Event | null>
     {
         return await this.eventsRepository.findOne({
-            relations: [ "raid", "compositions" ],
+            relations: [ "raid" ],
             where: {
                 id: id
             }

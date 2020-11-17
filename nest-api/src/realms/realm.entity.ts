@@ -23,8 +23,23 @@ export class Realm {
     @Column()
     slug: string;
     
+    @Index()
     @Column()
     category: string;
+
+    @Index()
+    @Column()
+    region: string;
+
+    @Column()
+    locale: string;
+
+    @Column()
+    timezone: string;
+
+    @Index()
+    @Column()
+    group: number;
     
     /*
     @BeforeInsert()
