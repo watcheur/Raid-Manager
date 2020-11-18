@@ -68,7 +68,7 @@ export class Item {
         enum: ItemSlot,
         nullable: true
     })
-    slot: string;
+    slot?: string;
 
     @Index()
     @Column({
@@ -76,14 +76,14 @@ export class Item {
         enum: ItemQuality,
         nullable: true,
     })
-    quality: ItemQuality;
+    quality?: ItemQuality;
 
     @Index()
     @Column({ nullable: true })
-    level: number;
+    level?: number;
 
     @Column({ nullable: true })
-    media: string;
+    media?: string;
 
     @CreateDateColumn({ name: 'created_at' })
 	createdAt: Date;
@@ -94,5 +94,5 @@ export class Item {
     @Index()
     @ManyToOne(type => Encounter, encounter => encounter.items)
     @JoinColumn({ name: 'source' })
-    source: Encounter;
+    source?: Encounter;
 }

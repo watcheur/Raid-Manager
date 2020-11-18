@@ -43,9 +43,14 @@ export class EncountersService {
         });
     }
 
-    public async create(encounter: Encounter): Promise<Encounter>
+    public async save(encounter: Encounter): Promise<Encounter>
     {
         return await this.encountersRepository.save(encounter);
+    }
+
+    public async saveBatch(encounters: Encounter[]): Promise<Encounter[]>
+    {
+        return await this.encountersRepository.save(encounters);
     }
 
     public async update(id: number, newValue: Encounter): Promise<Encounter | null>

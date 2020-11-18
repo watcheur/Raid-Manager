@@ -35,22 +35,11 @@ export class BlizzardController {
         })
     }
 
-    //@UseGuards(JwtAuthenticationGuard)
+    @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Retrieve all realms' })
-    @ApiQuery({ name: 'refresh', required: false })
     @Get('/realms')
     async getRealms(@Query('refresh') refresh: boolean)
     {
-        if (refresh)
-        {
-            const job = this.schedulerRegistry.getCronJob('realms');
-            console.log("job", job);
-            if (job)
-                job.start();
-        }
-
-        return [];
-
         return this.blizzardService.GetRealms();
     }
 

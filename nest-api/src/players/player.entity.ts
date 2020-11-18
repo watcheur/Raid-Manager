@@ -14,7 +14,7 @@ import {
 } from 'typeorm';
 
 export enum Rank {
-	TBD,
+	TBD = 0,
 	Out,
 	Apply,
 	Raider
@@ -23,7 +23,7 @@ export enum Rank {
 @Entity()
 @Index("idx_name_team", [ "name", "team" ], { unique: true })
 export class Player {
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     id: number;
 
 	@Index()

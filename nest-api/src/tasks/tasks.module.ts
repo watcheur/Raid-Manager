@@ -9,6 +9,7 @@ import { RealmsModule } from 'src/realms/realms.module';
 import { SeasonsModule } from 'src/seasons/seasons.module';
 import { WeeklysModule } from 'src/weeklys/weeklys.module';
 import { TasksService } from './tasks.service';
+import { TasksController } from './tasks.controller';
 
 @Module({
     imports: [
@@ -23,6 +24,7 @@ import { TasksService } from './tasks.service';
         CharactersModule
     ],
     providers: [TasksService],
-    exports: [TasksService]
+    exports: [TasksService],
+    controllers: [TasksController]
 })
 export class TasksModule {}

@@ -35,4 +35,14 @@ export class SeasonsService {
             }
         })
     }
+
+    public async save(season: Season): Promise<Season>
+    {
+        return await this.seasonsRepository.save(season);
+    }
+
+    public async saveBatch(seasons: Season[]): Promise<Season[]>
+    {
+        return await this.seasonsRepository.save(seasons);
+    }
 }

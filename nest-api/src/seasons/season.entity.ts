@@ -16,10 +16,10 @@ export class Season {
     start: Date;
 
     @Column({ nullable: true })
-    end: Date;
+    end?: Date;
 
     @OneToMany(type => Period, period => period.season)
-    periods: Period[];
+    periods?: Period[];
 
     get current(): boolean
     {

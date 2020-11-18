@@ -14,6 +14,7 @@ import { User } from 'src/users/user.entity';
 import { Invite } from 'src/invites/invite.entity';
 import { Player } from 'src/players/player.entity';
 import { Transform } from 'class-transformer';
+import { Character } from 'src/characters/character.entity';
 
 @Entity()
 export class Team {
@@ -37,12 +38,35 @@ export class Team {
 	@ManyToMany(type => User, user => user.teams, {
 		cascade: true
 	})
-	@JoinTable()
+	@JoinTable({
+		name: 'team_users',
+		joinColumn: {
+			name: 'team',
+			referencedColumnName: 'id'
+		},
+		inverseJoinColumn: {
+			name: 'user',
+			referencedColumnName: 'id'
+		}
+	})
 	users: User[];
 
 	@OneToMany(type => Player, player => player.team)
-	@JoinTable()
 	players: Player[];
+
+	@ManyToMany(type => Character)
+	@JoinTable({
+		name: 'team_characters',
+		joinColumn: {
+			name: 'team',
+			referencedColumnName: 'id'
+		},
+		inverseJoinColumn: {
+			name: 'character',
+			referencedColumnName: 'id'
+		}
+	})
+	characters: Character[];
 	
 	@OneToMany(type => Invite, invite => invite.team)
 	invites: Invite[];

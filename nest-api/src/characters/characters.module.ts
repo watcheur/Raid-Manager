@@ -3,9 +3,16 @@ import { CharactersService } from './characters.service';
 import { CharactersController } from './characters.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Character } from './character.entity';
+import { BlizzardModule } from 'src/blizzard/blizzard.module';
+import { RealmsModule } from 'src/realms/realms.module';
+import { PlayersModule } from 'src/players/players.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ Character ])],
+  imports: [
+    TypeOrmModule.forFeature([ Character ]),
+    RealmsModule,
+    PlayersModule,
+    BlizzardModule],
   controllers: [CharactersController],
   providers: [CharactersService],
   exports: [CharactersService]

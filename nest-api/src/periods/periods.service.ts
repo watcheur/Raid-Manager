@@ -30,9 +30,14 @@ export class PeriodsService {
         })
     }
 
-    public async create(period: Period): Promise<Period>
+    public async save(period: Period): Promise<Period>
     {
         return await this.periodsReposity.save(period);
+    }
+
+    public async saveBatch(periods: Period[]): Promise<Period[]>
+    {
+        return await this.periodsReposity.save(periods);
     }
 
     public async update(id: number, newValue: Period): Promise<Period | null>

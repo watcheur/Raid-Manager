@@ -22,14 +22,14 @@ export class Encounter {
     name: string;
 
     @Column({ default: 0 })
-    order: number;
+    order?: number;
 
     @Index()
     @ManyToOne(type => Raid, raid => raid.encounters)
     @JoinColumn({ name: 'raid' })
-    raid: Raid;
+    raid?: Raid;
 
     @OneToMany(type => Item, item => item.source, { cascade: true, onDelete: "CASCADE" })
     @JoinTable()
-    items: Item[];
+    items?: Item[];
 }

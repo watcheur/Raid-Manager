@@ -25,5 +25,5 @@ export class Period {
     @Index()
     @ManyToOne(type => Season, season => season.periods)
 	@JoinColumn({ name: 'season' })
-    season: Season;
+    season?: Season;
 }

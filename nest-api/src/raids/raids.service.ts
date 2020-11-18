@@ -41,8 +41,12 @@ export class RaidsService {
         })
     }
 
-    public async create(raid: Raid) : Promise<Raid> {
+    public async save(raid: Raid) : Promise<Raid> {
         return await this.raidsRepository.save(raid);
+    }
+
+    public async saveBatch(raids: Raid[]) : Promise<Raid[]> {
+        return await this.raidsRepository.save(raids);
     }
 
     public async delete(id: number): Promise<DeleteResult> {

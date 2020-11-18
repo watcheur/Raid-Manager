@@ -3,6 +3,7 @@ import { pick, merge } from "lodash";
 import { map } from 'rxjs/operators';
 import { ConfigService } from '@nestjs/config';
 import { Observable } from 'rxjs';
+import { connect } from 'http2';
 
 export const BlizzardEndpoints = {
     us: {
@@ -126,7 +127,7 @@ export class BlizzardService {
             access_token: token
         };
 
-        this.logger.log(`Calling ${endpoint.hostname}${encodeURI(path)} with params ${JSON.stringify(params)}`)
+        //this.logger.log(`Calling ${endpoint.hostname}${encodeURI(path)} with params ${JSON.stringify(params)}`)
 
         return this.http.get(`${endpoint.hostname}${encodeURI(path)}`, {
             headers: {
@@ -200,11 +201,11 @@ export class BlizzardService {
     public async Character(key, { realm, name, ...args })
     {
         const params = {
-            namespace: 'profile'
+            namespace: 'profile-eu'
         }
 
         return this.Get(
-            `/profile/wow/character/${realm}/${name}` + (key || key !== 'index' ? `/${key}` : ''),
+            `/profile/wow/character/${realm}/${name}` + (key ? `/${key}` : ''),
             merge({}, args, {
                 params,
             }),
@@ -250,7 +251,7 @@ export class BlizzardService {
 
     public async GetInstances()
     {
-        this.Get(`/data/wow/journal-instance/index`, {
+        return this.Get(`/data/wow/journal-instance/index`, {
             namespace: 'static',
             locale: 'en_GB'
         });
@@ -258,7 +259,7 @@ export class BlizzardService {
 
     public async GetInstance(id: number)
     {
-        this.Get(`/data/wow/journal-instance/${id}`, {
+        return this.Get(`/data/wow/journal-instance/${id}`, {
             namespace: 'static',
             locale: 'en_GB'
         });
@@ -266,7 +267,7 @@ export class BlizzardService {
 
     public async GetEncounters()
     {
-        this.Get(`/data/wow/journal-encounter/index`, {
+        return this.Get(`/data/wow/journal-encounter/index`, {
             namespace: 'static',
             locale: 'en_GB'
         });
@@ -282,7 +283,7 @@ export class BlizzardService {
 
     public async GetMythicKeystoneSeasons()
     {
-        this.Get(`/data/wow/mythic-keystone/season/index`, {
+        return this.Get(`/data/wow/mythic-keystone/season/index`, {
             namespace: 'dynamic',
             locale: 'en_GB'
         });
@@ -290,7 +291,7 @@ export class BlizzardService {
 
     public async GetMythicKeystoneSeason(id: number)
     {
-        this.Get(`/data/wow/mythic-keystone/season/${id}`, {
+        return this.Get(`/data/wow/mythic-keystone/season/${id}`, {
             namespace: 'dynamic',
             locale: 'en_GB'
         });

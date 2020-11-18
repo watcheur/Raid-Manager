@@ -15,7 +15,7 @@ import {
 	JoinTable, Index, PrimaryColumn, ManyToOne, JoinColumn
 } from 'typeorm';
 
-export enum Type {
+export enum CharacterType {
     MAIN,
     ALT,
     ALTFUN
@@ -55,15 +55,15 @@ export enum Race {
 }
 
 export enum Gender {
-    Male,
-    Female,
-    Unknown
+    Male = "MALE",
+    Female = "FEMALE",
+    Unknown = "UNKNOWN"
 }
 
 export enum Faction {
-    Horde,
-    Alliance,
-    Neutral
+    Horde = "HORDE",
+    Alliance = "ALLIANCE",
+    Neutral = "NEUTRAL"
 }
 
 export enum Class {
@@ -196,35 +196,38 @@ export class Character {
     @Column()
     name: string;
 
-    @Index()
     @ManyToOne(type => Realm, realm => realm.id)
-    realm: Realm;
+    @JoinColumn({ name: 'realm' })
+    realm?: Realm;
+
+    @Column({ name: 'realm' })
+    realmId: number;
 
     @Index()
-    @Column({ type: "enum", enum: Type })
-    type: Type;
+    @Column({ type: "enum", enum: CharacterType })
+    type: CharacterType;
 
     @Index()
     @Column({ nullable: true })
-    level: number;
+    level?: number;
 
     @Column({ type: "enum", enum: Race, nullable: true })
-    race: Race;
+    race?: Race;
 
     @Column({ type: "enum", enum: Gender, nullable: true })
-    gender: Gender;
+    gender?: Gender;
 
     @Index()
     @Column({ type: "enum", enum: Faction, nullable: true })
-    faction: Faction;
+    faction?: Faction;
 
     @Index()
     @Column({ type: "enum", enum: Class, nullable: true })
-    class: Class;
+    class?: Class;
 
     @Index()
     @Column({ type: "enum", enum: Spec, nullable: true })
-    spec: Spec;
+    spec?: Spec;
 
     get role(): Role {
         if (Heal.indexOf(this.spec) >= 0)
@@ -235,10 +238,10 @@ export class Character {
     }
 
     @Column({ nullable: true })
-    avg: number;
+    avg?: number;
 
     @Column({ nullable: true })
-    equipped: number;
+    equipped?: number;
 
     @CreateDateColumn({ name: 'created_at' })
 	createdAt: Date;
@@ -246,13 +249,15 @@ export class Character {
 	@UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
 
-    @Index()
     @ManyToOne(type => Player, player => player.characters)
     @JoinColumn({ name: 'player' })
-    player: Player;
+    player?: Player;
+
+    @Column({ name: 'player' })
+    playerId: number;
 
     @OneToMany(type => Weekly, weekly => weekly.character, { cascade: true, onDelete: "CASCADE" })
-    weeklys: Weekly[];
+    weeklys?: Weekly[];
     
     /*
     @Index()

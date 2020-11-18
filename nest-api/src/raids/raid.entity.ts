@@ -30,7 +30,7 @@ export class Raid {
     name: string;
 
     @Column()
-    minimumLevel: number;
+    minimum_level: number;
 
     @ManyToOne(type => Expansion, exp => exp.id)
     @JoinColumn({ name: 'expansion' })
