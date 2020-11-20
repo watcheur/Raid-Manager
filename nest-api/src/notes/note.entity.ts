@@ -1,3 +1,4 @@
+import { Team } from "src/teams/team.entity";
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
@@ -14,6 +15,11 @@ export class Note
 
     @Column()
     favorite: boolean;
+
+    @Column()
+    @ManyToOne(type => Team)
+    @JoinColumn({ name: 'team' })
+    team: Team;
 
     @CreateDateColumn({ name: 'created_at' })
 	createdAt: Date;

@@ -27,6 +27,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         const user = await this.authService.validateUserToken(payload);
         if (!user)
             throw new UnauthorizedException({ code: 1000, messager: 'Not logged' });
+            
         return user;
     }
 }

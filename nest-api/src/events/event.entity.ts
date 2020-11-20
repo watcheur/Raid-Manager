@@ -1,5 +1,6 @@
 import { Composition } from "src/compositions/composition.entity";
 import { Raid, RaidDifficulty } from "src/raids/raid.entity";
+import { Team } from "src/teams/team.entity";
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
@@ -21,6 +22,11 @@ export class Event
     @ManyToOne(type => Raid)
     @JoinColumn({ name: 'raid' })
     raid: Raid;
+
+    @Index()
+    @ManyToOne(type => Team)
+    @JoinColumn({ name: 'team' })
+    team: Team;
 
     @OneToMany(type => Composition, composition => composition.event)
     compositions: Composition[];

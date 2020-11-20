@@ -5,6 +5,7 @@ import { CompositionsModule } from 'src/compositions/compositions.module';
 import { CompositionsService } from 'src/compositions/compositions.service';
 import { EncountersModule } from 'src/encounters/encounters.module';
 import { RaidsModule } from 'src/raids/raids.module';
+import { TeamsModule } from 'src/teams/teams.module';
 import { Event } from './event.entity';
 import { EventsController } from './events.controller';
 import { EventsService } from './events.service';
@@ -15,7 +16,8 @@ import { EventsService } from './events.service';
 		CompositionsModule,
 		RaidsModule,
 		EncountersModule,
-		CharactersModule
+		CharactersModule,
+		TeamsModule
 	],
 	controllers: [EventsController],
 	providers: [EventsService],

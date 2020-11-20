@@ -6,13 +6,16 @@ import { Character } from './character.entity';
 import { BlizzardModule } from 'src/blizzard/blizzard.module';
 import { RealmsModule } from 'src/realms/realms.module';
 import { PlayersModule } from 'src/players/players.module';
+import { TeamsModule } from 'src/teams/teams.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ Character ]),
     RealmsModule,
     PlayersModule,
-    BlizzardModule],
+    BlizzardModule,
+    TeamsModule
+  ],
   controllers: [CharactersController],
   providers: [CharactersService],
   exports: [CharactersService]

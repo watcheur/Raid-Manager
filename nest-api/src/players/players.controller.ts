@@ -26,15 +26,18 @@ export class PlayersController {
         if (!teamId)
             throw new BadRequestException('No team provided');
 
-        const team = this.teamsService.findById(teamId);
+        const team = await this.teamsService.findById(teamId);
         if (!team)
             throw new NotFoundException('Team not found');
+        
+        if (!req.user.isInTeam(team.id))
+            throw new ForbiddenException("You can't request another team's players")
         
         return await this.playersService.findByTeam(teamId);
     }
 
     @UseGuards(JwtAuthenticationGuard)
-    @ApiOperation({ summary: 'Get given user' })
+    @ApiOperation({ summary: 'Get given player' })
     @Get(':id')
     async get(@Request() req: RequestWithUser, @Param('id') playerId: number): Promise<Player | null>
     {
@@ -42,7 +45,7 @@ export class PlayersController {
         if (!player)
             throw new NotFoundException('Player not found');
 
-        if (req.user.teams.map(t => t.id).indexOf(player.team.id) == -1)
+        if (!req.user.isInTeam(player.team.id))
             throw new BadRequestException("You can't request another team's player");
 
         return player;
@@ -56,7 +59,7 @@ export class PlayersController {
         if (!team)
             throw new NotFoundException("Team not found");
         
-        if (req.user.teams.map(t => t.id).indexOf(team.id) == -1)
+        if (!req.user.isInTeam(team.id))
             throw new ForbiddenException("You can't request player to other teams");
         
         return plainToClass(Player, await this.playersService.create(playerDto, team));
@@ -70,7 +73,7 @@ export class PlayersController {
         if (!player)
             throw new NotFoundException("Player not found");
 
-        if (req.user.teams.map(t => t.id).indexOf(player.team.id) == -1)
+            if (!req.user.isInTeam(player.team.id))
             throw new ForbiddenException("You can't update other teams player");
         
         return plainToClass(Player, this.playersService.update(id, playerDto));

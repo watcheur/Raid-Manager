@@ -11,11 +11,12 @@ export class NotesService {
         private readonly notesRepository: Repository<Note>
     ) {}
 
-    public async findAll(favorite: boolean): Promise<Note[]>
+    public async findAll(favorite: boolean, teamId: number): Promise<Note[]>
     {
         return await this.notesRepository.find({
             where: {
-                favorite: favorite
+                favorite: favorite,
+                team: teamId
             }
         });
     }
@@ -25,9 +26,24 @@ export class NotesService {
         return await this.notesRepository.findOne(id);
     }
 
+    public async findByIdAndTeam(id: number, team: number): Promise<Note | null>
+    {
+        return await this.notesRepository.findOne({
+            where: {
+                id: id,
+                team: team
+            }
+        })
+    }
+
     public async create(note: NoteDto): Promise<Note>
     {
         return await this.notesRepository.create(note);
+    }
+
+    public async save(note: any): Promise<Note>
+    {
+        return await this.notesRepository.save(note);
     }
 
     public async update(id: number, newValue: NoteDto): Promise<Note>

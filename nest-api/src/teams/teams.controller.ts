@@ -45,7 +45,7 @@ export class TeamsController {
         if (!team)
             throw new NotFoundException('Team not found');
 
-        if (team.users.findIndex(u => u.id == req.user.id) == -1)
+        if (!req.user.isInTeam(team.id))
             throw new NotFoundException('Team not found');
 
         return plainToClass(Team, team);

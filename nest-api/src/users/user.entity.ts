@@ -82,4 +82,12 @@ export class User {
 		
 		return responseObject;
 	}
+
+	public isInTeam(id: number): boolean
+	{
+		if (!this.teams)
+			return false;
+
+		return this.teams.map(t => t.id).indexOf(+id) >= 0;
+	}
 }

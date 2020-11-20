@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards, Req, Query, ForbiddenException } from '@nestjs/common';
 import JwtAuthenticationGuard from 'src/auth/jwt-authentication.guard';
 import { CompositionsService } from 'src/compositions/compositions.service';
 import { EventsService } from './events.service';
 import { plainToClass } from 'class-transformer';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { EventDto } from './event.dto';
 import { RaidsService } from 'src/raids/raids.service';
 import { EventDuplicateDto } from './event-duplicate.dto';
@@ -13,6 +13,8 @@ import { CharacterCompDto } from 'src/compositions/character-comp.dto';
 import { CompositionDto } from 'src/compositions/composition.dto';
 import { Event } from './event.entity';
 import { CharactersService } from 'src/characters/characters.service';
+import { RequestWithUser } from 'src/interfaces/request-with-user.interface';
+import { TeamsService } from 'src/teams/teams.service';
 
 @ApiTags('events')
 @Controller('events')
@@ -22,23 +24,40 @@ export class EventsController {
         private readonly compositionsService: CompositionsService,
         private readonly encountersService: EncountersService,
         private readonly raidsService: RaidsService,
-        private readonly charactersService: CharactersService
+        private readonly charactersService: CharactersService,
+        private readonly teamsService: TeamsService
     ) {}
 
     @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Get all events' })
+    @ApiQuery({ name: 'team', type: 'number' })
     @Get()
-    async getAll(): Promise<Event[]>
+    async getAll(@Req() request: RequestWithUser, @Query('team') teamId: number): Promise<Event[]>
     {
+        if (!request.user.isInTeam(teamId))
+            throw new ForbiddenException("Can't request other teams events");
+
+        const team = await this.teamsService.findById(teamId);
+        if (!team)
+            throw new NotFoundException("Team not found");
+
         return plainToClass(Event, await this.eventsService.findAll());
     }
 
     @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Get next scheduled event' })
+    @ApiQuery({ name: 'team', type: 'number' })
     @Get('next')
-    async getNext(): Promise<Event | null>
+    async getNext(@Req() request: RequestWithUser, @Query('team') teamId: number): Promise<Event | null>
     {
-        const nextEvent = await this.eventsService.findNext();
+        if (!request.user.isInTeam(teamId))
+        throw new ForbiddenException("Can't request other teams events");
+
+        const team = await this.teamsService.findById(teamId);
+        if (!team)
+            throw new NotFoundException("Team not found");
+            
+        const nextEvent = await this.eventsService.findNextTeamEvent(teamId);
         if (!nextEvent)
             throw new NotFoundException('No next event scheduled');
         return plainToClass(Event, nextEvent);
@@ -46,21 +65,38 @@ export class EventsController {
 
     @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Get given event' })
+    @ApiQuery({ name: 'team', type: 'number' })
     @Get(':id')
-    async get(@Param('id') id: number): Promise<Event | null>
+    async get(@Req() request: RequestWithUser, @Query('team') teamId: number, @Param('id') id: number): Promise<Event | null>
     {
-        const event = await this.eventsService.findById(id);
+        if (!request.user.isInTeam(teamId))
+        throw new ForbiddenException("Can't request other teams events");
+
+        const team = await this.teamsService.findById(teamId);
+        if (!team)
+            throw new NotFoundException("Team not found");
+
+        const event = await this.eventsService.findByIdAndTeam(id, teamId);
         if (!event)
             throw new NotFoundException('Event not found');
         return plainToClass(Event, event);
     }
 
     @UseGuards(JwtAuthenticationGuard)
-    @ApiOperation({ summary: 'Get given event' })
+    @ApiOperation({ summary: 'Duplicate event' })
+    @ApiQuery({ name: 'team', type: 'number' })
     @Post(':id/duplicate')
-    async duplicate(@Param('id') id: number, @Body() body: EventDuplicateDto): Promise<Event | null>
+    async duplicate(@Req() request: RequestWithUser, @Query('team') teamId: number, @Param('id') id: number, @Body() body: EventDuplicateDto): Promise<Event | null>
     {
-        const event = await this.eventsService.findById(id);
+        if (!request.user.isInTeam(teamId))
+        throw new ForbiddenException("Can't request other teams events");
+
+        const team = await this.teamsService.findById(teamId);
+        if (!team)
+            throw new NotFoundException("Team not found");
+
+
+        const event = await this.eventsService.findByIdAndTeam(id, teamId);
         if (!event)
             throw new NotFoundException('Event not found');
         return plainToClass(Event, await this.eventsService.duplicate(id, body.date));
@@ -68,34 +104,62 @@ export class EventsController {
 
     @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Get all comp for a given event' })
+    @ApiQuery({ name: 'team', type: 'number' })
     @Get(':id/compositions')
-    async getCompForEvent(@Param('id') id: number)
+    async getCompForEvent(@Req() request: RequestWithUser, @Query('team') teamId: number, @Param('id') id: number)
     {
-        const event = this.eventsService.findById(id);
+        if (!request.user.isInTeam(teamId))
+        throw new ForbiddenException("Can't request other teams events");
+
+        const team = await this.teamsService.findById(teamId);
+        if (!team)
+            throw new NotFoundException("Team not found");
+
+        const event = await this.eventsService.findByIdAndTeam(id, teamId);
         if (!event)
             throw new NotFoundException('Event not found');
         
-        return this.compositionsService.findByEvent(id);
+        return await this.compositionsService.findByEvent(id);
     }
 
     @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: "Get comp for given event's encounter" })
+    @ApiQuery({ name: 'team', type: 'number' })
     @Get(':id/compositions/:encounter')
-    async getCompForEventEncounter(@Param('id') id: number, @Param('encounter') encounter: number)
+    async getCompForEventEncounter(@Req() request: RequestWithUser, @Query('team') teamId: number, @Param('id') id: number, @Param('encounter') encounterId: number)
     {
-        const event = this.eventsService.findById(id);
-        if (!event)
-            throw new NotFoundException('Event not found');
+        if (!request.user.isInTeam(teamId))
+            throw new ForbiddenException("Can't request other teams events");
+
+        const team = await this.teamsService.findById(teamId);
+        if (!team)
+            throw new NotFoundException("Team not found");
         
-        return this.compositionsService.findByEventAndEncounter(id, encounter);
+        const encounter = await this.encountersService.findById(encounterId);
+        if (!encounter)
+            throw new NotFoundException("Encounter not found");
+        
+        const event = await this.compositionsService.findByEventAndEncounter(id, encounterId);
+        if (!event)
+            throw new NotFoundException("Event with this encounter not found");
+        
+        return event;
     }
 
     @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: "Create comp for a given event's encounter"})
+    @ApiQuery({ name: 'team', type: 'number' })
     @Post(':id/compositions/:encounter')
-    async createCompForEventEncounter(@Param('id') eventId: number, @Param('encounter') encounterId: number, @Body() body: CompositionDto)
+    async createCompForEventEncounter(@Req() request: RequestWithUser, @Query('team') teamId: number, @Param('id') eventId: number, @Param('encounter') encounterId: number, @Body() body: CompositionDto)
     {
-        const event = await this.eventsService.findById(eventId);
+        if (!request.user.isInTeam(teamId))
+        throw new ForbiddenException("Can't request other teams events");
+
+        const team = await this.teamsService.findById(teamId);
+        if (!team)
+            throw new NotFoundException("Team not found");
+
+        const event = await this.eventsService.findByIdAndTeam(eventId, teamId);
         if (!event)
             throw new NotFoundException('Event not found');
 
@@ -116,22 +180,38 @@ export class EventsController {
 
     @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Create an event' })
+    @ApiQuery({ name: 'team', type: 'number' })
     @Post()
-    async create(@Body() body: EventDto): Promise<Event>
+    async create(@Req() request: RequestWithUser, @Query('team') teamId: number, @Body() body: EventDto): Promise<Event>
     {
+        if (!request.user.isInTeam(teamId))
+            throw new ForbiddenException("Can't request other teams events");
+
+        const team = await this.teamsService.findById(teamId);
+        if (!team)
+            throw new NotFoundException("Team not found");
+
         const raid = await this.raidsService.findById(body.raid);
         if (!raid)
             throw new NotFoundException('Raid not found');
 
-        return plainToClass(Event, await this.eventsService.create(body));
+        return plainToClass(Event, await this.eventsService.create(body, teamId));
     }
 
     @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Update an event' })
-    @Put('id')
-    async update(@Param('id') id: number, @Body() body: EventDto): Promise<Event>
+    @ApiQuery({ name: 'team', type: 'number' })
+    @Put(':id')
+    async update(@Req() request: RequestWithUser, @Query('team') teamId: number, @Param('id') id: number, @Body() body: EventDto): Promise<Event>
     {
-        const event = await this.eventsService.findById(id);
+        if (!request.user.isInTeam(teamId))
+            throw new ForbiddenException("Can't request other teams events");
+
+        const team = await this.teamsService.findById(teamId);
+        if (!team)
+            throw new NotFoundException("Team not found");
+        
+        const event = await this.eventsService.findByIdAndTeam(id, teamId);
         if (!event)
             throw new NotFoundException('Event not found');
 
@@ -146,10 +226,18 @@ export class EventsController {
 
     @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Delete a given event' })
-    @Delete('id')
-    async delete(@Param('id') id: number): Promise<boolean>
+    @ApiQuery({ name: 'team', type: 'number' })
+    @Delete(':id')
+    async delete(@Req() request: RequestWithUser, @Query('team') teamId: number, @Param('id') id: number): Promise<boolean>
     {
-        const event = await this.eventsService.findById(id);
+        if (!request.user.isInTeam(teamId))
+            throw new ForbiddenException("Can't request other teams events");
+
+        const team = await this.teamsService.findById(teamId);
+        if (!team)
+            throw new NotFoundException("Team not found");
+
+        const event = await this.eventsService.findByIdAndTeam(id, teamId);
         if (!event)
             throw new NotFoundException('Event not found');
         return await this.eventsService.delete(id);

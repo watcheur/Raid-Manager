@@ -2,6 +2,7 @@ import { Exclude } from 'class-transformer';
 import { MaxLength } from 'class-validator';
 import { Player } from 'src/players/player.entity';
 import { Realm } from 'src/realms/realm.entity';
+import { Team } from 'src/teams/team.entity';
 import { Weekly } from 'src/weeklys/weekly.entity';
 import {
 	Entity,
@@ -258,6 +259,20 @@ export class Character {
 
     @OneToMany(type => Weekly, weekly => weekly.character, { cascade: true, onDelete: "CASCADE" })
     weeklys?: Weekly[];
+
+    @ManyToMany(type => Team)
+    @JoinTable({
+		name: 'team_characters',
+		joinColumn: {
+			name: 'character',
+			referencedColumnName: 'id'
+		},
+		inverseJoinColumn: {
+			name: 'team',
+			referencedColumnName: 'id'
+		}
+	})
+	teams?: Team[];
     
     /*
     @Index()

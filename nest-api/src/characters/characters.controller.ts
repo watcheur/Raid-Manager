@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, HttpException, InternalServerErrorException, NotFoundException, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, HttpException, InternalServerErrorException, NotFoundException, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import JwtAuthenticationGuard from 'src/auth/jwt-authentication.guard';
 import { plainToClass } from 'class-transformer';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CharactersService } from './characters.service';
 import { BlizzardService } from 'src/blizzard/blizzard.service';
 import { Character } from './character.entity';
@@ -10,6 +10,7 @@ import { RequestWithUser } from 'src/interfaces/request-with-user.interface';
 import { RealmsService } from 'src/realms/realms.service';
 import { PlayersService } from 'src/players/players.service';
 import { CharacterUpdateDto } from './character-update.dto';
+import { TeamsService } from 'src/teams/teams.service';
 
 @ApiTags('characters')
 @Controller('characters')
@@ -18,29 +19,39 @@ export class CharactersController {
         private readonly charactersService: CharactersService,
         private readonly blizzardService: BlizzardService,
         private readonly realmsService: RealmsService,
-        private readonly playersService: PlayersService
+        private readonly playersService: PlayersService,
+        private readonly teamsService: TeamsService
     ) {}
 
     @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Get all characters' })
+    @ApiQuery({ name: 'team', type: 'number' })
     @Get()
-    async getAll(): Promise<Character[]>
+    async getAll(@Req() request: RequestWithUser, @Query('team') teamId: number): Promise<Character[]>
     {
-        return plainToClass(Character, await this.charactersService.findAll());
+        if (!request.user.isInTeam(teamId))
+            throw new ForbiddenException("Can't request another team characters");
+            
+        return plainToClass(Character, await this.charactersService.findByTeam(teamId));
     }
 
     @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Get a given character' })
-    @Get()
-    async get(@Param('id') id: number)
+    @ApiQuery({ name: 'team', type: 'number' })
+    @Get(':id')
+    async get(@Req() request: RequestWithUser, @Param('id') id: number, @Query('team') teamId: number)
     {
-        return plainToClass(Character, await this.charactersService.findById(id));
+        if (!request.user.isInTeam(teamId))
+        throw new ForbiddenException("Can't request another team character");
+
+        return plainToClass(Character, await this.charactersService.findByIdAndTeam(id, teamId));
     }
 
     @UseGuards(JwtAuthenticationGuard)
-    @ApiOperation({ summary: 'Add a new character' })
+    @ApiOperation({ summary: 'Add a new character to a team' })
+    @ApiQuery({ name: 'team', type: 'number' })
     @Post()
-    async create(@Req() request: RequestWithUser, @Body() body: CharacterDto)
+    async create(@Req() request: RequestWithUser, @Body() body: CharacterDto, @Query('team') teamId: number)
     {
         const realm = await this.realmsService.findById(body.realm);
         if (!realm)
@@ -50,11 +61,21 @@ export class CharactersController {
         if (!player)
             throw new NotFoundException("Player not found");
 
+        const team = await this.teamsService.findById(teamId);
+        if (!team)
+            throw new NotFoundException("Team not found");
+        
+        if (!request.user.isInTeam(team.id))
+            throw new ForbiddenException("You can't add character to another team");
+
         try {
             const blizzardCharacter = await this.blizzardService.Character("", {
                 realm: realm.slug,
                 name: body.name.toLowerCase()
             });
+
+            if (team.characters.map(c => c.id).indexOf(blizzardCharacter.id) >= 0)
+                throw new BadRequestException("Character is already in this team");
 
             const character = await this.charactersService.saveRaw({
                 id: blizzardCharacter.id,
@@ -72,6 +93,11 @@ export class CharactersController {
                 equipped: blizzardCharacter.equipped_item_level
             });
 
+            if (!team.characters || team.characters.map(c => c.id).indexOf(character.id) <= 0) {
+                team.characters.push(character);
+                this.teamsService.save(team);
+            }
+
             // Todo equipment, weekly queue
 
             return character;
@@ -80,23 +106,58 @@ export class CharactersController {
         {
             if (error?.isAxiosError)
                 throw new HttpException(error.response.statusText, error.response.status)
+            if (error instanceof HttpException)
+                throw error;
             throw new InternalServerErrorException(error.message);
         }
     }
 
     @UseGuards(JwtAuthenticationGuard)
     @ApiOperation({ summary: 'Update a character' })
+    @ApiQuery({ name: 'team', type: 'number' })
     @Put(':id')
-    async update(@Req() request: RequestWithUser, @Param('id') id: number, @Body() body: CharacterUpdateDto)
+    async update(@Req() request: RequestWithUser, @Param('id') id: number, @Query('team') teamId: number, @Body() body: CharacterUpdateDto)
     {
         const character = await this.charactersService.findById(id);
         if (!character)
             throw new NotFoundException("Character not found");
+        
+        if (!request.user.isInTeam(teamId))
+            throw new ForbiddenException("You can't update another team character");
 
         const res = await this.charactersService.update(id, {
             type: body.type
         })
 
         return res;
+    }
+
+    @UseGuards(JwtAuthenticationGuard)
+    @ApiOperation({ summary: 'Remove a character' })
+    @ApiQuery({ name: 'team', type: 'number' })
+    @Delete(':id')
+    async delete(@Req() request: RequestWithUser, @Param('id') id: number, @Query('team') teamId: number)
+    {
+        const character = await this.charactersService.findById(id);
+        if (!character)
+            throw new NotFoundException("Character not found");
+
+        const team = await this.teamsService.findById(teamId);
+        if (!team)
+            throw new NotFoundException("Team not found")
+
+        if (!request.user.isInTeam(teamId))
+            throw new ForbiddenException("You can't delete another team's character");
+        
+        if (team.characters.map(c => c.id).indexOf(character.id) < 0)
+            throw new BadRequestException("This character isn't part of this team");
+        
+        team.characters = team.characters.filter(c => c.id != character.id)
+        await this.teamsService.save(team);
+
+        if (character.teams.filter(t => t.id != team.id).length == 0)
+            await this.charactersService.delete(character.id);
+        
+        return true;
     }
 }

@@ -7,14 +7,15 @@ import {
     ManyToMany,
 	JoinTable,
     CreateDateColumn,
-	UpdateDateColumn, ManyToOne, JoinColumn
+	UpdateDateColumn, ManyToOne, JoinColumn, PrimaryColumn
 } from 'typeorm';
 
 import { User } from 'src/users/user.entity';
 import { Invite } from 'src/invites/invite.entity';
 import { Player } from 'src/players/player.entity';
-import { Transform } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 import { Character } from 'src/characters/character.entity';
+import { IsNotEmpty } from 'class-validator';
 
 @Entity()
 export class Team {
@@ -30,11 +31,13 @@ export class Team {
 	@UpdateDateColumn({ name: 'updated_at' })
 	updatedAt: Date;
 
+	@Exclude()
 	@ManyToOne(type => User)
 	@Transform(user => user.id)
 	@JoinColumn({ name: 'founder' })
 	founder: User;
 
+	@Exclude()
 	@ManyToMany(type => User, user => user.teams, {
 		cascade: true
 	})
@@ -51,9 +54,11 @@ export class Team {
 	})
 	users: User[];
 
+	@Exclude()
 	@OneToMany(type => Player, player => player.team)
 	players: Player[];
 
+	@Exclude()
 	@ManyToMany(type => Character)
 	@JoinTable({
 		name: 'team_characters',
@@ -68,6 +73,23 @@ export class Team {
 	})
 	characters: Character[];
 	
+	@Exclude()
 	@OneToMany(type => Invite, invite => invite.team)
 	invites: Invite[];
+}
+
+@Entity('team_characters')
+export class TeamCharater {
+	@Column()
+	@IsNotEmpty()
+	@PrimaryColumn()
+	team: number;
+
+	@Column()
+	@IsNotEmpty()
+	@PrimaryColumn()
+	character: number;
+
+	@CreateDateColumn({ name: 'created_at' })
+	createdAt: Date
 }
