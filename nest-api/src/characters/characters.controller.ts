@@ -102,12 +102,13 @@ export class CharactersController {
             });
 
             if (!team.characters || team.characters.map(c => c.id).indexOf(character.id) <= 0) {
-                team.characters.push(character);
-                this.teamsService.save(team);
+                await this.teamsService.addCharacter(team, character);
 
                 // This is a new character, add him to queue
-                this.characterItemsQueue.add({ character: character.id });
-                this.characterWeeklysQueue.add({ character: character.id });
+                await Promise.all([
+                    this.characterItemsQueue.add({ character: character.id }),
+                    this.characterWeeklysQueue.add({ character: character.id })
+                ]);
             }
 
             return character;
@@ -162,9 +163,9 @@ export class CharactersController {
         if (team.characters.map(c => c.id).indexOf(character.id) < 0)
             throw new BadRequestException("This character isn't part of this team");
         
-        team.characters = team.characters.filter(c => c.id != character.id)
-        await this.teamsService.save(team);
+        await this.teamsService.removeCharacter(team, character);
 
+        // If character isn't part of any team, remove it
         if (character.teams.filter(t => t.id != team.id).length == 0)
             await this.charactersService.delete(character.id);
         

@@ -10,13 +10,21 @@ export class Composition
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(type => Event, event => event.compositions)
+    @ManyToOne(type => Event, event => event.id, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'event' })
-    event: Event | number;
+    event: Event;
 
-    @ManyToOne(type => Encounter)
+    @Index()
+    @Column({ name: 'event' })
+    eventId: number;
+
+    @ManyToOne(type => Encounter, encounter => encounter.id, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'encounter' })
-    encounter: Encounter | number;
+    encounter: Encounter;
+
+    @Index()
+    @Column({ name: 'encounter' })
+    encounterId: number;
 
     @OneToOne(type => Note)
     @JoinColumn({ name: 'note' })

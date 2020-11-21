@@ -41,7 +41,7 @@ export class Player {
     updatedAt: Date;
     
     @Index()
-    @ManyToOne(type => Team, team => team.players)
+    @ManyToOne(type => Team, team => team.id, { onDelete: 'CASCADE' })
 	@JoinColumn({ name: 'team' })
 	team: Team;
 	

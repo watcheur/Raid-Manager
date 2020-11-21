@@ -1,4 +1,5 @@
 import { Season } from 'src/seasons/season.entity';
+import { Weekly } from 'src/weeklys/weekly.entity';
 import {
 	Entity,
 	PrimaryGeneratedColumn,
@@ -13,7 +14,7 @@ import {
 
 @Entity()
 export class Period {
-    @PrimaryColumn({ generated: false })
+    @PrimaryColumn()
     id: number;
 
     @Column()
@@ -23,7 +24,7 @@ export class Period {
 	end: Date;
 	
     @Index()
-    @ManyToOne(type => Season, season => season.periods)
+    @ManyToOne(type => Season, season => season.id, { onDelete: 'CASCADE' })
 	@JoinColumn({ name: 'season' })
-    season?: Season;
+	season?: Season;
 }

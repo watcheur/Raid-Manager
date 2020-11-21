@@ -6,6 +6,7 @@ import { User } from 'src/users/user.entity';
 import { TeamDto } from 'src/teams/teams.dto';
 
 import moment from 'moment';
+import { Character } from 'src/characters/character.entity';
 
 @Injectable()
 export class TeamsService {
@@ -87,5 +88,29 @@ export class TeamsService {
             .relation(Team, 'users')
             .of(team)
             .add(user);
+    }
+
+    public async removeUser(team: Team, user: User): Promise<void>
+    {
+        return this.teamRepository.createQueryBuilder()
+            .relation(Team, 'users')
+            .of(team)
+            .remove(user);
+    }
+
+    public async addCharacter(team: Team, character: Character): Promise<void>
+    {
+        return this.teamRepository.createQueryBuilder()
+            .relation(Team, "characters")
+            .of(team)
+            .add(character);
+    }
+
+    public async removeCharacter(team: Team, character: Character): Promise<void>
+    {
+        return this.teamRepository.createQueryBuilder()
+            .relation(Team, 'characters')
+            .of(team)
+            .remove(character);
     }
 }

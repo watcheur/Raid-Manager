@@ -54,10 +54,10 @@ export class CompositionsService {
         })
     }
 
-    public async create(eventId: number, encounterId: number, composition: CompositionDto): Promise<Composition>
+    public async save(eventId: number, encounterId: number, composition: CompositionDto): Promise<Composition>
     {
         const comp = await this.compositionsRepository.save({
-            event: eventId,
+            eventId: eventId,
             encounterId: encounterId,
             note: composition.note,
             characters: composition.characters

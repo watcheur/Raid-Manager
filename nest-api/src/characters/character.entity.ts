@@ -198,7 +198,7 @@ export class Character {
     @Column()
     name: string;
 
-    @ManyToOne(type => Realm, realm => realm.id)
+    @ManyToOne(type => Realm, realm => realm.id, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'realm' })
     realm?: Realm;
 
@@ -252,24 +252,13 @@ export class Character {
     @Column({ name: 'player' })
     playerId: number;
 
-    @OneToMany(type => Weekly, weekly => weekly.character, { cascade: true, onDelete: "CASCADE" })
+    @OneToMany(type => Weekly, weekly => weekly.character)
     weeklys?: Weekly[];
 
-    @OneToMany(type => CharacterItem, ci => ci.character, { cascade: true, onDelete: 'CASCADE' })
+    @OneToMany(type => CharacterItem, ci => ci.character)
     items?: CharacterItem[];
 
-    @ManyToMany(type => Team)
-    @JoinTable({
-		name: 'team_characters',
-		joinColumn: {
-			name: 'character',
-			referencedColumnName: 'id'
-		},
-		inverseJoinColumn: {
-			name: 'team',
-			referencedColumnName: 'id'
-		}
-	})
+    @ManyToMany(type => Team, team => team.characters)
     teams?: Team[];
     
     @CreateDateColumn({ name: 'created_at' })
@@ -277,10 +266,4 @@ export class Character {
 
 	@UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
-    
-    /*
-    @Index()
-    @ManyToOne(type => Encounter, encounter => encounter.items)
-    source: Encounter;
-    */
 }

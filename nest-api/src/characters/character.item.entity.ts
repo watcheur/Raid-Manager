@@ -33,11 +33,11 @@ export class CharacterItem {
     @Column("simple-array", { nullable: true })
     enchantments?: string[];
 
-    @ManyToOne(type => Item, item => item.id)
+    @ManyToOne(type => Item, item => item.id, { cascade: true, onDelete: 'CASCADE' })
     @JoinColumn({ name: 'item' })
     item: Item;
 
-    @ManyToOne(type => Character, character => character.id)
+    @ManyToOne(type => Character, character => character.id, { cascade: true, onDelete: 'CASCADE' })
     @JoinColumn({ name: 'character' })
     character: Character;
     

@@ -366,6 +366,7 @@ export class TasksService {
 
         await Promise.all([
             this.characters.addCharacterToQueue(id),
+            this.characters.addCharacterToWeeklysQueue(id),
             this.characters.addCharacterToItemsQueue(id)
         ])
 

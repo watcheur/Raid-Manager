@@ -11,13 +11,19 @@ export class CharacterComp
     @Column()
     role: Role;
 
-    @Index()
-    @ManyToOne(type => Character)
+    @ManyToOne(type => Character, character => character.id, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'character' })
-    character: Character | number;
+    character: Character;
 
     @Index()
-    @ManyToOne(type => Composition, composition => composition.characters)
+    @Column({ name: 'character' })
+    characterId: number;
+
+    @ManyToOne(type => Composition, composition => composition.id, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'composition' })
-    composition: Composition | number;
+    composition: Composition;
+
+    @Index()
+    @Column({ name: 'composition' })
+    compositionId: number;
 }

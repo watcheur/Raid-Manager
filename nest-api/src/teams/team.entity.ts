@@ -32,15 +32,13 @@ export class Team {
 	updatedAt: Date;
 
 	@Exclude()
-	@ManyToOne(type => User)
+	@ManyToOne(type => User, user => user.id)
 	@Transform(user => user.id)
 	@JoinColumn({ name: 'founder' })
 	founder: User;
 
 	@Exclude()
-	@ManyToMany(type => User, user => user.teams, {
-		cascade: true
-	})
+	@ManyToMany(type => User, user => user.teams)
 	@JoinTable({
 		name: 'team_users',
 		joinColumn: {
@@ -59,7 +57,7 @@ export class Team {
 	players: Player[];
 
 	@Exclude()
-	@ManyToMany(type => Character)
+	@ManyToMany(type => Character, character => character.teams)
 	@JoinTable({
 		name: 'team_characters',
 		joinColumn: {

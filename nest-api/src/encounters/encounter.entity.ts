@@ -25,7 +25,7 @@ export class Encounter {
     order?: number;
 
     @Index()
-    @ManyToOne(type => Raid, raid => raid.encounters)
+    @ManyToOne(type => Raid, raid => raid.id, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'raid' })
     raid?: Raid;
 

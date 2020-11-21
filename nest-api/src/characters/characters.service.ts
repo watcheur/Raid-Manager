@@ -9,6 +9,7 @@ import { Character } from './character.entity';
 import { InjectQueue } from '@nestjs/bull';
 import { Job, Queue } from 'bull';
 import { CharacterItem } from './character.item.entity';
+import { Team } from 'src/teams/team.entity';
 
 @Injectable()
 export class CharactersService {

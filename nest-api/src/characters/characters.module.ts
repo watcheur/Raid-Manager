@@ -14,6 +14,7 @@ import { CharactersItemsConsumer } from './characters.items.consumer';
 import { CharactersWeeklysConsumer } from './characters.weeklys.consumer';
 import { ItemsModule } from 'src/items/items.module';
 import { CharacterItem } from './character.item.entity';
+import { PeriodsModule } from 'src/periods/periods.module';
 
 @Module({
 	imports: [
@@ -31,6 +32,7 @@ import { CharacterItem } from './character.item.entity';
 		PlayersModule,
 		BlizzardModule,
 		WeeklysModule,
+		PeriodsModule,
 		ItemsModule,
 		TeamsModule
 	],

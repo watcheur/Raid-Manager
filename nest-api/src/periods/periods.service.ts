@@ -17,6 +17,8 @@ export class PeriodsService {
 
     public async findById(id: number): Promise<Period | null>
     {
+        if (!id)
+            return null;
         return await this.periodsReposity.findOne(id);
     }
 
@@ -39,7 +41,7 @@ export class PeriodsService {
     {
         return await this.periodsReposity.save(periods);
     }
-
+    
     public async update(id: number, newValue: Period): Promise<Period | null>
     {
         const period = await this.periodsReposity.findOneOrFail(id);

@@ -29,9 +29,19 @@ export class WeeklysService {
         })
     }
 
-    public async create(weekly: Weekly): Promise<Weekly>
+    public async save(weekly: Weekly): Promise<Weekly>
     {
         return await this.weeklysRepository.save(weekly);
+    }
+
+    public async saveRaw(weekly: any): Promise<Weekly>
+    {
+        return await this.weeklysRepository.save(weekly);
+    }
+
+    public async saveBatch(weeklys: any[]): Promise<Weekly[]>
+    {
+        return await this.weeklysRepository.save(weeklys);
     }
 
     public async update(id: number, newValue: Weekly): Promise<Weekly>

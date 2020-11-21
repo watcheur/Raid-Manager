@@ -4,6 +4,10 @@ import { Job } from 'bull';
 import { Logger } from '@nestjs/common';
 import { BlizzardService } from 'src/blizzard/blizzard.service';
 import { CharactersService } from './characters.service';
+import { PeriodsService } from 'src/periods/periods.service';
+import { WeeklysService } from 'src/weeklys/weeklys.service';
+import { Period } from 'src/periods/period.entity';
+import { Character } from './character.entity';
 
 @Processor('character-weeklys')
 export class CharactersWeeklysConsumer
@@ -13,12 +17,14 @@ export class CharactersWeeklysConsumer
     constructor(
         private readonly blizzard: BlizzardService,
         private readonly characters: CharactersService,
+        private readonly periods: PeriodsService,
+        private readonly weeklys: WeeklysService
     ) {}
 
     @Process()
     async loadCharacterWeeklys(job: Job<IChararacterJob>)
     {
-        const characterId = job.data.character;
+        const characterId = +job.data.character;
         if (!characterId)
             throw new Error('Missing {character} property');
 
@@ -29,8 +35,32 @@ export class CharactersWeeklysConsumer
         const blizzardData = await this.blizzard.Character('mythic-keystone-profile', { realm: character.realm.slug, name: character.name.toLowerCase() });
         if (!blizzardData)
             throw new Error('Blizzard API error');
+        
+        if (!blizzardData.current_period || !blizzardData.current_period.best_runs)
+            throw new Error("There is no period nor runs for this character");
 
-        return {}
+        const periodId = +blizzardData.current_period.period.id;
+        const period = await this.periods.findById(periodId);
+        if (!period)
+            throw new Error("Period not saved yet, will try later");
+
+        const weeklys = (blizzardData.current_period.best_runs.map(run => {
+            return {
+                level: run.keystone_level,
+                zone: run.dungeon.id,
+                duration: run.duration,
+                timed: run.is_completed_within_time,
+                completed: new Date(run.completed_timestamp),
+                affixes: run.keystone_affixes.map(affixe => affixe.id),
+                members: run.members.map(member => `${member.character.name}-${member.character.realm.slug}`),
+                period: periodId,
+                character: characterId
+            }
+        }))
+
+        const res = await this.weeklys.saveBatch(weeklys);
+
+        return res;
     }
 
     @OnQueueActive()

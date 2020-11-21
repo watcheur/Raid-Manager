@@ -17,7 +17,7 @@ export class Note
     favorite: boolean;
 
     @Column()
-    @ManyToOne(type => Team)
+    @ManyToOne(type => Team, team => team.id, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'team' })
     team: Team;
 

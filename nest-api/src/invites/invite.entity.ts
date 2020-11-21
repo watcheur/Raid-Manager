@@ -34,9 +34,9 @@ export class Invite {
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
     
-    @ManyToOne(type => Team, team => team.invites)
+    @ManyToOne(type => Team, team => team.invites, { onDelete: 'CASCADE' })
     team: Team;
 
-    @ManyToOne(type => User, user => user.invites)
+    @ManyToOne(type => User, user => user.invites, { onDelete: 'CASCADE' })
     owner: User;
 }

@@ -93,7 +93,7 @@ export class Item {
     updatedAt: Date;
     
     @Index()
-    @ManyToOne(type => Encounter, encounter => encounter.items)
+    @ManyToOne(type => Encounter, encounter => encounter.id, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'source' })
     source?: Encounter;
 }

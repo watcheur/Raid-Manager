@@ -102,9 +102,13 @@ export class WishlistsService {
         })
     }
 
-    public async create(wishDto: WishDto): Promise<Wish>
+    public async save(wishDto: WishDto): Promise<Wish>
     {
-        return await this.wishsRepository.save(wishDto);
+        return await this.wishsRepository.save({
+            characterId: wishDto.character,
+            itemId: wishDto.item,
+            difficulty: wishDto.difficulty
+        });
     }
 
     public async update(id: number, newValue: WishDto): Promise<Wish | null>
@@ -115,7 +119,11 @@ export class WishlistsService {
             console.error("wish doesn't exist");
         }
 
-        await this.wishsRepository.update(id, newValue);
+        await this.wishsRepository.update(id, {
+            characterId: newValue.character,
+            itemId: newValue.item,
+            difficulty: newValue.difficulty
+        });
         return await this.findById(id);
     }
 

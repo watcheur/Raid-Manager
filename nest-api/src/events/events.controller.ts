@@ -175,7 +175,7 @@ export class EventsController {
                 throw new NotFoundException("Some characters weren't found");
         }
         
-        return this.compositionsService.create(eventId, encounterId, body);
+        return this.compositionsService.save(eventId, encounterId, body);
     }
 
     @UseGuards(JwtAuthenticationGuard)

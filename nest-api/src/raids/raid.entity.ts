@@ -32,7 +32,7 @@ export class Raid {
     @Column()
     minimum_level: number;
 
-    @ManyToOne(type => Expansion, exp => exp.id)
+    @ManyToOne(type => Expansion, exp => exp.id, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'expansion' })
     expansion: Expansion;
 

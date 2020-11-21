@@ -19,12 +19,12 @@ export class Event
     difficulty: RaidDifficulty;
 
     @Index()
-    @ManyToOne(type => Raid)
+    @ManyToOne(type => Raid, raid => raid.id, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'raid' })
     raid: Raid;
 
     @Index()
-    @ManyToOne(type => Team)
+    @ManyToOne(type => Team, team => team.id, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'team' })
     team: Team;
 
