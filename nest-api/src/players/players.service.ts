@@ -73,4 +73,10 @@ export class PlayersService {
         await this.playersRepository.update(id, newValue);
         return await this.playersRepository.findOneOrFail(id);
     }
+
+    public async delete(id: number): Promise<boolean>
+    {
+        const res = await this.playersRepository.delete(id);
+        return res.affected > 0;
+    }
 }

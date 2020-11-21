@@ -47,7 +47,7 @@ export class WeeklysService {
     public async update(id: number, newValue: Weekly): Promise<Weekly>
     {
         const weekly = await this.weeklysRepository.findOneOrFail(id);
-        if (!weekly.id) {
+        if (!weekly) {
             // tslint:disable-next-line:no-console
             console.error("user doesn't exist");
         }

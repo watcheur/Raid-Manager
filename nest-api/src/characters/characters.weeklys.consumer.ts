@@ -8,6 +8,7 @@ import { PeriodsService } from 'src/periods/periods.service';
 import { WeeklysService } from 'src/weeklys/weeklys.service';
 import { Period } from 'src/periods/period.entity';
 import { Character } from './character.entity';
+import { AppGateway, SocketAction, SocketChannel } from 'src/app.gateway';
 
 @Processor('character-weeklys')
 export class CharactersWeeklysConsumer
@@ -18,7 +19,8 @@ export class CharactersWeeklysConsumer
         private readonly blizzard: BlizzardService,
         private readonly characters: CharactersService,
         private readonly periods: PeriodsService,
-        private readonly weeklys: WeeklysService
+        private readonly weeklys: WeeklysService,
+        private readonly appGateway: AppGateway
     ) {}
 
     @Process()
@@ -58,7 +60,28 @@ export class CharactersWeeklysConsumer
             }
         }))
 
+        weeklys.push({
+            level: 10,
+            zone: 42,
+            duration: 4242424242,
+            timed: true,
+            completed: new Date(),
+            affixes: [1,2,3,4],
+            members: ['rhogar-ysondre', 'boby-lapointe', 'tintin-aucongo'],
+            period: 777,
+            character: characterId
+        })
+
         const res = await this.weeklys.saveBatch(weeklys);
+
+        character.teams.forEach(team => {
+            this.appGateway.emit(team.id, SocketChannel.Character, {
+                action: SocketAction.Updated,
+                data: {
+                    character: characterId
+                }
+            })
+        })
 
         return res;
     }

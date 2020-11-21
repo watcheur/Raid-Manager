@@ -14,6 +14,7 @@ import { TeamsService } from 'src/teams/teams.service';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { WeeklysService } from 'src/weeklys/weeklys.service';
+import { AppGateway, SocketAction, SocketChannel } from 'src/app.gateway';
 
 @ApiTags('characters')
 @Controller('characters')
@@ -29,6 +30,8 @@ export class CharactersController {
         @InjectQueue('character') private characterQueue: Queue,
         @InjectQueue('character-items') private characterItemsQueue: Queue,
         @InjectQueue('character-weeklys') private characterWeeklysQueue: Queue,
+
+        private readonly appGateway: AppGateway
     ) {}
 
     @UseGuards(JwtAuthenticationGuard)
@@ -109,7 +112,23 @@ export class CharactersController {
                     this.characterItemsQueue.add({ character: character.id }),
                     this.characterWeeklysQueue.add({ character: character.id })
                 ]);
+
+                this.appGateway.emit(teamId, SocketChannel.Character, {
+                    action: SocketAction.Created,
+                    data: {
+                        character: character.id,
+                        type: body.type
+                    }
+                })
             }
+
+            this.appGateway.emit(teamId, SocketChannel.Player, {
+                action: SocketAction.Updated,
+                data: {
+                    player: player.id,
+                    ...player
+                }
+            })
 
             return character;
         }
@@ -140,6 +159,13 @@ export class CharactersController {
             type: body.type
         })
 
+        this.appGateway.emit(teamId, SocketChannel.Character, {
+            action: SocketAction.Updated,
+            data: {
+                character: character.id
+            }
+        })
+
         return res;
     }
 
@@ -168,6 +194,13 @@ export class CharactersController {
         // If character isn't part of any team, remove it
         if (character.teams.filter(t => t.id != team.id).length == 0)
             await this.charactersService.delete(character.id);
+
+        this.appGateway.emit(teamId, SocketChannel.Character, {
+            action: SocketAction.Deleted,
+            data: {
+                character: character.id
+            }
+        })
         
         return true;
     }

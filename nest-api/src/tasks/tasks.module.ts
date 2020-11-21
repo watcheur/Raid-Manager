@@ -11,6 +11,7 @@ import { WeeklysModule } from 'src/weeklys/weeklys.module';
 import { TasksService } from './tasks.service';
 import { TasksController } from './tasks.controller';
 import { ItemsModule } from 'src/items/items.module';
+import { AppGateway } from 'src/app.gateway';
 
 @Module({
     imports: [
@@ -25,7 +26,10 @@ import { ItemsModule } from 'src/items/items.module';
         ItemsModule,
         CharactersModule
     ],
-    providers: [TasksService],
+    providers: [
+        TasksService,
+        AppGateway
+    ],
     exports: [TasksService],
     controllers: [TasksController]
 })

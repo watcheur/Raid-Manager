@@ -7,13 +7,15 @@ import { RequestWithUser } from 'src/interfaces/request-with-user.interface';
 import { TeamsService } from 'src/teams/teams.service';
 import { OptionDto } from './option.dto';
 import { Option } from './option.entity';
+import { AppGateway, SocketAction, SocketChannel } from 'src/app.gateway';
 
 @ApiTags('options')
 @Controller('options')
 export class OptionsController {
     constructor(
         private readonly optionsService: OptionsService,
-        private readonly teamsService: TeamsService
+        private readonly teamsService: TeamsService,
+        private readonly appGateway: AppGateway
     ) {}
 
     @UseGuards(JwtAuthenticationGuard)
@@ -65,7 +67,14 @@ export class OptionsController {
         if (!team)
             throw new NotFoundException("Team not found");
 
-        return plainToClass(Option, await this.optionsService.save(teamId, body));
+        const option = await this.optionsService.save(teamId, body);
+
+        this.appGateway.emit(teamId, SocketChannel.Option, {
+            action: SocketAction.Created,
+            data: option
+        })
+
+        return plainToClass(Option, option);
     }
 
     @UseGuards(JwtAuthenticationGuard)
@@ -90,7 +99,14 @@ export class OptionsController {
         if (!option)
             throw new NotFoundException("Option not found");
 
-        return plainToClass(Option, await this.optionsService.update(option.id, body));
+        const updated = await this.optionsService.update(option.id, body);
+
+        this.appGateway.emit(teamId, SocketChannel.Option, {
+            action: SocketAction.Updated,
+            data: updated
+        })
+
+        return plainToClass(Option, updated);
     }
 
     @UseGuards(JwtAuthenticationGuard)
@@ -114,6 +130,13 @@ export class OptionsController {
         if (!option)
             throw new NotFoundException("Option not found");
 
-        return await this.optionsService.delete(option.id);
+        const res = await this.optionsService.delete(option.id);
+
+        this.appGateway.emit(teamId, SocketChannel.Option, {
+            action: SocketAction.Deleted,
+            data: option
+        })
+
+        return res;
     }
 }

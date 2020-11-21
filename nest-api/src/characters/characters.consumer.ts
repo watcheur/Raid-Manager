@@ -4,6 +4,7 @@ import { Job } from 'bull';
 import { Logger } from '@nestjs/common';
 import { BlizzardService } from 'src/blizzard/blizzard.service';
 import { CharactersService } from './characters.service';
+import { AppGateway, SocketAction, SocketChannel } from 'src/app.gateway';
 
 @Processor('character')
 export class CharactersConsumer
@@ -13,6 +14,7 @@ export class CharactersConsumer
     constructor(
         private readonly blizzard: BlizzardService,
         private readonly characters: CharactersService,
+        private readonly appGateway: AppGateway
     ) {}
 
     @Process()
@@ -30,7 +32,7 @@ export class CharactersConsumer
         if (!blizzardData)
             throw new Error('Blizzard API error');
 
-        return await this.characters.update(characterId, {
+        const res = await this.characters.update(characterId, {
             level: blizzardData.level,
             race: blizzardData.race.id,
             gender: blizzardData.gender.type,
@@ -40,6 +42,17 @@ export class CharactersConsumer
             avg: blizzardData.average_item_level,
             equipped: blizzardData.equipped_item_level
         });
+
+        character.teams.forEach(team => {
+            this.appGateway.emit(team.id, SocketChannel.Character, {
+                action: SocketAction.Updated,
+                data: {
+                    character: characterId
+                }
+            })
+        })
+
+        return res;
     }
 
     @OnQueueActive()

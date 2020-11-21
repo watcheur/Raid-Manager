@@ -6,13 +6,15 @@ import { Invite } from 'src/invites/invite.entity';
 import { InvitesController } from './invites.controller';
 import { InvitesService } from './invites.service';
 import { TeamsService } from 'src/teams/teams.service';
+import { AppGateway } from 'src/app.gateway';
 
 @Module({
     imports: [TypeOrmModule.forFeature([Invite, Team, User])],
     controllers: [InvitesController],
     providers: [
         InvitesService,
-        TeamsService
+        TeamsService,
+        AppGateway
     ],
     exports: [InvitesService]
 })

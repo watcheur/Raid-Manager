@@ -6,6 +6,7 @@ import { BlizzardService } from 'src/blizzard/blizzard.service';
 import { CharactersService } from './characters.service';
 import { ItemsService } from 'src/items/items.service';
 import { CharacterItem } from './character.item.entity';
+import { AppGateway, SocketAction, SocketChannel } from 'src/app.gateway';
 
 @Processor('character-items')
 export class CharactersItemsConsumer
@@ -16,6 +17,7 @@ export class CharactersItemsConsumer
         private readonly blizzard: BlizzardService,
         private readonly items: ItemsService,
         private readonly characters: CharactersService,
+        private readonly appGateway: AppGateway
     ) {}
 
     @Process()
@@ -61,7 +63,16 @@ export class CharactersItemsConsumer
         await this.items.saveBatch(items);
         await this.characters.saveCharacterItems(character.id, characterItems);
 
-        return characterItems;
+        character.teams.forEach(team => {
+            this.appGateway.emit(team.id, SocketChannel.Character, {
+                action: SocketAction.Updated,
+                data: {
+                    character: characterId
+                }
+            })
+        })
+
+        return characterItems.map(ci => ci.item);
     }
 
     @OnQueueActive()

@@ -3,11 +3,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RealmsController } from './realms.controller';
 import { RealmsService } from './realms.service';
 import { Realm } from './realm.entity';
+import { AppGateway } from 'src/app.gateway';
 
 @Module({
     imports: [TypeOrmModule.forFeature([Realm])],
     controllers: [RealmsController],
-    providers: [RealmsService],
+    providers: [
+        RealmsService,
+        AppGateway
+    ],
     exports: [RealmsService]
 })
 export class RealmsModule {}

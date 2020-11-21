@@ -24,8 +24,7 @@ import { ItemsService } from './items.service';
 	providers: [
 		ItemsService,
 		ItemsConsumer,
-		ItemsMediaConsumer,
-		AppGateway
+		ItemsMediaConsumer
 	],
 	exports: [ItemsService]
 })

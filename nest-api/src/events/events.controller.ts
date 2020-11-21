@@ -15,6 +15,7 @@ import { Event } from './event.entity';
 import { CharactersService } from 'src/characters/characters.service';
 import { RequestWithUser } from 'src/interfaces/request-with-user.interface';
 import { TeamsService } from 'src/teams/teams.service';
+import { AppGateway, SocketAction, SocketChannel } from 'src/app.gateway';
 
 @ApiTags('events')
 @Controller('events')
@@ -25,7 +26,8 @@ export class EventsController {
         private readonly encountersService: EncountersService,
         private readonly raidsService: RaidsService,
         private readonly charactersService: CharactersService,
-        private readonly teamsService: TeamsService
+        private readonly teamsService: TeamsService,
+        private readonly appGateway: AppGateway
     ) {}
 
     @UseGuards(JwtAuthenticationGuard)
@@ -99,7 +101,17 @@ export class EventsController {
         const event = await this.eventsService.findByIdAndTeam(id, teamId);
         if (!event)
             throw new NotFoundException('Event not found');
-        return plainToClass(Event, await this.eventsService.duplicate(id, body.date));
+        const newEvent = await this.eventsService.duplicate(id, body.date);
+
+        this.appGateway.emit(teamId, SocketChannel.Event, {
+            action: SocketAction.Created,
+            data: {
+                event: newEvent.id,
+                ...newEvent
+            }
+        })
+
+        return plainToClass(Event, newEvent);
     }
 
     @UseGuards(JwtAuthenticationGuard)
@@ -175,7 +187,17 @@ export class EventsController {
                 throw new NotFoundException("Some characters weren't found");
         }
         
-        return this.compositionsService.save(eventId, encounterId, body);
+        const res = await this.compositionsService.save(eventId, encounterId, body);
+
+        this.appGateway.emit(teamId, SocketChannel.Composition, {
+            action: SocketAction.Created,
+            data: {
+                event: eventId,
+                encounter: encounter.id
+            }
+        })
+
+        return res;
     }
 
     @UseGuards(JwtAuthenticationGuard)
@@ -195,7 +217,14 @@ export class EventsController {
         if (!raid)
             throw new NotFoundException('Raid not found');
 
-        return plainToClass(Event, await this.eventsService.create(body, teamId));
+        const event = await this.eventsService.create(body, teamId);
+
+        this.appGateway.emit(teamId, SocketChannel.Event, {
+            action: SocketAction.Created,
+            data: event
+        })
+
+        return plainToClass(Event, event);
     }
 
     @UseGuards(JwtAuthenticationGuard)
@@ -221,7 +250,14 @@ export class EventsController {
                 throw new NotFoundException('Raid not found');
         }
 
-        return plainToClass(Event, await this.eventsService.update(id, body));
+        const updatedEvent = await this.eventsService.update(id, body);
+
+        this.appGateway.emit(teamId, SocketChannel.Event, {
+            action: SocketAction.Updated,
+            data: updatedEvent
+        })
+
+        return plainToClass(Event, updatedEvent);
     }
 
     @UseGuards(JwtAuthenticationGuard)
@@ -240,6 +276,18 @@ export class EventsController {
         const event = await this.eventsService.findByIdAndTeam(id, teamId);
         if (!event)
             throw new NotFoundException('Event not found');
-        return await this.eventsService.delete(id);
+        const res = await this.eventsService.delete(id);
+
+        if (res)
+        {
+            this.appGateway.emit(teamId, SocketChannel.Event, {
+                action: SocketAction.Deleted,
+                data: {
+                    event: event.id
+                }
+            })
+        }
+
+        return res;
     }
 }

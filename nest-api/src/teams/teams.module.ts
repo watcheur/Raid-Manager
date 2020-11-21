@@ -6,11 +6,15 @@ import { TeamsService } from 'src/teams/teams.service';
 
 import { Team } from 'src/teams/team.entity';
 import { User } from 'src/users/user.entity';
+import { AppGateway } from 'src/app.gateway';
 
 @Module({
     imports: [TypeOrmModule.forFeature([Team])],
     controllers: [TeamsController],
-    providers: [TeamsService],
+    providers: [
+        TeamsService,
+        AppGateway
+    ],
     exports: [TeamsService]
 })
 export class TeamsModule {}

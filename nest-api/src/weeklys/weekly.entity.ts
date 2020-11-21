@@ -40,22 +40,19 @@ export enum DungeonAffixe {
 @Unique('idx_members_complete', [ 'completed', 'duration', 'zone' ])
 @Entity()
 export class Weekly {
-    @PrimaryGeneratedColumn()
-    id: number;
-
     @Column()
     level: number;
 
-    @Column()
+    @PrimaryColumn()
     zone: number;
 
-    @Column()
+    @PrimaryColumn()
     duration: number;
 
     @Column()
     timed: boolean;
 
-    @Column()
+    @PrimaryColumn()
     completed: Date;
 
     @Column({ type: 'simple-array' })
@@ -65,12 +62,12 @@ export class Weekly {
     members: string[];
 
     @Index()
-    @ManyToOne(type => Period, period => period.id, { cascade: true, onDelete: 'CASCADE' })
+    @ManyToOne(type => Period, period => period.id, { cascade: true, onDelete: 'CASCADE', primary: true })
 	@JoinColumn({ name: 'period' })
     period: Period;
 
     @Index()
-    @ManyToOne(type => Character, character => character.id, { cascade: true, onDelete: "CASCADE" })
+    @ManyToOne(type => Character, character => character.id, { cascade: true, onDelete: "CASCADE", primary: true })
 	@JoinColumn({ name: 'character' })
     character: Character;
 }

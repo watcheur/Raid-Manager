@@ -15,7 +15,6 @@ export class ItemsConsumer
     constructor(
         private readonly blizzard: BlizzardService,
         private readonly items: ItemsService,
-        private readonly appGateway: AppGateway,
 
         @InjectQueue('item-media') private itemsMediaQueue: Queue
     ) {}

@@ -10,6 +10,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { Job, Queue } from 'bull';
 import { CharacterItem } from './character.item.entity';
 import { Team } from 'src/teams/team.entity';
+import { AppGateway } from 'src/app.gateway';
 
 @Injectable()
 export class CharactersService {
@@ -24,7 +25,7 @@ export class CharactersService {
 
         @InjectQueue('character') private characterQueue: Queue,
         @InjectQueue('character-items') private characterItemsQueue: Queue,
-        @InjectQueue('character-weeklys') private characterWeeklysQueue: Queue,
+        @InjectQueue('character-weeklys') private characterWeeklysQueue: Queue
     ) {}
 
     public async findIds(): Promise<number[]>

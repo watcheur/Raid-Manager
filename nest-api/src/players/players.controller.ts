@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, ForbiddenException, Get, NotFoundException, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, NotFoundException, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import JwtAuthenticationGuard from 'src/auth/jwt-authentication.guard';
@@ -8,13 +8,15 @@ import { PlayerUpdateDto } from './player-update.dto';
 import { PlayerDto } from './player.dto';
 import { Player } from './player.entity';
 import { PlayersService } from './players.service';
+import { AppGateway, SocketAction, SocketChannel } from 'src/app.gateway';
 
 @ApiTags('players')
 @Controller('players')
 export class PlayersController {
     constructor(
         private readonly playersService: PlayersService,
-        private readonly teamsService: TeamsService
+        private readonly teamsService: TeamsService,
+        private readonly appGateway: AppGateway
     ) {}
 
     @UseGuards(JwtAuthenticationGuard)
@@ -61,8 +63,18 @@ export class PlayersController {
         
         if (!req.user.isInTeam(team.id))
             throw new ForbiddenException("You can't request player to other teams");
+
+        const player = await this.playersService.create(playerDto, team);
+
+        this.appGateway.emit(team.id, SocketChannel.Player, {
+            action: SocketAction.Created,
+            data: {
+                player: player.id,
+                ...player
+            }
+        })
         
-        return plainToClass(Player, await this.playersService.create(playerDto, team));
+        return plainToClass(Player, player);
    }
 
     @UseGuards(JwtAuthenticationGuard)
@@ -73,9 +85,43 @@ export class PlayersController {
         if (!player)
             throw new NotFoundException("Player not found");
 
-            if (!req.user.isInTeam(player.team.id))
+        if (!req.user.isInTeam(player.team.id))
             throw new ForbiddenException("You can't update other teams player");
+
+        const updated = await this.playersService.update(id, playerDto);
+
+        this.appGateway.emit(player.team.id, SocketChannel.Player, {
+            action: SocketAction.Updated,
+            data: {
+                player: player.id,
+                ...player
+            }
+        })
         
-        return plainToClass(Player, this.playersService.update(id, playerDto));
+        return plainToClass(Player, updated);
+    }
+
+    @UseGuards(JwtAuthenticationGuard)
+    @ApiOperation({ summary: 'Delete a player' })
+    @Delete(':id')
+    async delete(@Request() req: RequestWithUser, @Param('id') id: number): Promise<boolean> {
+        const player = await this.playersService.findById(id);
+        if (!player)
+            throw new NotFoundException("Player not found");
+
+        if (!req.user.isInTeam(player.team.id))
+            throw new ForbiddenException("You can't update other teams player");
+
+        const res = await this.playersService.delete(id);
+
+        this.appGateway.emit(player.team.id, SocketChannel.Player, {
+            action: SocketAction.Deleted,
+            data: {
+                player: player.id,
+                ...player
+            }
+        })
+        
+        return res;
     }
 }
