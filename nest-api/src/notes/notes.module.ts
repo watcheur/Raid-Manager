@@ -4,6 +4,7 @@ import { NotesController } from './notes.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Note } from './note.entity';
 import { TeamsModule } from 'src/teams/teams.module';
+import { AppGateway } from 'src/app.gateway';
 
 @Module({
     imports: [
@@ -11,7 +12,10 @@ import { TeamsModule } from 'src/teams/teams.module';
         TeamsModule
     ],
     controllers: [NotesController],
-    providers: [NotesService],
+    providers: [
+        NotesService,
+        AppGateway
+    ],
     exports: [NotesService]
 })
 export class NotesModule {}

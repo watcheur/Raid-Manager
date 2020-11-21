@@ -1,6 +1,7 @@
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppGateway } from 'src/app.gateway';
 import { BlizzardModule } from 'src/blizzard/blizzard.module';
 import { Item } from './item.entity';
 import { ItemsConsumer } from './items.consumer';
@@ -23,7 +24,8 @@ import { ItemsService } from './items.service';
 	providers: [
 		ItemsService,
 		ItemsConsumer,
-		ItemsMediaConsumer
+		ItemsMediaConsumer,
+		AppGateway
 	],
 	exports: [ItemsService]
 })

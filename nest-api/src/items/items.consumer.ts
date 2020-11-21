@@ -4,6 +4,7 @@ import { Logger } from '@nestjs/common';
 import { BlizzardService } from 'src/blizzard/blizzard.service';
 import { ItemsService } from './items.service';
 import { IItemJob } from './interfaces/item.job.interface';
+import { AppGateway } from 'src/app.gateway';
 
 
 @Processor('item')
@@ -14,6 +15,7 @@ export class ItemsConsumer
     constructor(
         private readonly blizzard: BlizzardService,
         private readonly items: ItemsService,
+        private readonly appGateway: AppGateway,
 
         @InjectQueue('item-media') private itemsMediaQueue: Queue
     ) {}

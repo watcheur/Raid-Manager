@@ -15,6 +15,7 @@ import { Invite } from 'src/invites/invite.entity';
 import { Player } from 'src/players/player.entity';
 import { Exclude, Transform } from 'class-transformer';
 import { Character } from 'src/characters/character.entity';
+import { Option } from 'src/options/option.entity';
 import { IsNotEmpty } from 'class-validator';
 
 @Entity()
@@ -74,6 +75,9 @@ export class Team {
 	@Exclude()
 	@OneToMany(type => Invite, invite => invite.team)
 	invites: Invite[];
+
+	@OneToMany(type => Option, option => option.team)
+	options: Option[];
 }
 
 @Entity('team_characters')

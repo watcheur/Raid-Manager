@@ -5,6 +5,7 @@ import { CompositionsController } from './compositions.controller';
 import { Composition } from './composition.entity';
 import { CharacterComp } from './character-comp.entity';
 import { NotesModule } from 'src/notes/notes.module';
+import { AppGateway } from 'src/app.gateway';
 
 @Module({
     imports: [
@@ -12,7 +13,10 @@ import { NotesModule } from 'src/notes/notes.module';
         NotesModule
     ],
     controllers: [CompositionsController],
-    providers: [CompositionsService],
+    providers: [
+        CompositionsService,
+        AppGateway
+    ],
     exports: [CompositionsService]
 })
 export class CompositionsModule {}

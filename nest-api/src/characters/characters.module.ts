@@ -15,6 +15,7 @@ import { CharactersWeeklysConsumer } from './characters.weeklys.consumer';
 import { ItemsModule } from 'src/items/items.module';
 import { CharacterItem } from './character.item.entity';
 import { PeriodsModule } from 'src/periods/periods.module';
+import { AppGateway } from 'src/app.gateway';
 
 @Module({
 	imports: [
@@ -41,7 +42,8 @@ import { PeriodsModule } from 'src/periods/periods.module';
 		CharactersService,
 		CharactersConsumer,
 		CharactersItemsConsumer,
-		CharactersWeeklysConsumer
+		CharactersWeeklysConsumer,
+		AppGateway
 	],
 	exports: [CharactersService]
 })

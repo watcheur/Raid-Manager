@@ -30,6 +30,7 @@ import { TasksModule } from './tasks/tasks.module';
 
 import * as Joi from 'joi';
 import { BullModule } from '@nestjs/bull';
+import { OptionsModule } from './options/options.module';
 
 @Module({
 	imports: [
@@ -93,7 +94,8 @@ import { BullModule } from '@nestjs/bull';
 		EventsModule,
 		NotesModule,
 		CompositionsModule,
-		TasksModule
+		TasksModule,
+		OptionsModule
 	],
 	controllers: [AppController],
 	providers: [

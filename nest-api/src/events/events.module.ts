@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppGateway } from 'src/app.gateway';
+import { AppModule } from 'src/app.module';
 import { CharactersModule } from 'src/characters/characters.module';
 import { CompositionsModule } from 'src/compositions/compositions.module';
 import { CompositionsService } from 'src/compositions/compositions.service';
@@ -20,7 +22,10 @@ import { EventsService } from './events.service';
 		TeamsModule
 	],
 	controllers: [EventsController],
-	providers: [EventsService],
+	providers: [
+		EventsService,
+		AppGateway
+	],
 	exports: [EventsService]
 })
 export class EventsModule {}

@@ -14,7 +14,7 @@ async function bootstrap() {
 	const options = new DocumentBuilder()
 		.addBearerAuth()
 		.setTitle("Raid-Manager API")
-		.setVersion("0.0.1")
+		.setVersion("1.0.0")
 		.build();
 
 	const document = SwaggerModule.createDocument(app, options);
