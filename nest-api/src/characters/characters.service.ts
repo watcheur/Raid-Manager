@@ -1,17 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { TeamsService } from 'src/teams/teams.service';
+import { WeeklysModule } from 'src/weeklys/weeklys.module';
+import { WeeklysService } from 'src/weeklys/weeklys.service';
 import { In, Repository } from 'typeorm';
 import { CharacterDto } from './character.dto';
 import { Character } from './character.entity';
+import { InjectQueue } from '@nestjs/bull';
+import { Job, Queue } from 'bull';
+import { CharacterItem } from './character.item.entity';
 
 @Injectable()
 export class CharactersService {
     constructor(
         @InjectRepository(Character)
         private readonly charactersRepository: Repository<Character>,
-        private readonly teamsService: TeamsService
+
+        @InjectRepository(CharacterItem)
+        private readonly charactersItemsReposity: Repository<CharacterItem>,
+
+        private readonly teamsService: TeamsService,
+
+        @InjectQueue('character') private characterQueue: Queue,
+        @InjectQueue('character-items') private characterItemsQueue: Queue,
+        @InjectQueue('character-weeklys') private characterWeeklysQueue: Queue,
     ) {}
+
+    public async findIds(): Promise<number[]>
+    {
+        return (await this.charactersRepository.createQueryBuilder().select('id').getRawMany()).map(c => c.id);
+    }
 
     public async findAll(): Promise<Character[]>
     {
@@ -21,7 +39,7 @@ export class CharactersService {
     public async findById(id: number): Promise<Character>
     {
         return this.charactersRepository.findOne({
-            relations: [ "player", "teams" ],
+            relations: [ "realm", "player", "teams" ],
             where: {
                 id: id
             }
@@ -90,9 +108,40 @@ export class CharactersService {
         return await this.findById(id);
     }
 
+    public async saveCharacterItems(id: number, items: CharacterItem[]): Promise<CharacterItem[]>
+    {
+        const char = await this.charactersRepository.findOneOrFail(id);
+        if (!char.id)
+        {
+            // tslint:disable-next-line:no-console
+            console.error("user doesn't exist");
+        }
+
+        // Clean other items
+        await this.charactersItemsReposity.delete({
+            character: {
+                id: id
+            }
+        })
+
+        return await this.charactersItemsReposity.save(items);
+    }
+
     public async delete(id: number): Promise<boolean>
     {
         const res = await this.charactersRepository.delete(id);
         return res.affected > 0
+    }
+
+    public addCharacterToQueue(character: number): Promise<Job<any>> {
+        return this.characterQueue.add({ character: character })
+    }
+
+    public addCharacterToItemsQueue(character: number): Promise<Job<any>> {
+        return this.characterItemsQueue.add({ character: character })
+    }
+
+    public addCharacterToWeeklysQueue(character: number): Promise<Job<any>> {
+        return this.characterWeeklysQueue.add({ character: character })
     }
 }

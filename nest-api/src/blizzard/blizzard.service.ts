@@ -312,4 +312,20 @@ export class BlizzardService {
             locale: 'en_GB'
         });
     }
+
+    public async GetItem(id: number)
+    {
+        return this.Get(`/data/wow/item/${id}`, {
+            namespace: 'static',
+            locale: 'en_GB'
+        })
+    }
+
+    public async GetItemMedia(id: number)
+    {
+        return this.Get(`/data/wow/media/item/${id}`, {
+            namespace: 'static',
+            locale: 'en_GB'
+        })
+    }
 }

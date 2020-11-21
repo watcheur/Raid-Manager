@@ -15,6 +15,7 @@ import {
 	ManyToMany,
 	JoinTable, Index, PrimaryColumn, ManyToOne, JoinColumn
 } from 'typeorm';
+import { CharacterItem } from './character.item.entity';
 
 export enum CharacterType {
     MAIN,
@@ -244,12 +245,6 @@ export class Character {
     @Column({ nullable: true })
     equipped?: number;
 
-    @CreateDateColumn({ name: 'created_at' })
-	createdAt: Date;
-
-	@UpdateDateColumn({ name: 'updated_at' })
-    updatedAt: Date;
-
     @ManyToOne(type => Player, player => player.characters)
     @JoinColumn({ name: 'player' })
     player?: Player;
@@ -259,6 +254,9 @@ export class Character {
 
     @OneToMany(type => Weekly, weekly => weekly.character, { cascade: true, onDelete: "CASCADE" })
     weeklys?: Weekly[];
+
+    @OneToMany(type => CharacterItem, ci => ci.character, { cascade: true, onDelete: 'CASCADE' })
+    items?: CharacterItem[];
 
     @ManyToMany(type => Team)
     @JoinTable({
@@ -272,7 +270,13 @@ export class Character {
 			referencedColumnName: 'id'
 		}
 	})
-	teams?: Team[];
+    teams?: Team[];
+    
+    @CreateDateColumn({ name: 'created_at' })
+	createdAt: Date;
+
+	@UpdateDateColumn({ name: 'updated_at' })
+    updatedAt: Date;
     
     /*
     @Index()

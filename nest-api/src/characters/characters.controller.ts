@@ -11,6 +11,9 @@ import { RealmsService } from 'src/realms/realms.service';
 import { PlayersService } from 'src/players/players.service';
 import { CharacterUpdateDto } from './character-update.dto';
 import { TeamsService } from 'src/teams/teams.service';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
+import { WeeklysService } from 'src/weeklys/weeklys.service';
 
 @ApiTags('characters')
 @Controller('characters')
@@ -20,7 +23,12 @@ export class CharactersController {
         private readonly blizzardService: BlizzardService,
         private readonly realmsService: RealmsService,
         private readonly playersService: PlayersService,
-        private readonly teamsService: TeamsService
+        private readonly teamsService: TeamsService,
+        private readonly weeklyService: WeeklysService,
+        
+        @InjectQueue('character') private characterQueue: Queue,
+        @InjectQueue('character-items') private characterItemsQueue: Queue,
+        @InjectQueue('character-weeklys') private characterWeeklysQueue: Queue,
     ) {}
 
     @UseGuards(JwtAuthenticationGuard)
@@ -96,9 +104,11 @@ export class CharactersController {
             if (!team.characters || team.characters.map(c => c.id).indexOf(character.id) <= 0) {
                 team.characters.push(character);
                 this.teamsService.save(team);
-            }
 
-            // Todo equipment, weekly queue
+                // This is a new character, add him to queue
+                this.characterItemsQueue.add({ character: character.id });
+                this.characterWeeklysQueue.add({ character: character.id });
+            }
 
             return character;
         }

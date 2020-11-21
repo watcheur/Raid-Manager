@@ -29,6 +29,7 @@ export enum ItemSlot {
     CLOAK = "CLOAK",
     CHEST = "CHEST",
     SHIRT = "SHIRT",
+    BODY = "BODY", // Should be same as shirt
     TABARD = "TABARD",
     WRIST = "WRIST",
     HAND = "HAND",
@@ -39,16 +40,16 @@ export enum ItemSlot {
     TRINKET = "TRINKET",
     WEAPON = "WEAPON",
     SHIELD = "SHIELD",
-    RANGED = "RANGED",
+    RANGED = "RANGED", // Bows
     TWOHWEAPON = "2HWEAPON",
-    BAG = "BAG",
+    BAG = "BAG", // Containers
     ROBE = "ROBE",
     WEAPONMAINHAND = "WEAPONMAINHAND",
     WEAPONOFFHAND = "WEAPONOFFHAND",
     HOLDABLE = "HOLDABLE",
     AMMO = "AMMO",
     THROWN = "THROWN",
-    RANGEDRIGHT = "RANGEDRIGHT",
+    RANGEDRIGHT = "RANGEDRIGHT", // Wands, Guns, Crossbows
     QUIVER = "QUIVER",
     RELIC = "RELIC"
 }

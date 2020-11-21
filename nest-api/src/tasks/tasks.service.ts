@@ -6,6 +6,7 @@ import { Encounter } from 'src/encounters/encounter.entity';
 import { EncountersService } from 'src/encounters/encounters.service';
 import { Expansion } from 'src/expansions/expansion.entity';
 import { ExpansionsService } from 'src/expansions/expansions.service';
+import { ItemsService } from 'src/items/items.service';
 import { Period } from 'src/periods/period.entity';
 import { PeriodsService } from 'src/periods/periods.service';
 import { Raid } from 'src/raids/raid.entity';
@@ -26,6 +27,7 @@ export class TasksService {
         private readonly seasons: SeasonsService,
         private readonly periods: PeriodsService,
         private readonly weeklys: WeeklysService,
+        private readonly items: ItemsService,
         private readonly expansions: ExpansionsService,
         private readonly raids: RaidsService,
         private readonly encounters: EncountersService,
@@ -157,11 +159,33 @@ export class TasksService {
         return encounters;
     }
 
-    // Refresh items data - every 3 hours
+    // Refresh items without data - every 3 hours
     @Cron("0 */3 * * WED", { name: 'items' })
     async itemsRefresh()
     {
         this.logger.log("Start items loader")
+        const logger = new Logger("ItemsRefresher", true);
+        logger.log("Started")
+
+        const ids = await this.items.findIdsByMissingMedia();
+        
+        await Promise.all(ids.map(id => this.items.addItemToQueue(id)));
+
+        return ids;
+    }
+
+    async itemRefresh(id: number)
+    {
+        this.logger.log("Start item refresh")
+        const logger = new Logger("ItemRefresher", true);
+        logger.log(`Started with item id: ${id}`)
+
+        await Promise.all([
+            this.items.addItemToQueue(id),
+            this.items.addItemToMediaQueue(id)
+        ])
+
+        return id;
     }
 
     // Refresh all items without media - every 4 hours
@@ -169,6 +193,14 @@ export class TasksService {
     async itemsMediaRefresh()
     {
         this.logger.log("Start items medias loader")
+        const logger = new Logger("ItemsMediaRefresher", true);
+        logger.log("Started")
+
+        const ids = await this.items.findIdsByMissingMedia();
+
+        await Promise.all(ids.map(id => this.items.addItemToMediaQueue(id)));
+
+        return ids;
     }
 
     // Refresh all realms - 01:00 AM monday
@@ -291,16 +323,52 @@ export class TasksService {
 
     // ---- CHARACTERS ----
     // Refresh characters mythic keystone dungeons - every 3 hours
-    @Cron(CronExpression.EVERY_3_HOURS, { name: 'weeklys' })
-    async weeklysRefresh()
+    @Cron(CronExpression.EVERY_2_HOURS, { name: 'characters' })
+    async charactersRefresh()
     {
-        this.logger.log("Start characters mythic keystone dungeons refresher")
+        this.logger.log("Start characters refresher");
+
+        const charactersIds = await this.characters.findIds();
+
+        await Promise.all(charactersIds.map(id => this.characters.addCharacterToQueue(id)));
+
+        return charactersIds;
+    }
+
+    @Cron(CronExpression.EVERY_3_HOURS, { name: 'weeklys' })
+    async charactersWeeklysRefresh()
+    {
+        this.logger.log("Start characters mythic keystone dungeons refresher");
+
+        const charactersIds = await this.characters.findIds();
+
+        await Promise.all(charactersIds.map(id => this.characters.addCharacterToWeeklysQueue(id)));
+
+        return charactersIds;
     }
 
     // Refresh characters equipment - every 5 hours
-    @Cron(CronExpression.EVERY_5_HOURS, { name: 'characters' })
-    async refreshCharactersItems()
+    @Cron(CronExpression.EVERY_5_HOURS, { name: 'characters-items' })
+    async charactersItemsRefresh()
     {
-        this.logger.log("Start characters items refresher")
+        this.logger.log("Start characters items refresher");
+
+        const charactersIds = await this.characters.findIds();
+
+        await Promise.all(charactersIds.map(id => this.characters.addCharacterToItemsQueue(id)));
+
+        return charactersIds;
+    }
+
+    async characterRefresh(id: number)
+    {
+        this.logger.log(`Start character (${id}) refresh`);
+
+        await Promise.all([
+            this.characters.addCharacterToQueue(id),
+            this.characters.addCharacterToItemsQueue(id)
+        ])
+
+        return id;
     }
 }

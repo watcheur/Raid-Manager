@@ -10,6 +10,7 @@ import { SeasonsModule } from 'src/seasons/seasons.module';
 import { WeeklysModule } from 'src/weeklys/weeklys.module';
 import { TasksService } from './tasks.service';
 import { TasksController } from './tasks.controller';
+import { ItemsModule } from 'src/items/items.module';
 
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import { TasksController } from './tasks.controller';
         ExpansionsModule,
         RaidsModule,
         EncountersModule,
+        ItemsModule,
         CharactersModule
     ],
     providers: [TasksService],
