@@ -37,10 +37,10 @@ export enum DungeonAffixe {
     Storming,
 }
 
-@Unique('idx_members_complete', [ 'completed', 'duration', 'zone' ])
+@Unique('idx_members_complete', [ 'completed', 'duration', 'zone', 'period', 'character', 'level' ])
 @Entity()
 export class Weekly {
-    @Column()
+    @PrimaryColumn()
     level: number;
 
     @PrimaryColumn()
@@ -61,13 +61,17 @@ export class Weekly {
     @Column({ type: 'simple-array' })
     members: string[];
 
-    @Index()
     @ManyToOne(type => Period, period => period.id, { cascade: true, onDelete: 'CASCADE', primary: true })
 	@JoinColumn({ name: 'period' })
     period: Period;
 
-    @Index()
+    @PrimaryColumn({ name: 'period' })
+    periodId: number;
+
     @ManyToOne(type => Character, character => character.id, { cascade: true, onDelete: "CASCADE", primary: true })
 	@JoinColumn({ name: 'character' })
     character: Character;
+
+    @PrimaryColumn({ name: 'character' })
+    characterId: number;
 }

@@ -43,7 +43,7 @@ export class WeeklysService {
     {
         return await this.weeklysRepository.save(weeklys);
     }
-
+    
     public async update(id: number, newValue: Weekly): Promise<Weekly>
     {
         const weekly = await this.weeklysRepository.findOneOrFail(id);

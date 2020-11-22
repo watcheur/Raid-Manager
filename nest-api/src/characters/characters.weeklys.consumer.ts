@@ -55,22 +55,10 @@ export class CharactersWeeklysConsumer
                 completed: new Date(run.completed_timestamp),
                 affixes: run.keystone_affixes.map(affixe => affixe.id),
                 members: run.members.map(member => `${member.character.name}-${member.character.realm.slug}`),
-                period: periodId,
-                character: characterId
+                periodId: periodId,
+                characterId: characterId
             }
         }))
-
-        weeklys.push({
-            level: 10,
-            zone: 42,
-            duration: 4242424242,
-            timed: true,
-            completed: new Date(),
-            affixes: [1,2,3,4],
-            members: ['rhogar-ysondre', 'boby-lapointe', 'tintin-aucongo'],
-            period: 777,
-            character: characterId
-        })
 
         const res = await this.weeklys.saveBatch(weeklys);
 

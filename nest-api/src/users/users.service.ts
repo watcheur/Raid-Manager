@@ -21,7 +21,12 @@ export class UsersService {
     }
 
     public async findByEmail(email: string) : Promise<User | null> {
-        return await this.userRepository.findOne({ email: email });
+        return await this.userRepository.findOne({
+            relations: [ 'teams' ],
+            where: {
+                email: email
+            }
+        });
     }
 
     public async findById(id: number) : Promise<User | null> {

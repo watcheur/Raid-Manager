@@ -50,7 +50,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
 	
 	afterInit(server: Server) {
 		this.logger.log("Websocket Gateway started")
-		this.server.setMaxListeners(20);
 	}
 	
 	handleDisconnect(client: Socket) {
