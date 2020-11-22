@@ -22,7 +22,7 @@ class Context {
     }
 
     constructor() {
-        this.LoadData();
+        //this.LoadData();
     }
 
     async LoadData() {

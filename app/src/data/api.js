@@ -94,6 +94,8 @@ class Api {
     Logout = () => this.Get('/auth/logout');
     Refresh = () => this.Get('/auth/refresh');
 
+    GetTeams = () => this.Get('/teams');
+
     GetCurrentUser = () => this.Get('/users/current');
 
     GetPlayers = (args) => this.Get('/players', args);

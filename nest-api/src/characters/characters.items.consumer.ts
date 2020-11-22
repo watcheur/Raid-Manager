@@ -61,6 +61,8 @@ export class CharactersItemsConsumer
         });
 
         await this.items.saveBatch(items);
+        Promise.all(items.map(it => this.items.addItemToQueue(it.id)));
+
         await this.characters.saveCharacterItems(character.id, characterItems);
 
         character.teams.forEach(team => {

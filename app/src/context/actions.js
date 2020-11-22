@@ -8,7 +8,9 @@ export async function loginUser(dispatch, username, password) {
 
         if (response.data.data) {
             localStorage.setItem('user', JSON.stringify(response.data.data));
-            dispatch({ type: 'LOGIN_SUCCESS', payload: {
+            dispatch({
+                type: 'LOGIN_SUCCESS',
+                payload: {
                     user: response.data.data
                 }
             });
@@ -22,12 +24,24 @@ export async function loginUser(dispatch, username, password) {
     }
 }
 
+export async function setTeam(dispatch, team)
+{
+    localStorage.setItem('team', JSON.stringify(team))
+    dispatch({
+        type: 'TEAM_SELECT',
+        payload: {
+            team: team
+        }
+    })
+}
+
 export async function logoutUser(dispatch) {
     try {
         await Api.Logout();
 
         dispatch({ type: 'LOGOUT' });
         localStorage.removeItem('user');
+        localStorage.removeItem('team');
     }
     catch (error) {
         console.log("err", error);

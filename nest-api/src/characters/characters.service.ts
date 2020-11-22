@@ -54,7 +54,13 @@ export class CharactersService {
         if (!team)
             return [];
         
-        return team.characters;
+        const ids = team.characters.map(c => c.id);
+        return this.charactersRepository.find({
+            relations: [ "items", "items.item", "player" ],
+            where: {
+                id: In(ids)
+            }
+        })
     }
 
     public async findByIdAndTeam(id: number, teamId: number): Promise<Character>

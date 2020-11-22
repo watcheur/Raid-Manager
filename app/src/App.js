@@ -84,11 +84,10 @@ export default () => (
 									isPrivate={route.isPrivate}
 									exact={route.exact}
 									component={withTracker(props => (
-											<route.layout {...props}>
-												<route.component {...props} />
-											</route.layout>
-										)
-									)}
+										<route.layout {...props}>
+											<route.component {...props} />
+										</route.layout>
+									))}
 								/>
 							);
 						})}

@@ -10,19 +10,19 @@ import MainNavbar from "../components/layout/MainNavbar/MainNavbar";
 import MainSidebar from "../components/layout/MainSidebar/MainSidebar";
 import MainFooter from "../components/layout/MainFooter";
 
-const DefaultLayout = ({ children, noNavbar, noFooter }) => (
+const DefaultLayout = ({ children, noNavbar, noSidebar, noFooter }) => (
   <Container fluid>
     <ToastContainer />
     <Row>
-      <MainSidebar />
+      {!noSidebar && <MainSidebar />}
       <Col
         className="main-content p-0"
-        lg={{ size: 10, offset: 2 }}
-        md={{ size: 9, offset: 3 }}
+        lg={{ size: (!noSidebar ? 10 : 12), offset: (!noSidebar ? 2 : 0) }}
+        md={{ size: (!noSidebar ? 9 : 12), offset: (!noSidebar ? 3 : 0) }}
         sm="12"
         tag="main"
       >
-        <MainNavbar />
+        {!noNavbar && <MainNavbar />}
         {children}
         {!noFooter && <MainFooter />}
       </Col>
@@ -34,6 +34,10 @@ const DefaultLayout = ({ children, noNavbar, noFooter }) => (
 
 DefaultLayout.propTypes = {
   /**
+   * Whether to display the sidebar, or not.
+   */
+  noSidebar: PropTypes.bool,
+  /**
    * Whether to display the navbar, or not.
    */
   noNavbar: PropTypes.bool,
@@ -44,7 +48,8 @@ DefaultLayout.propTypes = {
 };
 
 DefaultLayout.defaultProps = {
-  noNavbar: true,
+  noSidebar: false,
+  noNavbar: false,
   noFooter: true
 };
 

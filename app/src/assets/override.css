@@ -348,6 +348,14 @@
     padding: 10px;
 }
 
+.team-card {
+    cursor: pointer;
+}
+
+.team-card:hover {
+    background: #dddfe021;
+}
+
 /* DESKTOP */
 @media only screen and (min-width : 1224px){
     .players-list .player-name, .players-list .player-rank {
