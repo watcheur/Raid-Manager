@@ -25,7 +25,7 @@ export class UsersService {
     }
 
     public async findById(id: number) : Promise<User | null> {
-        return await this.userRepository.findOneOrFail({
+        return await this.userRepository.findOne({
             relations: [ 'teams' ],
             where: {
                 id: id
