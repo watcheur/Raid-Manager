@@ -2,7 +2,7 @@ import React from "react";
 import { Container, Row, Col } from "shards-react";
 
 import PageTitle from "../components/common/PageTitle";
-import IlvlsOpt from "../components/options/IlvlsOptions";
+//import IlvlsOpt from "../components/options/IlvlsOptions";
 
 const OptionsOverview = () => (
   <Container fluid className="main-content-container px-4">
@@ -12,7 +12,6 @@ const OptionsOverview = () => (
 
     <Row>
         <Col md="3">
-          <IlvlsOpt />
         </Col>
     </Row>
   </Container>

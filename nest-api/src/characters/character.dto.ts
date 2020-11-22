@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CharacterType } from './character.entity';
+import { CharacterType } from './enums';
 
 export class CharacterDto {
     @ApiProperty()

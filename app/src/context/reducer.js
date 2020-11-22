@@ -1,4 +1,10 @@
 import React, { useReducer } from "react";
+import SocketIOClient from "socket.io-client";
+import url from 'url';
+import Dispatcher from '../flux/dispatcher';
+
+import Api from '../data/api';
+import Constants from "../flux/constants";
 
 let user = "";
 let team = "";
@@ -17,6 +23,59 @@ export const initialState = {
     loading: false,
     errorMessage: null
 }
+
+const endpoint = url.parse(Api.endpoint);
+const socket = SocketIOClient(`${endpoint.protocol}//${endpoint.host}`);
+
+socket.on('connect', () => {
+    if (team)
+        socket.emit('team', { team: team.id });
+})
+
+socket.on(Constants.CHANNEL_CHARACTER, data => {
+    console.log(Constants.CHANNEL_CHARACTER, data);
+    Dispatcher.dispatch({
+        channel: Constants.CHANNEL_CHARACTER,
+        actionType: data.action,
+        ...data.data
+    })
+});
+
+socket.on(Constants.CHANNEL_EVENT, data => {
+    console.log(Constants.CHANNEL_EVENT, data);
+    Dispatcher.dispatch({
+        channel: Constants.CHANNEL_EVENT,
+        actionType: data.action,
+        ...data.data
+    })
+});
+
+socket.on(Constants.CHANNEL_COMP, data => {
+    console.log(Constants.CHANNEL_CHARACTER, data);
+    Dispatcher.dispatch({
+        channel: Constants.CHANNEL_COMP,
+        actionType: data.action,
+        ...data.data
+    })
+});
+
+socket.on(Constants.CHANNEL_NOTE, data => {
+    console.log(Constants.CHANNEL_NOTE, data);
+    Dispatcher.dispatch({
+        channel: Constants.CHANNEL_NOTE,
+        actionType: data.action,
+        ...data.data
+    })
+});
+
+socket.on(Constants.CHANNEL_PLAYER, data => {
+    console.log(Constants.CHANNEL_PLAYER, data);
+    Dispatcher.dispatch({
+        channel: Constants.CHANNEL_PLAYER,
+        actionType: data.action,
+        ...data.data
+    })
+});
 
 export const AuthReducer = (initialState, action) => {
     switch (action.type) {
@@ -44,6 +103,8 @@ export const AuthReducer = (initialState, action) => {
                 errorMessage: action.error
             };
         case "TEAM_SELECT":
+            if (socket)
+                socket.emit('team', action.payload.team.id);
             return {
                 ...initialState,
                 team: action.payload.team

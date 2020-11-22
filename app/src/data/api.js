@@ -105,13 +105,13 @@ class Api {
     DeletePlayer = (id) => this.Delete(`/players/${id}`);
 
     GetCharacters = (args) => this.Get('/characters', args);
-    GetCharacter = (id) => this.Get(`/characters/${id}`);
-    RefreshCharacter = (id) => this.Get(`/characters/${id}/refresh`);
-    CreateCharacter = (data) => this.Post('/characters', data);
-    UpdateCharacter = (id, data) => this.Put(`/characters/${id}`, data);
-    DeleteCharacter = (id) => this.Delete(`/characters/${id}`);
+    GetCharacter = (id, args) => this.Get(`/characters/${id}`, args);
+    RefreshCharacter = (id, args) => this.Get(`/tasks/character/${id}`, args);
+    CreateCharacter = (data, args) => this.Post('/characters', data, args);
+    UpdateCharacter = (id, data, args) => this.Put(`/characters/${id}`, data, args);
+    DeleteCharacter = (id, args) => this.Delete(`/characters/${id}`, args);
     
-    ToggleNeed = (character, id, difficulty) => this.Post(`/wishlist/toggle`, { character: character, item: id, difficulty: difficulty });
+    ToggleNeed = (character, id, difficulty, args) => this.Post(`/wishlist/toggle`, { character: character, item: id, difficulty: difficulty }, args);
     GetWishlist = (args) => this.Get('/wishlist', args);
 
     GetRaids = (args) => this.Get('/raids', args);
@@ -123,26 +123,26 @@ class Api {
     RefreshExpansions = () => this.Get('/expansions/refresh');
 
     GetEvents = (args) => this.Get('/events', args);
-    GetEvent = (id) => this.Get(`/events/${id}`);
-    CreateEvent = (data) => this.Post('/events', data);
-    UpdateEvent = (id, data) => this.Put(`/events/${id}`, data);
-    DeleteEvent = (id) => this.Delete(`/events/${id}`);
-    GetNextEvent = () => this.Get('/events/next');
-    DuplicateEvent = (id, data) => this.Post(`/events/${id}/duplicate`, data);
+    GetEvent = (id, args) => this.Get(`/events/${id}`, args);
+    CreateEvent = (data, args) => this.Post('/events', data, args);
+    UpdateEvent = (id, data, args) => this.Put(`/events/${id}`, data, args);
+    DeleteEvent = (id, args) => this.Delete(`/events/${id}`, args);
+    GetNextEvent = (args) => this.Get('/events/next', args);
+    DuplicateEvent = (id, data, args) => this.Post(`/events/${id}/duplicate`, data, args);
 
-    GetComp = (event) => this.Get(`/compositions/${event}`);
-    GetCompEncounter = (event, encounter) => this.Get(`/compositions/${event}/${encounter}`);
-    CreateComp = (data) => this.Post(`/compositions`, data);
+    GetComp = (event, args) => this.Get(`/compositions/${event}`, args);
+    GetCompEncounter = (event, encounter, args) => this.Get(`/compositions/${event}/${encounter}`, args);
+    CreateComp = (data, args) => this.Post(`/compositions`, data, args);
 
-    GetOptions = () => this.Get('/options');
-    CreateOptions = (data) => this.Post('/options', data);
+    GetOptions = (args) => this.Get('/options', args);
+    CreateOptions = (data, args) => this.Post('/options', data, args);
 
-    GetFavoritesNotes = () => this.Get('/notes/favorites');
-    CreateNote = (title, text, favorite) => this.Post('/notes', { title: title, text: text, favorite: favorite });
-    UpdateNote = (id, title, text, favorite) => this.Put(`/notes/${id}`, { title: title, text: text, favorite: favorite });
-    DeleteNote = (id) => this.Delete(`/notes/${id}`);
+    GetFavoritesNotes = (args) => this.Get('/notes/favorites', args);
+    CreateNote = (title, text, favorite, args) => this.Post('/notes', { title: title, text: text, favorite: favorite }, args);
+    UpdateNote = (id, title, text, favorite, args) => this.Put(`/notes/${id}`, { title: title, text: text, favorite: favorite }, args);
+    DeleteNote = (id, args) => this.Delete(`/notes/${id}`, args);
 
-    GetRealms = (args) => this.Get('/blizzard/realms', args);
+    GetRealms = (args) => this.Get('/realms', args);
 
     GetAverageIlvl = () => this.Get('/stats/ilvl');
     GetAverageAzerite = () => this.Get('/stats/azerite');

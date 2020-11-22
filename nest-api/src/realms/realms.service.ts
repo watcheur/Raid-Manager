@@ -4,6 +4,13 @@ import { Repository, DeleteResult, Like, DeepPartial } from 'typeorm';
 import { Realm } from './realm.entity';
 import { RealmDto } from './realms.dto';
 
+export interface IRealmWhere
+{
+    category: string;
+    region: string;
+    locale: string;
+}
+
 @Injectable()
 export class RealmsService {
     constructor(
@@ -11,8 +18,13 @@ export class RealmsService {
         private readonly realmRepository: Repository<Realm>
     ){}
 
-    public async findAll(): Promise<Realm[]> {
-        return await this.realmRepository.find();
+    public async findAll(where?: IRealmWhere): Promise<Realm[]> {
+        return await this.realmRepository.find({
+            where: where,
+            order: {
+                name: 'ASC'
+            }
+        });
     }
 
     public async findByName(name: string) : Promise<Realm | null> {

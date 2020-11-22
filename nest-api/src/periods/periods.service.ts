@@ -26,8 +26,8 @@ export class PeriodsService {
     {
         return await this.periodsReposity.findOne({
             where: {
-                start: MoreThanOrEqual(new Date()),
-                end: LessThanOrEqual(new Date())
+                start: LessThanOrEqual(new Date()),
+                end: MoreThanOrEqual(new Date())
             }
         })
     }

@@ -1,5 +1,5 @@
-import { Character, Role } from "src/characters/character.entity";
 import { ApiProperty } from '@nestjs/swagger';
+import { Role } from "src/characters/enums";
 
 export class CharacterCompDto
 {

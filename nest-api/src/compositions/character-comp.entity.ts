@@ -1,4 +1,5 @@
-import { Character, Role } from "src/characters/character.entity";
+import { Character } from "src/characters/character.entity";
+import { Role } from "src/characters/enums";
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Composition } from "./composition.entity";
 

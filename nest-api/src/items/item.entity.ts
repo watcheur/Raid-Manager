@@ -41,7 +41,8 @@ export enum ItemSlot {
     WEAPON = "WEAPON",
     SHIELD = "SHIELD",
     RANGED = "RANGED", // Bows
-    TWOHWEAPON = "2HWEAPON",
+    TWOHANDWEAPON = "2HWEAPON",
+    TWOHWEAPON = "TWOHWEAPON",
     BAG = "BAG", // Containers
     ROBE = "ROBE",
     WEAPONMAINHAND = "WEAPONMAINHAND",

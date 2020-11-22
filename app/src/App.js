@@ -20,7 +20,7 @@ import "./assets/toast.css";
 import "./assets/override.css";
 import "./assets/react-contextmenu.css";
 
-import Context from './utils/context';
+//import Context from './utils/context';
 
 class EndpointPrompt extends React.Component {
 	constructor(props) {

@@ -1,3 +1,4 @@
+import { Exclude, Expose } from 'class-transformer';
 import { Character } from 'src/characters/character.entity';
 import { Period } from 'src/periods/period.entity';
 
@@ -65,6 +66,7 @@ export class Weekly {
 	@JoinColumn({ name: 'period' })
     period: Period;
 
+    @Exclude()
     @PrimaryColumn({ name: 'period' })
     periodId: number;
 
@@ -72,6 +74,7 @@ export class Weekly {
 	@JoinColumn({ name: 'character' })
     character: Character;
 
+    @Exclude()
     @PrimaryColumn({ name: 'character' })
     characterId: number;
 }

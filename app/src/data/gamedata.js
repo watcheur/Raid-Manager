@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import Context from '../utils/context'
+import Options from '../utils/options';
 
 const CharacterType = {
     MAIN: 0,
@@ -757,7 +757,7 @@ export default {
      */
     GenderToObj: GenderToObj,
     CharToRaceIc: (char) => {
-        return `GameIcon--${RaceToObj(char.race).slug}_${GenderToObj(char.gender).slug}`
+        return `GameIcon--${RaceToObj(char.race).slug}_${char.gender.slugify()}`
     },
     /**
      * @param {Faction} faction
@@ -850,19 +850,19 @@ export default {
      * @param {Number} ilvl
      */
     IlvlToClass: (ilvl) => {
-        if (ilvl >= Context.Options.artifact_ilvl)
+        if (ilvl >= Options.artifact_ilvl)
             return 'artifact';
-        if (ilvl >= Context.Options.legendary_ilvl)
+        if (ilvl >= Options.legendary_ilvl)
             return 'legendary';
-        if (ilvl >= Context.Options.epic_ilvl)
+        if (ilvl >= Options.epic_ilvl)
             return 'epic';
-        if (ilvl >= Context.Options.rare_ilvl)
+        if (ilvl >= Options.rare_ilvl)
             return 'rare';
-        if (ilvl >= Context.Options.uncommon_ilvl)
+        if (ilvl >= Options.uncommon_ilvl)
             return 'uncommon';
-        if (ilvl >= Context.Options.common_ilvl)
+        if (ilvl >= Options.common_ilvl)
             return 'common';
-        if (ilvl >= Context.Options.poor_ilvl)
+        if (ilvl >= Options.poor_ilvl)
             return 'poor';
         return 'poor';
     },
@@ -904,15 +904,15 @@ export default {
             { label: 'Other', data: other }
         ];
     },
-    ItemToWowHead: (item, args) => {
-        let str = `item=${item.id}&ilvl=${item.level}`;
+    ItemToWowHead: (equipped, args) => {
+        let str = `item=${equipped.item.id}&ilvl=${equipped.level}`;
 
-        if (item.bonuses)
-            str += `&bonus=${item.bonuses}`;
-        if (item.sockets)
-            str += `&gems=${item.sockets}`;
-        if (item.enchantments)
-            str += `&ench=${item.enchantments}`;
+        if (equipped.bonuses)
+            str += `&bonus=${equipped.bonuses.join(':')}`;
+        if (equipped.sockets)
+            str += `&gems=${equipped.sockets.join(':')}`;
+        if (equipped.enchantments)
+            str += `&ench=${equipped.enchantments.join(':')}`;
 
         if (args)
             str += args;

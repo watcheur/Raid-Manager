@@ -1,8 +1,8 @@
 import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, HttpException, InternalServerErrorException, NotFoundException, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import JwtAuthenticationGuard from 'src/auth/jwt-authentication.guard';
-import { plainToClass } from 'class-transformer';
+import { classToClass, classToPlain, plainToClass } from 'class-transformer';
 import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { CharactersService } from './characters.service';
+import { CharactersService, ICharactersWhere } from './characters.service';
 import { BlizzardService } from 'src/blizzard/blizzard.service';
 import { Character } from './character.entity';
 import { CharacterDto } from './character.dto';
@@ -38,12 +38,12 @@ export class CharactersController {
     @ApiOperation({ summary: 'Get all characters' })
     @ApiQuery({ name: 'team', type: 'number' })
     @Get()
-    async getAll(@Req() request: RequestWithUser, @Query('team') teamId: number): Promise<Character[]>
+    async getAll(@Req() request: RequestWithUser, @Query('team') teamId: number, @Query()query: ICharactersWhere): Promise<any>
     {
         if (!request.user.isInTeam(teamId))
             throw new ForbiddenException("Can't request another team characters");
-            
-        return plainToClass(Character, await this.charactersService.findByTeam(teamId));
+           
+        return classToPlain(await this.charactersService.findByTeam(teamId, query))
     }
 
     @UseGuards(JwtAuthenticationGuard)

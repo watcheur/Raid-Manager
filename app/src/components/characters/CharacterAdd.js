@@ -88,7 +88,7 @@ class CharacterAdd extends React.Component {
 				realm: realm,
 				type: type,
 				player: (player ? player.id : null)
-			})
+			}, { team: this.props.team.id })
 			.then(res => {
 				if (!res.data.err) {
 					this.setState({ ...this.defaultState });
@@ -111,7 +111,9 @@ class CharacterAdd extends React.Component {
 	}
 
     componentDidMount() {
-        Api.GetRealms(this.props.parameters)
+		const { team, parameters } = this.props;
+
+        Api.GetRealms({...parameters})
             .then(res => {
                 if (!res.data.err) {
 					this.setState({ realms: res.data.data })
@@ -120,7 +122,7 @@ class CharacterAdd extends React.Component {
             })
 			.catch(err => this.setState({ error: 'GetRealms: ' + err.message }));
 
-		Api.GetPlayers()
+		Api.GetPlayers({ team: team.id })
 			.then(res => {
                 if (!res.data.err) {
 					this.setState({ players: res.data.data })
@@ -135,6 +137,11 @@ class CharacterAdd extends React.Component {
 	}
 	
 	render() {
+		const { team } = this.props;
+
+		if (!team)
+			return (<div className="bg-warning text-white text-center" style={{ boxShadow: "inset 0 0 5px rgba(0,0,0,.2)" }}> <i className="material-icons">warning</i> No team</div>)
+
 		return (
 			<Card small className="mb-4">
 				<CardHeader className="border-bottom">
@@ -191,7 +198,7 @@ class CharacterAdd extends React.Component {
 												<option>Choose...</option>
 												{this.state.realms.sort(c => c.type).map((realm, index) => {
 													return (
-														<option value={realm.slug} key={realm.id}>{realm.name}</option>
+														<option value={realm.id} key={realm.id}>{realm.name}</option>
 													);
 												})}
 											</FormSelect>
@@ -232,7 +239,10 @@ CharacterAdd.propTypes = {
 	/**
 	 * Default realm
 	 */
-	realm: PropTypes.string
+	realm: PropTypes.string,
+
+	user: PropTypes.object,
+	team: PropTypes.object
 };
 
 CharacterAdd.defaultProps = {

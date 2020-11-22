@@ -13,7 +13,7 @@ import Api from '../../data/api'
 import { Dispatcher, Constants } from "../../flux"
 
 const CharacterMenu = (props) => {
-    const { id, trigger, admin } = props;
+    const { id, trigger, team, user } = props;
     const handleItemClick = trigger ? trigger.onItemClick : null;
 
     return (
@@ -21,13 +21,13 @@ const CharacterMenu = (props) => {
             {trigger && <h6 className={classNames('GameColorClass', GameData.ClassToObj(trigger.character.class).slug)}>
                 {trigger.character.name}
             </h6>}
-            {trigger && <MenuItem onClick={(e, data) => window.open(`https://worldofwarcraft.com/en-gb/character/eu/${trigger.character.realm}/${trigger.character.name}`, '_blank')}>
+            {trigger && <MenuItem onClick={(e, data) => window.open(`https://worldofwarcraft.com/en-gb/character/eu/${trigger.character.realm.slug}/${trigger.character.name}`, '_blank')}>
                 <img src="/images/blizzard/logo.png" className='GameIcon--tiny' /> Armory
             </MenuItem>}
-            {trigger && <MenuItem onClick={(e, data) => window.open(`https://raider.io/characters/eu/${trigger.character.realm}/${trigger.character.name}`, '_blank')}>
+            {trigger && <MenuItem onClick={(e, data) => window.open(`https://raider.io/characters/eu/${trigger.character.realm.slug}/${trigger.character.name}`, '_blank')}>
                 <img src="/images/raiderio.png" className='GameIcon--tiny' /> Raider.IO
             </MenuItem>}
-            {admin && trigger && (
+            {user && trigger && (
                 <SubMenu title='Type'>
                     <MenuItem onClick={handleItemClick} data={{ character: trigger.character, action: 'UPDATE_TYPE', type: GameData.Characters.Type.MAIN }}>{trigger.character.type == GameData.Characters.Type.MAIN && (<i className='material-icons'>check</i>)} Main</MenuItem>
                     <MenuItem onClick={handleItemClick} data={{ character: trigger.character, action: 'UPDATE_TYPE', type: GameData.Characters.Type.ALT }}>{trigger.character.type == GameData.Characters.Type.ALT && (<i className='material-icons'>check</i>)}Alt</MenuItem>
@@ -139,7 +139,6 @@ export default class CharactersList extends React.Component {
                                     count++;
                             }
                             break;
-                        case 'azerite':
                         case 'equipped':
                             if (expr.evaluate({ x: char[i] }))
                                 count++;
@@ -220,7 +219,7 @@ export default class CharactersList extends React.Component {
             this.setState({characters: characters});
         }
 
-        Api.DeleteCharacter(char.id)
+        Api.DeleteCharacter(char.id, { team: this.props.team.id })
             .then(res => {
             })
             .catch(err => {
@@ -235,15 +234,8 @@ export default class CharactersList extends React.Component {
         this.spin(target);
         Api.RefreshCharacter(char.id)
             .then(res => {
-                if (!res.data.err) {
-                   let characters = [...this.state.characters];
-                   let index = this.state.characters.indexOf(this.state.characters.find(c => c.id === res.data.data.id));
-                   if (index >= 0) {
-                        Object.assign(characters[index], res.data.data)
-                        this.setState({characters: characters });
-                        this.success(target);
-                   }
-                }
+                if (!res.data.error)
+                    this.success(target);
             })
             .catch(err => {
                 this.error(target);
@@ -253,10 +245,11 @@ export default class CharactersList extends React.Component {
 
     loadCharacters(target = null) {
         this.spin(target);
-        const { name, realm, type, level, cl, spec, role, equipped, avg, azerite, weekly} = this.props;
+        const { name, realm, type, level, cl, spec, role, equipped, avg, weekly, team} = this.props;
         
         this.setState({ isLoading: true, error: null });
         Api.GetCharacters({
+            team: team.id,
             name: name,
             realm, realm,
             type: type,
@@ -266,7 +259,6 @@ export default class CharactersList extends React.Component {
             role: role,
             equipped: equipped,
             avg: avg,
-            azerite: azerite,
             weekly: weekly
         })
         .then(res => {
@@ -296,16 +288,24 @@ export default class CharactersList extends React.Component {
 
     componentDidMount() {
         this.dispatcherToken = Dispatcher.register(payload => {
-            switch (payload.actionType) {
-                case Constants.CHAR_CREATED:
-                case Constants.CHAR_UPDATE:
-                    if (this.props.type === undefined || this.props.type == payload.character.type)
-                        this.loadCharacters();
-                    break;
-                case Constants.CHAR_DELETED:
-                    this.loadCharacters();
-                    break;
-                default:
+            if (payload.channel == Constants.CHANNEL_CHARACTER)
+            {
+                switch (payload.actionType) {
+                    case Constants.CREATED:
+                    case Constants.UPDATED:
+                        if (!this.props.type || this.props.type == payload.type)
+                            this.loadCharacters();
+                        break;
+                    case Constants.DELETED:
+                        let { characters } = this.state;
+                        let index = this.state.characters.indexOf(this.state.characters.find(c => c.id === payload.character));
+                        if (index >= 0) {
+                            characters.splice(index, 1);
+                            this.setState({characters: characters});
+                        }
+                        break;
+                    default:
+                }
             }
         });
         this.loadCharacters();
@@ -316,7 +316,7 @@ export default class CharactersList extends React.Component {
     }
 
     render() {
-        const { title, admin, logged } = this.props;
+        const { title, user } = this.props;
         const slots = ['HEAD', 'NECK', 'SHOULDER', 'BACK', 'CHEST', 'WRIST', 'HANDS', 'WAIST', 'LEGS', 'FEET', 'FINGER_1', 'FINGER_2', 'TRINKET_1', 'TRINKET_2', 'MAIN_HAND', 'OFF_HAND'];
         const ConnectedMenu = connectMenu(this.uniqueID)(CharacterMenu);
         
@@ -332,7 +332,7 @@ export default class CharactersList extends React.Component {
                         </h5>
                     </CardHeader>
                 ) : ''}
-                <ConnectedMenu id={this.uniqueID} admin={admin} />
+                <ConnectedMenu id={this.uniqueID} admin={user} />
                 <CardBody className="bg-dark p-0 pb-3">
                     <table className="table table-dark mb-0">
                         <thead className="thead-dark">
@@ -355,12 +355,6 @@ export default class CharactersList extends React.Component {
                                 <th scope="col" className="border-0 char-role">
                                     Role
                                 </th>
-                                <th scope="col" className="border-0 char-azerite" onClick={ev => this.filter('azerite')}>
-                                    <div className={`GameIcon GameIconUtils GameIcon--Utils-HeartOfAzeroth GameIcon--small ${this.state.filters['azerite'] ? 'border-orange': ''}`}
-                                        data-tip={`Heart of Azeroth${(this.state.filters['azerite'] ? ` (${this.state.filters['azerite']})` : '')}`}>
-                                        <div className="GameIcon-icon"></div>
-                                    </div>
-                                </th>
                                 <th scope="col" className="border-0 char-weekly" onClick={ev => this.filter('weekly')}>
                                     <div className={`GameIcon GameIconUtils GameIcon--Utils-Weekly GameIcon--small ${this.state.filters['weekly'] ? 'border-orange': ''}`}
                                         data-tip={`Weekly chest${(this.state.filters['weekly'] ? ` (${this.state.filters['weekly']})` : '')}`}>
@@ -382,7 +376,7 @@ export default class CharactersList extends React.Component {
                                         </th>
                                     )
                                 })}
-                                {admin && logged ? (
+                                {user ? (
                                 <th scope="col" className="border-0 char-refresh">
                                     <a style={{cursor:'pointer'}} onClick={ev => this.loadCharacters(ev.target)} className='material-icons'>refresh</a>
                                 </th>) : (<th scope="col" className="border-0"></th>)}
@@ -406,13 +400,13 @@ export default class CharactersList extends React.Component {
                                         <td onClick={(ev) => this.toggleSelected(character.id)}
                                             className={classNames('GameColorClass', GameData.ClassToObj(character.class).slug, 'char-name')} style={{textTransform: 'capitalize'}}>
                                             <a
-                                                href={`https://worldofwarcraft.com/en-gb/character/eu/${character.realm}/${character.name}`}
+                                                href={`https://worldofwarcraft.com/en-gb/character/eu/${character.realm.slug}/${character.name}`}
                                                 target="_blank"
                                                 className='mr-1'>
                                                 <img src="/images/blizzard/logo.png" className='GameIcon--tiny' />
                                             </a>
                                             <a
-                                                href={admin && logged ? `/characters/${character.id}/wishlist` : '#'}
+                                                href={user ? `/characters/${character.id}/wishlist` : '#'}
                                                 className={classNames('GameColorClass', GameData.ClassToObj(character.class).slug)}>
                                                 {character.name}
                                             </a>
@@ -439,19 +433,18 @@ export default class CharactersList extends React.Component {
                                                 <div className="GameIcon-icon"></div>
                                             </div>
                                         </td>
-                                        <td className={classNames(GameData.AzeriteToClass(character.azerite), 'char-azerite')}>{character.azerite || (<i className="material-icons">help_outline</i>)}</td>
                                         <td className={classNames(character.weekly ? 'text-success': 'text-danger', 'char-weekly')}>{character.weekly || ''} <i className="material-icons">{character.weekly ? '' : 'clear'}</i> </td>
                                         <td className={classNames(GameData.IlvlToClass(character.equipped), 'char-equipped')}>{character.equipped}</td>
                                         {slots.map((value, index) => {
-                                            let item = character.items.find(it => it.slot == value);
-                                            if (!item)
+                                            let equipped = character.items.find(it => it.slot == value);
+                                            if (!equipped)
                                                 return (<td key={index}></td>);
                                             return (
-                                                <td key={index} className={classNames(GameData.IlvlToClass(item.level), 'items', `char-${value}`)}>
-                                                    <a href="#" className={classNames(GameData.IlvlToClass(item.level))} data-wowhead={GameData.ItemToWowHead(item)}>{item.level}</a>
-                                                    {(item.missing_enchantment || item.missing_socket) && (
+                                                <td key={index} className={classNames(GameData.IlvlToClass(equipped.level), 'items', `char-${value}`)}>
+                                                    <a href="#" className={classNames(GameData.IlvlToClass(equipped.level))} data-wowhead={GameData.ItemToWowHead(equipped)}>{equipped.level}</a>
+                                                    {(equipped.missing_enchantment || equipped.missing_socket) && (
                                                         <i data-for="missing"
-                                                        data-tip={`${item.missing_enchantment ? '<p>Enchantment missing</p>' : ''}${item.missing_socket ? '<p>Socket missing</p>' : ''}`}
+                                                        data-tip={`${equipped.missing_enchantment ? '<p>Enchantment missing</p>' : ''}${equipped.missing_socket ? '<p>Socket missing</p>' : ''}`}
                                                             className='material-icons text-warning mx-1'>
                                                             report_problem
                                                         </i>
@@ -460,11 +453,11 @@ export default class CharactersList extends React.Component {
                                             )
                                         })}
                                         
-                                        {admin && logged ? (
+                                        {user ? (
                                             <td className='char-refresh'><a style={{cursor:'pointer'}} onClick={ev => this.refreshCharacter(ev.target, character)} className="material-icons">refresh</a></td>
                                         ) : (<td></td>)}
 
-                                        {admin && logged ? (
+                                        {user ? (
                                             <td className='char-delete'><a style={{cursor:'pointer'}} onClick={ev => this.deleteCharacter(ev.target, character)} className="material-icons text-danger">clear</a></td>
                                         ): (<td></td>)}
                                     </ContextMenuTrigger>

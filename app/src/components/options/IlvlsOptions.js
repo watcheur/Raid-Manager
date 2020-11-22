@@ -13,13 +13,14 @@ import {
 } from "shards-react";
 import { toast } from 'react-toastify';
 
-import Context from '../../utils/context';
+//import Context from '../../utils/context';
 import Api from '../../data/api';
 import { Dispatcher, Constants } from "../../flux";
 
 /**
  * @param {Object} parameters
  */
+/*
 export default class IlvlsOptions extends React.Component {
     defaultState = {
         loading: false,
@@ -150,3 +151,4 @@ export default class IlvlsOptions extends React.Component {
         )
     }
 }
+*/

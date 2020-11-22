@@ -3,14 +3,31 @@ import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { TeamsService } from 'src/teams/teams.service';
 import { WeeklysModule } from 'src/weeklys/weeklys.module';
 import { WeeklysService } from 'src/weeklys/weeklys.service';
-import { In, Repository } from 'typeorm';
+import { In, Like, Repository } from 'typeorm';
 import { CharacterDto } from './character.dto';
 import { Character } from './character.entity';
+import { CharacterType, CharacterClass, CharacterSpec } from './enums';
 import { InjectQueue } from '@nestjs/bull';
 import { Job, Queue } from 'bull';
 import { CharacterItem } from './character.item.entity';
 import { Team } from 'src/teams/team.entity';
 import { AppGateway } from 'src/app.gateway';
+import { PeriodsService } from 'src/periods/periods.service';
+import { Realm } from 'src/realms/realm.entity';
+import { Player } from 'src/players/player.entity';
+import { Item } from 'src/items/item.entity';
+import { Weekly } from 'src/weeklys/weekly.entity';
+
+export interface ICharactersWhere {
+    name?: string;
+    realm?: number;
+    type?: CharacterType,
+    level?: number;
+    class?: CharacterClass,
+    spec?: CharacterSpec,
+    equipped?: number,
+    average?: number
+}
 
 @Injectable()
 export class CharactersService {
@@ -22,6 +39,7 @@ export class CharactersService {
         private readonly charactersItemsReposity: Repository<CharacterItem>,
 
         private readonly teamsService: TeamsService,
+        private readonly periodsService: PeriodsService,
 
         @InjectQueue('character') private characterQueue: Queue,
         @InjectQueue('character-items') private characterItemsQueue: Queue,
@@ -33,9 +51,11 @@ export class CharactersService {
         return (await this.charactersRepository.createQueryBuilder().select('id').getRawMany()).map(c => c.id);
     }
 
-    public async findAll(): Promise<Character[]>
+    public async findAll(where?: ICharactersWhere): Promise<Character[]>
     {
-        return this.charactersRepository.find();
+        return this.charactersRepository.find({
+            where: where
+        });
     }
 
     public async findById(id: number): Promise<Character>
@@ -48,19 +68,47 @@ export class CharactersService {
         });
     }
 
-    public async findByTeam(teamId: number): Promise<Character[]>
+    public async findByTeam(teamId: number, where?: ICharactersWhere): Promise<Character[]>
     {
         const team = await this.teamsService.findById(teamId);
         if (!team)
             return [];
-        
+            
         const ids = team.characters.map(c => c.id);
-        return this.charactersRepository.find({
-            relations: [ "items", "items.item", "player" ],
-            where: {
-                id: In(ids)
-            }
-        })
+        const period = await this.periodsService.findCurrent();
+
+        let test = await this.charactersRepository.createQueryBuilder("C")
+            .innerJoinAndMapOne("C.realm", Realm, "R", "R.id = C.realm")
+            .innerJoinAndMapOne("C.player", Player, "P", "P.id = C.player")
+            .leftJoinAndMapMany("C.items", CharacterItem, "CI", "CI.character = C.id")
+            .leftJoinAndMapOne("CI.item", Item, "IT", "IT.id = CI.item")
+            .leftJoinAndMapOne("CI.character", Character, "Ca", "Ca.id = CI.character")
+            .leftJoinAndMapMany("C.weeklys", Weekly, "W", `W.period = ${period.id ?? -1}`)
+            .where("C.id IN(:...ids)", { ids: ids })
+
+        if (where)
+        {
+            if (where.name)
+                test = test.where("C.name LIKE :name")
+            if (where.realm)
+                test = test.where("C.realm = :realm")
+            if (where.type)
+                test = test.where("C.type = :type")
+            if (where.level)
+                test = test.where("C.level = :level")
+            if (where.class)
+                test = test.where("C.class = :class")
+            if (where.spec)
+                test = test.where("C.spec = :spec")
+            if (where.equipped)
+                test = test.where("C.equipped = :equipped")
+            if (where.average)
+                test = test.where("C.average = :average")
+            
+            test = test.setParameters(where);
+        }
+
+        return test.getMany();
     }
 
     public async findByIdAndTeam(id: number, teamId: number): Promise<Character>
