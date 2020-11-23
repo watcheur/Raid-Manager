@@ -64,10 +64,9 @@ class EventAdd extends React.Component {
         this.setState({ loading: true, error: '' });
         try
         {
-            
             const res = await Api.CreateEvent({
                 name: title,
-                schedule: moment(date).utc().format(`YYYY-MM-DD ${time}:00`),
+                schedule: moment(date).format(`YYYY-MM-DD ${time}:00`),
                 raid: raid,
                 difficulty: difficulty
             }, { team: this.props.team.id })
@@ -125,6 +124,11 @@ class EventAdd extends React.Component {
 	}
 	
 	render() {
+        const { team, user } = this.props;
+
+        if (!team)
+            return <div className="text-danger"><i className='material-icons'>error</i> EventAdd: Missing [team] property</div>;
+
 		return (
 			<Card small>
 				<CardHeader className="border-bottom">

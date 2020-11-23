@@ -780,6 +780,9 @@ th .GameIcon {
 .bg.ny-alotha-the-waking-city {
     background-image: url(/images/blizzard/raids/nyalotha-the-waking-city-small.jpg);
 }
+.bg.castle-nathria {
+	background-image: url(/images/blizzard/raids/castle-nathria-small.jpg);
+}
 
 .difficulty::before {
     position: absolute;

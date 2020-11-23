@@ -221,7 +221,10 @@ export class EventsController {
 
         this.appGateway.emit(teamId, SocketChannel.Event, {
             action: SocketAction.Created,
-            data: event
+            data: {
+                event: event.id,
+                ...event
+            }
         })
 
         return plainToClass(Event, event);

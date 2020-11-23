@@ -24,7 +24,7 @@ const EventsOverview = () => {
 				</Col>
 			</Row>)}
 			
-			<EventCalendar />
+			<EventCalendar team={team} user={user} />
 		</Container>
 	)
 };

@@ -19,7 +19,7 @@ const localizer = momentLocalizer(moment);
 const Event = (ev) => {
     return(
         <a href={`/events/${ev.event.resource.id}`}>
-            <div className={`rbc-event-main bg ${ev.event.resource.raid.name.slugify()} difficulty ${GameData.DifficultyToClass(ev.event.resource.difficulty)}`}>
+            <div className={`rbc-event-main bg ${ev.event.resource.raid.name.slugify()} difficulty ${ev.event.resource.difficulty.slugify()}`}>
                 <span className="time">{moment(ev.event.start).format('HH:mm')}</span>
                 <span className="title" title={ev.event.title}>{ev.event.title}</span>
             </div>
@@ -52,42 +52,72 @@ class EventCalendar extends React.Component {
         }
 
         return {
-            className: `${event.resource.raid.name.slugify()} ${difficulty}`
+            className: `${event.resource.raid.name.slugify()} ${event.resource.difficilty.slugify()}`
         }
     }
 
-    loadEvents() {
-        Api.GetEvents()
-            .then(res => {
-                if (!res.data.err) {
-                    let events = res.data.data.map(ev => {
-                        return {
-                            title: ev.title,
-                            start: ev.schedule,
-                            end: ev.schedule,
-                            allDay: false,
-                            resource: ev
-                        }
-                    });
+    async loadEvents() {
+        try
+        {
+            if (!this.props.team)
+                return;
+            
+            this.setState({ loading: true })
 
-                    this.setState({ events: events })
-                    this.defaultState.events = events;
-				}
-            })
-            .catch(err => alert(err))
+            const res = await Api.GetEvents({ team: this.props.team.id })
+
+            if (res.data.data)
+            {
+                let events = res.data.data.map(ev => {
+                    return {
+                        title: ev.name,
+                        start: ev.schedule,
+                        end: ev.schedule,
+                        allDay: false,
+                        resource: ev
+                    }
+                });
+
+                this.setState({ events: events })
+                this.defaultState.events = events;
+            }
+        }
+        catch (error)
+        {
+            // Api send a response who isn't a 2XX
+            if (error.response)
+                this.setState({ loading: false, error: error.response.data.message });
+            else
+                this.setState({ loading: false, error: error.message });
+        }
     }
 
     componentDidMount() {
         this.dispatcherToken = Dispatcher.register(payload => {
-            switch (payload.actionType) {
-                case Constants.EVENT_DELETED:
-                    if (this.state.event && this.state.event.id == payload.event.id)
-                        this.setState({ event: null });
-                case Constants.EVENT_CREATED:
-                case Constants.EVENT_UPDATED:
-                        this.loadEvents();
-                    break;
-                default:
+            if (payload.channel == Constants.CHANNEL_EVENT)
+            {
+                let { id, name, raid, schedule, difficulty } = payload;
+                let { events } = this.state;
+                switch (payload.actionType) {
+                    case Constants.CREATED:
+                    case Constants.UPDATED:
+                        events.push({
+                            title: payload.name,
+                            start: payload.schedule,
+                            end: payload.schedule,
+                            allDay: false,
+                            resource: payload
+                        })
+                        this.setState({ events: events });
+                        break;
+                    case Constants.DELETED:
+                        let index = events.findIndex(ev => ev.resource.id === payload.event);
+                        if (index >= 0) {
+                            events.splice(index, 1);
+                            this.setState({events: events});
+                        }
+                        break;
+                }
             }
         });
         this.loadEvents();
@@ -98,6 +128,10 @@ class EventCalendar extends React.Component {
     }
 	
 	render() {
+        const { user, team } = this.props;
+        if (!team)
+            return <div className="text-danger"><i className='material-icons'>error</i> EventCalendar: Missing [team] property</div>;
+            
 		return (
             <Row className="mb-4">
                 <Col>
