@@ -99,10 +99,10 @@ class Api {
     GetCurrentUser = () => this.Get('/users/current');
 
     GetPlayers = (args) => this.Get('/players', args);
-    GetPlayer = (id) => this.Get(`/players/${id}`);
-    CreatePlayer = (data) => this.Post('/players', data);
+    GetPlayer = (id, args) => this.Get(`/players/${id}`, args);
+    CreatePlayer = (data, args) => this.Post('/players', data, args);
     UpdatePlayer = (id, data) => this.Put(`/players/${id}`, data);
-    DeletePlayer = (id) => this.Delete(`/players/${id}`);
+    DeletePlayer = (id, args) => this.Delete(`/players/${id}`, args);
 
     GetCharacters = (args) => this.Get('/characters', args);
     GetCharacter = (id, args) => this.Get(`/characters/${id}`, args);

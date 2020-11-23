@@ -24,7 +24,7 @@ const CharactersOverview = (props) => {
 			{user && (
 				<Row className="justify-content-md-center">
 					<Col sm="12" md="12" lg="9">
-						<CharacterAdd parameters={{ category: 'French' }} realm={1335} user={user} team={team} {...props} />
+						<CharacterAdd parameters={{ category: 'French' }} realm={1335} team={team}  user={user} {...props} />
 					</Col>
 				</Row>
 			)}

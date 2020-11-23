@@ -44,7 +44,10 @@ CharacterMenu.propTypes = {
         character: PropTypes.shape({
             id: PropTypes.number.isRequired,
             name: PropTypes.string.isRequired,
-            realm: PropTypes.string.isRequired,
+            realm: PropTypes.shape({
+                id: PropTypes.number.isRequired,
+                name: PropTypes.string.isRequired
+            }),
             type: PropTypes.number.isRequired
         }).isRequired,
         onItemClick: PropTypes.func.isRequired,
@@ -182,7 +185,7 @@ export default class CharactersList extends React.Component {
         }
     }
 
-    charAction(e, data, target) {
+    async charAction(e, data, target) {
         const { action, character, type } = data;
         
         switch (action) {
@@ -190,22 +193,28 @@ export default class CharactersList extends React.Component {
                 if (character.type != type)
                 {
                     let characters = [...this.state.characters];
-                    let index = this.state.characters.indexOf(this.state.characters.find(c => c.id === character.id));
+                    let index = characters.findIndex(c => c.id === character.id);
                     if (index >= 0) {
                         characters.splice(index, 1);
                         this.setState({ characters: characters });
                     }
 
-                    Api.UpdateCharacter(character.id, { type: type })
-                        .then(res => {
-					        toast.success(`Character ${character.name.capitalize()} updated`)
-                        })
-                        .catch(err => {
-					        toast.error('An error occured while updating this character')
-                            
-                            characters.splice(index, 0, character);
-                            this.setState({ characters: characters });
-                        })
+                    try
+                    {
+                        const res = Api.UpdateCharacter(character.id, { type: type }, { team: this.props.team.id })
+                        if (res)
+                            toast.success(`Character ${character.name.capitalize()} updated`)
+                    }
+                    catch (error)
+                    {
+                        if (error.response)
+                            toast.error('Character update: ' + error.response.data.message)
+                        else
+                            toast.error('An error occured while updating this character');
+
+                        characters.splice(index, 0, character);
+                        this.setState({ characters: characters });
+                    }
                 }
                 break;
         }
@@ -213,7 +222,7 @@ export default class CharactersList extends React.Component {
 
     deleteCharacter(target, char) {
         let characters = [...this.state.characters];
-        let index = this.state.characters.indexOf(this.state.characters.find(c => c.id === char.id));
+        let index = characters.findIndex(c => c.id === char.id);
         if (index >= 0) {
             characters.splice(index, 1);
             this.setState({characters: characters});
@@ -293,12 +302,12 @@ export default class CharactersList extends React.Component {
                 switch (payload.actionType) {
                     case Constants.CREATED:
                     case Constants.UPDATED:
-                        if (!this.props.type || this.props.type == payload.type)
+                        if (!this.props.type || !payload.type || this.props.type == payload.type)
                             this.loadCharacters();
                         break;
                     case Constants.DELETED:
                         let { characters } = this.state;
-                        let index = this.state.characters.indexOf(this.state.characters.find(c => c.id === payload.character));
+                        let index = characters.findIndex(c => c.id === payload.character);
                         if (index >= 0) {
                             characters.splice(index, 1);
                             this.setState({characters: characters});
@@ -316,7 +325,7 @@ export default class CharactersList extends React.Component {
     }
 
     render() {
-        const { title, user } = this.props;
+        const { title, user, team } = this.props;
         const slots = ['HEAD', 'NECK', 'SHOULDER', 'BACK', 'CHEST', 'WRIST', 'HANDS', 'WAIST', 'LEGS', 'FEET', 'FINGER_1', 'FINGER_2', 'TRINKET_1', 'TRINKET_2', 'MAIN_HAND', 'OFF_HAND'];
         const ConnectedMenu = connectMenu(this.uniqueID)(CharacterMenu);
         
@@ -332,7 +341,7 @@ export default class CharactersList extends React.Component {
                         </h5>
                     </CardHeader>
                 ) : ''}
-                <ConnectedMenu id={this.uniqueID} admin={user} />
+                <ConnectedMenu id={this.uniqueID} user={user} team={team} />
                 <CardBody className="bg-dark p-0 pb-3">
                     <table className="table table-dark mb-0">
                         <thead className="thead-dark">

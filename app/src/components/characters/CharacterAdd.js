@@ -30,8 +30,7 @@ class CharacterAdd extends React.Component {
 		realm: '',
 		name: '',
 		type: 0,
-		invalidName : false,
-		errorNameText: '',
+		errorName: '',
 		invalidRealm: false,
 		loading: false,
 		error: ''
@@ -48,28 +47,30 @@ class CharacterAdd extends React.Component {
 		this.playerRef = React.createRef();
 	}
 
-	selectPlayer(arr) {
+	async selectPlayer(arr) {
 		let value = (arr ? arr[0] : null);
 		if (value) {
 			if (value.customOption) {
-				Api.CreatePlayer({ name: value.name, rank: GameData.Players.Ranks.TBD })
-				.then(res => {
-					if (!res.data.err) {
-						let players = this.state.players || [];
-						players.push(res.data.data);
-
-						this.setState({ player: res.data.data, players: players })
-						this.defaultState.players = players;
-					}
-				})
-				.catch(err => this.setState({ error: 'SelectPlayer: ' + err.message }));
+				try
+				{
+					const res = await Api.CreatePlayer({ name: value.name, rank: GameData.Players.Ranks.TBD, team: this.props.team.id });
+					if (res.data.data)
+						this.setState({ player: res.data.data });
+				}
+				catch (error)
+				{
+					if (error.response)
+						this.setState({ error: error.response.data.message })
+					else
+						this.setState({ error: error.message })
+				}
 			}
 			else
 				this.setState({ player: value })
 		}
 	}
 	
-	handleSubmit(event) {
+	async handleSubmit(event) {
 		event.preventDefault();
 
 		this.setState({
@@ -78,35 +79,33 @@ class CharacterAdd extends React.Component {
 		})
 
 		if (this.state.name.length === 0)
-			return this.setState({ errorNameText: 'You must specify a character name' })
+			return this.setState({ errorName: 'You must specify a character name' })
 
 		this.setState({ loading: true });
 		const { name, realm, type, player } = this.state;
-		if (name.length > 0 && realm.length > 0) {
-			Api.CreateCharacter({
-				name: name,
-				realm: realm,
-				type: type,
-				player: (player ? player.id : null)
-			}, { team: this.props.team.id })
-			.then(res => {
-				if (!res.data.err) {
+
+		if (name && realm) {
+
+			try
+			{
+				const res = await Api.CreateCharacter({ name: name, realm, realm, type: type ?? 0, player: (player ? player.id : null)}, { team: this.props.team.id })
+				if (!res.data.error)
+				{
+					this.defaultState.players.push(res.data.data);
 					this.setState({ ...this.defaultState });
-					toast.success(`Character ${name.capitalize()}-${realm.capitalize()} added`)
+					toast.success(`Character ${name.capitalize()} added`);
 				}
-				else
-					this.setState({ loading: false });
 
 				if (this.playerRef && this.playerRef.current)
 					this.playerRef.current.clear();
-			})
-			.catch(err => {
-				this.setState({
-					errorNameText: err.response.data.message,
-					invalidName: true,
-					loading: false
-				});
-			})
+			}
+			catch (error)
+			{
+				if (error.response)
+					this.setState({ errorName: error.response.data.message, loading: false })
+				else
+					this.setState({ errorName: error.message, loading: false })
+			}
 		}
 	}
 
@@ -120,7 +119,12 @@ class CharacterAdd extends React.Component {
 					this.defaultState.realms = res.data.data;
 				}
             })
-			.catch(err => this.setState({ error: 'GetRealms: ' + err.message }));
+			.catch(err => {
+				if (err.response)
+					this.setState({ error: 'GetRealms: ' + err.response.data.message })
+				else
+					this.setState({ error: 'GetRealms: ' + err.message })
+			});
 
 		Api.GetPlayers({ team: team.id })
 			.then(res => {
@@ -129,7 +133,12 @@ class CharacterAdd extends React.Component {
 					this.defaultState.players = res.data.data;
 				}
 			})
-			.catch(err => this.setState({ error: 'GetPlayers: ' + err.message }));
+			.catch(err => {
+				if (err.response)
+					this.setState({ error: 'GetPlayers: ' + err.response.data.message })
+				else
+					this.setState({ error: 'GetPlayers: ' + err.message })
+			});
 	}
 
 	componentWillUnmount() {
@@ -211,17 +220,17 @@ class CharacterAdd extends React.Component {
 													id="feCharacter"
 													type="text"
 													placeholder="Name"
-													invalid={this.state.invalidName}
+													invalid={this.state.errorName}
 													value={this.state.name}
 													required
-													onChange={(event) => { this.setState({ name: event.target.value, errorNameText: '', invalidName: false }); }}
+													onChange={(event) => { this.setState({ name: event.target.value, errorName: '' }); }}
 												/>
 												<div className="input-group-append">
 													<Button type="submit">
 														<i className={`material-icons ${this.state.loading ? 'spin': ''}`}>{this.state.loading ? 'refresh' : 'save'}</i> Add
 													</Button>
 												</div>
-												<FormFeedback valid={false}>{this.state.errorNameText}</FormFeedback>
+												<FormFeedback valid={false}>{this.state.errorName}</FormFeedback>
 											</InputGroup>
 										</Col>
 									</Row>

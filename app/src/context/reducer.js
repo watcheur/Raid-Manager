@@ -51,7 +51,7 @@ socket.on(Constants.CHANNEL_EVENT, data => {
 });
 
 socket.on(Constants.CHANNEL_COMP, data => {
-    console.log(Constants.CHANNEL_CHARACTER, data);
+    console.log(Constants.CHANNEL_COMP, data);
     Dispatcher.dispatch({
         channel: Constants.CHANNEL_COMP,
         actionType: data.action,

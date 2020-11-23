@@ -28,7 +28,7 @@ export default class PlayersList extends React.Component {
         this.updatePlayer = this.updatePlayer.bind(this);
     }
 
-    deletePlayer(player) {
+    async deletePlayer(player) {
         let players = [...this.state.players];
         let index = this.state.players.indexOf(this.state.players.find(c => c.id === player.id));
         if (index >= 0) {
@@ -36,61 +36,106 @@ export default class PlayersList extends React.Component {
             this.setState({players: players});
         }
 
-        Api.DeletePlayer(player.id)
-            .then(res => {
-                if (!res.data.err)
-					toast.success(`Player ${player.name.capitalize()} deleted`)
-            })
-            .catch(err => {
-                alert('An error occured while deleting this player');
-                
-                players.splice(index, 0, player);
-                this.setState({ players: players });
-            })
+        try
+        {
+            const res = await Api.DeletePlayer(player.id, { team: this.props.team.id })
+            if (res)
+            {
+                toast.success(`Player ${player.name.capitalize()} deleted`)
+            }
+        }
+        catch (error)
+        {
+            if (error.response)
+                this.setState({ loading: false, error: error.response.data.message })
+            else
+                this.setState({ loading: false, error: error.message })
+        }
     }
 
-    updatePlayer(player, rank) {
+    async updatePlayer(player, rank) {
         this.setState({ loading: true });
         
-        Api.UpdatePlayer(player.id, { rank: rank })
-            .then(res => {
-                this.setState({ loading: false });
-            })
-            .catch(err => {
-                this.setState({ loading: false });
-                alert('An error occured while updating this player');
-            })
+        try
+        {
+            const res = Api.UpdatePlayer(player.id, { rank: rank, team: this.props.team })
+            if (res)
+            {
+                let { players } = this.state;
+                let index = players.indexOf(player);
+                if (index >= 0)
+                {
+                    players.splice(index, 1)
+                    this.setState({ players: players })
+                }
+
+                this.setState({ loading: false })
+            }
+        }
+        catch (error)
+        {
+            if (error.response)
+                this.setState({ loading: false, error: error.response.data.message })
+            else
+                this.setState({ loading: false, error: error.message })
+        }
     }
 
-    loadPlayers() {
+    async loadPlayers() {
         this.setState({ loading: true });
 
-        Api.GetPlayers({ include: 1, rank: this.props.rank })
-            .then(res => {
-                this.setState({ loading: false });
-                if (!res.data.err) {
-                    this.setState({players: res.data.data });
-                }
-            })
-            .catch(err => {
-                this.setState({ loading: false });
-                alert('An error occured while refreshing this player');
-            })
+        try
+        {
+            const { rank, team } = this.props;
+
+            const res = await Api.GetPlayers({ rank: rank, team: team.id })
+            if (res)
+                this.setState({ loading: false, players: res.data.data })
+        }
+        catch (error)
+        {
+            if (error.response)
+                this.setState({ loading: false, error: error.response.data.message })
+            else
+                this.setState({ loading: false, error: error.message })
+        }
     }
 
     componentDidMount() {
+        if (this.dispatcherToken)
+            Dispatcher.unregister(this.dispatcherToken);
         this.dispatcherToken = Dispatcher.register(payload => {
-            switch (payload.actionType) {
-                case Constants.PLAYER_CREATED:
-                case Constants.PLAYER_UPDATE:
-                case Constants.PLAYER_DELETED:
-                case Constants.CHAR_CREATED:
-                    if (this.props.type === undefined || this.props.type == payload.character.type)
-                        this.loadPlayers();
-                    break;
-                default:
+            if ([Constants.CHANNEL_PLAYER, Constants.CHANNEL_CHARACTER].indexOf(payload.channel) >= 0)
+            {
+                console.log("payload", payload);
+                switch (payload.actionType) {
+                    case Constants.CREATED:
+                    case Constants.UPDATED:
+                        if (!this.props.rank || (payload.rank == this.props.rank))
+                            this.loadPlayers();
+                        break;
+                    case Constants.DELETED:
+                        if (payload.player)
+                        {
+                            /*
+                            let { players } = this.state;
+                            let index = players.findIndex(player);
+                            if (index >= 0)
+                            {
+                                players.splice(index, 1)
+                                this.setState({ players: players })
+                            }
+                            */
+                        }
+                        if (payload.character)
+                        {
+
+                        }
+                        break;
+                }
             }
         });
+
         this.loadPlayers();
     }
 
@@ -109,8 +154,17 @@ export default class PlayersList extends React.Component {
                         <tbody>
                             {this.state.loading && (
                                 <tr className="p-0 pb-3 text-center">
-                                    <td colspan="3">
+                                    <td colspan="4">
                                         <h1 className="material-icons spin">refresh</h1>
+                                    </td>
+                                </tr>
+                            )}
+                            {this.state.error && (
+                                <tr className="bg-dark p-0 pb-3">
+                                    <td colSpan="4"
+                                        className="bg-warning text-white text-center"
+                                        style={{ boxShadow: "inset 0 0 5px rgba(0,0,0,.2)" }}>
+                                        <i className="material-icons">warning</i> {this.state.error}
                                     </td>
                                 </tr>
                             )}

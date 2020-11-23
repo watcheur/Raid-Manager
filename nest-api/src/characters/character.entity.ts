@@ -75,13 +75,6 @@ export class Character {
     @Column({ nullable: true })
     equipped?: number;
 
-    @ManyToOne(type => Player, player => player.characters)
-    @JoinColumn({ name: 'player' })
-    player?: Player;
-
-    @Column({ name: 'player' })
-    playerId: number;
-
     @Expose({ name: 'weekly' })
     get weekly(): number
     {
@@ -98,7 +91,19 @@ export class Character {
 
     @ManyToMany(type => Team, team => team.characters)
     teams?: Team[];
-    
+
+    @Exclude()
+    @ManyToMany(type => Player, player => player.characters)
+    players?: any[];
+
+    @Expose({ name: 'player' })
+    get player(): Player
+    {
+        if (this.players)
+            return this.players.find(pc => pc.player)?.player;
+        return null;
+    }
+
     @CreateDateColumn({ name: 'created_at' })
 	createdAt: Date;
 

@@ -92,7 +92,6 @@ export class CharactersController {
                 id: blizzardCharacter.id,
                 name: blizzardCharacter.name,
                 realmId: blizzardCharacter.realm.id,
-                playerId: body.player,
                 type: body.type,
                 level: blizzardCharacter.level,
                 race: blizzardCharacter.race.id,
@@ -103,6 +102,9 @@ export class CharactersController {
                 avg: blizzardCharacter.average_item_level,
                 equipped: blizzardCharacter.equipped_item_level
             });
+
+            if (!player.characters || player.characters.map(c => c.id).indexOf(character.id) <= 0)
+                await this.playersService.addCharacter(player, character);
 
             if (!team.characters || team.characters.map(c => c.id).indexOf(character.id) <= 0) {
                 await this.teamsService.addCharacter(team, character);

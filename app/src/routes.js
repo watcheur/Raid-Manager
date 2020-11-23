@@ -12,7 +12,7 @@ import EventDetail from "./views/EventDetail";
 import EventManage from "./views/EventManage";
 import NotesOverview from "./views/NotesOverview";
 import LoginView from "./views/LoginView";
-import PlayerOverview from "./views/PlayerOverview";
+import PlayersOverview from "./views/PlayersOverview";
 import CharacterDetail from "./views/CharacterDetail";
 import CharacterWishlist from "./views/CharacterWishlist";
 import StatsOverview from "./views/StatsOverview";
@@ -64,7 +64,7 @@ export default [
 		exact: true,
 		layout: DefaultLayout,
 		isPrivate: true,
-		component: PlayerOverview
+		component: PlayersOverview
 	},
 	{
 		path: "/events",

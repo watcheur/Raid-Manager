@@ -7,7 +7,7 @@ import { TeamsService } from 'src/teams/teams.service';
 import { PlayerUpdateDto } from './player-update.dto';
 import { PlayerDto } from './player.dto';
 import { Player } from './player.entity';
-import { PlayersService } from './players.service';
+import { IPlayerWhere, PlayersService } from './players.service';
 import { AppGateway, SocketAction, SocketChannel } from 'src/app.gateway';
 
 @ApiTags('players')
@@ -23,7 +23,7 @@ export class PlayersController {
     @ApiOperation({ summary: 'Get users by team' })
     @ApiQuery({ name: 'team' })
     @Get()
-    async getAll(@Request() req: RequestWithUser, @Query('team') teamId: number): Promise<Player[]>
+    async getAll(@Request() req: RequestWithUser, @Query('team') teamId: number, @Query() query: IPlayerWhere): Promise<Player[]>
     {
         if (!teamId)
             throw new BadRequestException('No team provided');
@@ -35,7 +35,7 @@ export class PlayersController {
         if (!req.user.isInTeam(team.id))
             throw new ForbiddenException("You can't request another team's players")
         
-        return await this.playersService.findByTeam(teamId);
+        return await this.playersService.findByTeam(teamId, query);
     }
 
     @UseGuards(JwtAuthenticationGuard)
@@ -62,7 +62,11 @@ export class PlayersController {
             throw new NotFoundException("Team not found");
         
         if (!req.user.isInTeam(team.id))
-            throw new ForbiddenException("You can't request player to other teams");
+            throw new ForbiddenException("You can't add player to other teams");
+
+        const exist = await this.playersService.findByNameAndTeam(playerDto.name, team.id);
+        if (exist)
+            throw new BadRequestException(`Player with name ${playerDto.name} already exist`);
 
         const player = await this.playersService.create(playerDto, team);
 
@@ -93,8 +97,8 @@ export class PlayersController {
         this.appGateway.emit(player.team.id, SocketChannel.Player, {
             action: SocketAction.Updated,
             data: {
-                player: player.id,
-                ...player
+                player: updated.id,
+                ...updated
             }
         })
         

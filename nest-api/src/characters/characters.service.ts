@@ -14,7 +14,7 @@ import { Team } from 'src/teams/team.entity';
 import { AppGateway } from 'src/app.gateway';
 import { PeriodsService } from 'src/periods/periods.service';
 import { Realm } from 'src/realms/realm.entity';
-import { Player } from 'src/players/player.entity';
+import { Player, PlayerCharacter } from 'src/players/player.entity';
 import { Item } from 'src/items/item.entity';
 import { Weekly } from 'src/weeklys/weekly.entity';
 
@@ -61,7 +61,7 @@ export class CharactersService {
     public async findById(id: number): Promise<Character>
     {
         return this.charactersRepository.findOne({
-            relations: [ "realm", "player", "teams" ],
+            relations: [ "realm", "teams" ],
             where: {
                 id: id
             }
@@ -77,9 +77,10 @@ export class CharactersService {
         const ids = team.characters.map(c => c.id);
         const period = await this.periodsService.findCurrent();
 
-        let test = await this.charactersRepository.createQueryBuilder("C")
+        let req = await this.charactersRepository.createQueryBuilder("C")
             .innerJoinAndMapOne("C.realm", Realm, "R", "R.id = C.realm")
-            .innerJoinAndMapOne("C.player", Player, "P", "P.id = C.player")
+            .leftJoinAndMapMany("C.players", PlayerCharacter, "PC", "PC.character = C.id")
+            .leftJoinAndMapOne("PC.player", Player, "P", "PC.player = P.id AND P.team = :teamId", { teamId: team.id })
             .leftJoinAndMapMany("C.items", CharacterItem, "CI", "CI.character = C.id")
             .leftJoinAndMapOne("CI.item", Item, "IT", "IT.id = CI.item")
             .leftJoinAndMapOne("CI.character", Character, "Ca", "Ca.id = CI.character")
@@ -89,26 +90,26 @@ export class CharactersService {
         if (where)
         {
             if (where.name)
-                test = test.where("C.name LIKE :name")
+                req = req.where("C.name LIKE :name")
             if (where.realm)
-                test = test.where("C.realm = :realm")
+                req = req.where("C.realm = :realm")
             if (where.type)
-                test = test.where("C.type = :type")
+                req = req.where("C.type = :type")
             if (where.level)
-                test = test.where("C.level = :level")
+                req = req.where("C.level = :level")
             if (where.class)
-                test = test.where("C.class = :class")
+                req = req.where("C.class = :class")
             if (where.spec)
-                test = test.where("C.spec = :spec")
+                req = req.where("C.spec = :spec")
             if (where.equipped)
-                test = test.where("C.equipped = :equipped")
+                req = req.where("C.equipped = :equipped")
             if (where.average)
-                test = test.where("C.average = :average")
+                req = req.where("C.average = :average")
             
-            test = test.setParameters(where);
+            req = req.setParameters(where);
         }
 
-        return test.getMany();
+        return req.getMany();
     }
 
     public async findByIdAndTeam(id: number, teamId: number): Promise<Character>
