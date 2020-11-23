@@ -32,7 +32,7 @@ export class Player {
 	name: string;
 	
 	@Index()
-	@Column({ type: "enum", enum: Rank })
+	@Column({ type: "enum", enum: Rank, default: Rank.TBD })
 	rank: Rank;
 
     @CreateDateColumn({ name: 'created_at' })

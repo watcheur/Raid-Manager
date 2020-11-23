@@ -22,7 +22,6 @@ export class Expansion {
     @Column()
     name: string;
 
-    @OneToMany(type => Raid, raid => raid.id, { cascade: true, onDelete: "CASCADE" })
-    @JoinTable()
+    @OneToMany(type => Raid, raid => raid.expansion, { cascade: true, onDelete: "CASCADE" })
     raids: Raid[];
 }

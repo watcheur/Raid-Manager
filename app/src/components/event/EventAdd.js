@@ -33,8 +33,7 @@ class EventAdd extends React.Component {
         invalidDate: false,
         invalidTime: false,
         invalidDifficulty: false,
-        apiError: false,
-        apiErrorMessage: true
+        error: '',
     }
 
     constructor(props) {
@@ -45,14 +44,16 @@ class EventAdd extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 	
-	handleSubmit(event) {
+	async handleSubmit(event) {
         event.preventDefault();
 
+        const { title, raid, difficulty, date, time } = this.state
+
         let invalids = {
-            invalidRaid: this.state.raid.length === 0,
-            invalidDifficulty: this.state.difficulty.length === 0,
-            invalidDate: this.state.date.length === 0,
-            invalidTime: this.state.time.length === 0
+            invalidRaid: raid.length === 0,
+            invalidDifficulty: difficulty.length === 0,
+            invalidDate: date.length === 0,
+            invalidTime: time.length === 0
         }
         
         this.setState(invalids);
@@ -60,30 +61,53 @@ class EventAdd extends React.Component {
         if (invalids.invalidTime || invalids.invalidDate || invalids.invalidRaid || invalids.invalidDifficulty)
             return;
 
-        this.setState({ loading: true, apiError: false, apiErrorMessage: '' });
-        Api.CreateEvent({
-            title: this.state.title,
-            schedule: moment(this.state.date).format(`YYYY-MM-DD ${this.state.time}:00`),
-            raid: this.state.raid,
-            difficulty: this.state.difficulty
-        })
-        .then(res => {
-            this.setState({ loading: false });
-            if (!res.data.err) {
+        this.setState({ loading: true, error: '' });
+        try
+        {
+            
+            const res = await Api.CreateEvent({
+                name: title,
+                schedule: moment(date).utc().format(`YYYY-MM-DD ${time}:00`),
+                raid: raid,
+                difficulty: difficulty
+            }, { team: this.props.team.id })
+
+            if (res)
+            {
                 this.setState({ ...this.defaultState });
                 toast.success(`Event created`)
             }
+        }
+        catch (error)
+        {
+            // Api send a response who isn't a 2XX
+            if (error.response)
+                this.setState({ loading: false, error: error.response.data.message });
             else
-                this.setState({ loading: false });
-        })
-        .catch(err => {
-            this.setState({
-                loading: false,
-                apiError: true,
-                apiErrorMessage: err.response.data.message
-            });
-        })
-	}
+                this.setState({ loading: false, error: error.message });
+        }
+    }
+    
+    async loadExpansions()
+    {
+        try
+        {
+            this.setState({ loading: true })
+            const res = await Api.GetExpansions();
+            if (res.data.data) {
+                this.defaultState.expansions = res.data.data
+                this.setState({ expansions: res.data.data, loading: false })
+            }
+        }
+        catch (error)
+        {
+            // Api send a response who isn't a 2XX
+            if (error.response)
+                this.setState({ loading: false, error: error.response.data.message });
+            else
+                this.setState({ loading: false, error: error.message });
+        }
+    }
 
     componentDidMount() {
         Api.GetExpansions()
@@ -142,10 +166,10 @@ class EventAdd extends React.Component {
 												required
 												onChange={(event) => { this.setState({ difficulty: event.target.value }); }}>
 												<option value=''>Choose...</option>
-                                                <option value="0">LFR</option>
-                                                <option value="1">Normal</option>
-                                                <option value="2">Heroic</option>
-                                                <option value="3">Mythic</option>
+                                                <option value="LFR">LFR</option>
+                                                <option value="NORMAL">Normal</option>
+                                                <option value="HEROIC">Heroic</option>
+                                                <option value="MYTHIC">Mythic</option>
 											</FormSelect>
 											<FormFeedback valid={false}>Select a difficilty</FormFeedback>
                                         </Col>
@@ -193,7 +217,7 @@ class EventAdd extends React.Component {
 											</InputGroup>
                                         </Col>
 									</Row>
-                                    {this.state.apiError && (<div className="text-danger"><i className='material-icons'>error</i> {this.state.apiErrorMessage}</div>)}
+                                    {this.state.error && (<div className="text-danger"><i className='material-icons'>error</i> {this.state.error}</div>)}
 								</Form>
 							</Col>
 						</Row>

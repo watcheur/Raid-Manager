@@ -28,7 +28,7 @@ class PlayerAdd extends React.Component {
         loading: false,
         error: '',
 
-        rank: '',
+        rank: 0,
         name: ''
     }
 
@@ -49,7 +49,7 @@ class PlayerAdd extends React.Component {
             const { name, rank } = this.state;
 
             const res = await Api.CreatePlayer({ name: name, rank: rank, team: this.props.team.id });
-            this.setState({ loading: false, error: res.data.error, error: res.data.message, name: '', rank: '' })
+            this.setState({ loading: false, error: res.data.error, error: res.data.message, name: '', rank: 0 })
             if (!res.data.error)
                 toast.success(`Player ${name.capitalize()} added`)
         }

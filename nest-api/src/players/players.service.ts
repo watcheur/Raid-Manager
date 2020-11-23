@@ -29,6 +29,7 @@ export class PlayersService {
     public async findByTeam(teamId: number, where?: IPlayerWhere): Promise<Player[]>
     {
         return await this.playersRepository.find({
+            relations: [ "characters" ],
             where: {
                 team: teamId,
                 ...where

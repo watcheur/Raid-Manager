@@ -52,7 +52,8 @@ export enum ItemSlot {
     THROWN = "THROWN",
     RANGEDRIGHT = "RANGEDRIGHT", // Wands, Guns, Crossbows
     QUIVER = "QUIVER",
-    RELIC = "RELIC"
+    RELIC = "RELIC",
+    NON_EQUIP = "NON_EQUIP"
 }
 
 @Entity()

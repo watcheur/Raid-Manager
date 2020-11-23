@@ -107,29 +107,22 @@ export default class PlayersList extends React.Component {
         this.dispatcherToken = Dispatcher.register(payload => {
             if ([Constants.CHANNEL_PLAYER, Constants.CHANNEL_CHARACTER].indexOf(payload.channel) >= 0)
             {
-                console.log("payload", payload);
                 switch (payload.actionType) {
                     case Constants.CREATED:
                     case Constants.UPDATED:
-                        if (!this.props.rank || (payload.rank == this.props.rank))
+                        if (!this.props.rank || payload.character || (payload.rank == this.props.rank))
                             this.loadPlayers();
                         break;
                     case Constants.DELETED:
                         if (payload.player)
                         {
-                            /*
                             let { players } = this.state;
-                            let index = players.findIndex(player);
+                            let index = players.findIndex(p => p.id == payload.player);
                             if (index >= 0)
                             {
                                 players.splice(index, 1)
                                 this.setState({ players: players })
                             }
-                            */
-                        }
-                        if (payload.character)
-                        {
-
                         }
                         break;
                 }

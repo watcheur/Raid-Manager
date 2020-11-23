@@ -137,7 +137,7 @@ class Api {
     GetOptions = (args) => this.Get('/options', args);
     CreateOptions = (data, args) => this.Post('/options', data, args);
 
-    GetFavoritesNotes = (args) => this.Get('/notes/favorites', args);
+    GetNotes = (args) => this.Get('/notes', args);
     CreateNote = (title, text, favorite, args) => this.Post('/notes', { title: title, text: text, favorite: favorite }, args);
     UpdateNote = (id, title, text, favorite, args) => this.Put(`/notes/${id}`, { title: title, text: text, favorite: favorite }, args);
     DeleteNote = (id, args) => this.Delete(`/notes/${id}`, args);

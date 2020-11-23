@@ -160,14 +160,14 @@ export class TasksService {
     }
 
     // Refresh items without data - every 3 hours
-    @Cron("0 */3 * * WED", { name: 'items' })
+    @Cron(CronExpression.EVERY_3_HOURS, { name: 'items' })
     async itemsRefresh()
     {
         this.logger.log("Start items loader")
         const logger = new Logger("ItemsRefresher", true);
         logger.log("Started")
 
-        const ids = await this.items.findIdsByMissingMedia();
+        const ids = await this.items.findIdsWithMissingData();
         
         await Promise.all(ids.map(id => this.items.addItemToQueue(id)));
 
@@ -189,12 +189,15 @@ export class TasksService {
     }
 
     // Refresh all items without media - every 4 hours
-    @Cron("0 */4 * * WED", { name: 'items-media' })
+    @Cron(CronExpression.EVERY_4_HOURS, { name: 'items-media' })
     async itemsMediaRefresh()
     {
         this.logger.log("Start items medias loader")
         const logger = new Logger("ItemsMediaRefresher", true);
         logger.log("Started")
+
+        logger.error('ENDED, PLEASE IMPLEMENT');
+        return;
 
         const ids = await this.items.findIdsByMissingMedia();
 

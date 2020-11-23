@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheInterceptor, CacheModule, Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -75,6 +75,9 @@ import { OptionsModule } from './options/options.module';
 			}),
 			inject: [ConfigService]
 		}),
+		CacheModule.register({
+			ttl: 60 // 1 minute cache
+		}),
 		AuthModule,
 		UsersModule,
 		RealmsModule,
@@ -103,6 +106,10 @@ import { OptionsModule } from './options/options.module';
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: TransformInterceptor
+		},
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: CacheInterceptor
 		},
 		AppGateway
 	],
