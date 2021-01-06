@@ -5,7 +5,7 @@
 	"homepage": "/",
 	"main": "src/start.js",
 	"dependencies": {
-		"axios": "^0.20.0",
+		"axios": "^0.21.1",
 		"camelize": "*",
 		"chart.js": "*",
 		"classnames": "*",
