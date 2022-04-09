@@ -14,7 +14,7 @@
 		"expr-eval": "^2.0.2",
 		"flux": "*",
 		"lodash.find": "*",
-		"moment": "^2.29.0",
+		"moment": "^2.29.2",
 		"react": "*",
 		"react-big-calendar": "^0.28.0",
 		"react-bootstrap-typeahead": "^5.1.1",
